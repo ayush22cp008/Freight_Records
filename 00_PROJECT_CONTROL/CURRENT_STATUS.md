@@ -8,6 +8,8 @@ Node 2.5 (core logic testing) is complete and locked. All 3 technically uncertai
 - Camera capture → Supabase Storage upload — confirmed working
 - Immutable insert-only enforcement — confirmed working via service-role server-side insert route (see MASTER_ARCHITECTURE.md)
 
+⚠️ Scope correction (Aug 20, 2026): Hackathon window is 25 days (Aug 21 – Sep 15), not 4 days as originally planned. All 8 stretch items are now targeted in priority order (see ROADMAP.md), not just the original 5. Core MVP scope itself is unchanged.
+
 ## Repos & infra set up
 - Records repo: `Freight_Records` (GitHub, public)
 - Records replica: Google Drive folder `Freight_hackathon_records`
