@@ -12,9 +12,8 @@
   - `freight/src/app/events/arrival/ArrivalClient.tsx`: Client component enforcing mandatory photo upload, executing all Day 2 capture utilities, and showing clear success/error UI states.
 - **Build/Compile Status:**
   - `npm run build` completed successfully. Project compiles and builds green.
-- **Migration Applied Confirmation:**
-  - *Pending*: Awaiting Ayush to run the migration script manually in the Supabase SQL editor.
+- **Verification Status:**
+  - **VERIFIED**: The `events` table migration was applied successfully in Supabase.
+  - **VERIFIED**: Ayush manually tested the full `/events/arrival` UI flow in the browser. The GPS capture, server timestamp fetch, photo upload, and database insertion all succeeded perfectly as evidenced by the UI success state and the files in the Supabase storage bucket.
 - **Deviations from Spec:**
   - No deviations. The Next.js logic strictly implements the Day 3 instructions, reusing Day 2's utilities unmodified.
-
-Ayush will now apply the migration and manually test the full `/events/arrival` UI flow in the browser.
