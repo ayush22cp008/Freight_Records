@@ -1,6 +1,6 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Aug 21, 2026
+**Last updated:** Aug 22, 2026
 
 ## Where we are
 Day 3 of 25 (Node 3 build execution) — **COMPLETE and LOCKED**.
@@ -18,14 +18,32 @@ Also re-verified Aug 21: a Supabase platform incident (401s from JWT rejections,
 
 Day 1 (login + pre-seeded trip) and Day 2 (GPS/timestamp/photo utils) remain LOCKED from before — see CHANGELOG.md.
 
+## Chat5 Node 3 — Flow & Navigation decision
+Chat5 investigation and architecture review are complete. The navigation/state architecture is now **LOCKED**:
+- Current MVP remains a single-facility, fixed 3-event workflow: Arrival → Check-in → Departure.
+- Trip Hub (`/`) is the single source of truth for the driver's current workflow state and next required action.
+- Next-event decisions must come from authoritative database state, not temporary client state.
+- Out-of-order access, refresh behavior, Back behavior, and duplicate-event handling are defined as part of the locked navigation contract.
+- Multi-stop / full pickup-to-delivery expansion remains deferred.
+
+The Chat5 source audit identified the remaining implementation work: connect the Hub to the event flow, enforce the next-event state/navigation contract, and verify it before implementing Check-in. The audit report remains the historical record of the pre-fix source state.
+
 ## Repos & infra set up
 - Records repo: `Freight_Records` (GitHub, public)
 - Records replica: Google Drive folder `Freight_hackathon_records`
-- Source code repo: `freight_hackathon` (GitHub, public) — Day 1, 2, 3 code now implemented
+- Source code repo: `freight_hackathon` (GitHub, public) — Day 1, 2, 3 code implemented
 - Supabase project: `freight_hackathon` (ap-south-1 Mumbai, Nano) — `drivers`, `trips`, `events` tables live, RLS enabled, `events` immutable at DB level; `event-photos` Storage bucket live
 
-## Next step
-Day 4 (Node 3): Event 2 — Check-in (photo optional per current core scope). Reuse the Arrival pattern (API route + UI) with `event_type = 'checkin'` and optional photo enforcement instead of mandatory.
+## Current next step
+**Node 3 — Hub/navigation foundation implementation and verification.**
+
+After the Hub/navigation foundation is implemented and manually verified:
+1. Event 2 — Check-in (photo optional per current core scope)
+2. Event 3 — Departure
+3. Timeline
+4. AI Evidence Summary
+
+Do not redesign the locked MVP or revisit the locked `events` schema/immutability approach without an explicit reason.
 
 ## Do not re-discuss
-Product definition, MVP scope, and stack are locked — see MASTER_ARCHITECTURE.md and ROADMAP.md. Day 1, Day 2, and Day 3 build details are locked — see CHANGELOG.md and their implementation reports, do not re-verify. `events` table schema and immutability approach are locked — see the schema decision record, do not re-discuss without explicit reason.
+Product definition, MVP scope, and stack are locked — see MASTER_ARCHITECTURE.md and ROADMAP.md. Day 1, Day 2, and Day 3 build details are locked — see CHANGELOG.md and their implementation reports, do not re-verify. Chat5 flow/navigation decisions are locked in `Chat5_Node3_Flow_And_Navigation_Decision.md`.
