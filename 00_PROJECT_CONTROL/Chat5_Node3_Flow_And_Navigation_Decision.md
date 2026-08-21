@@ -152,17 +152,19 @@ Browser Back must not provide a way to bypass event ordering or create duplicate
 
 ## 8. Current implementation state
 
-The source audit found:
+The Chat5 implementation is now **COMPLETE for the Hub/navigation foundation**:
 
-- `/login` active
-- `/` active but currently has no event navigation
-- `/events/arrival` active but currently orphaned from `/`
-- `/test-day2` exists as a testing utility
-- Check-in and Departure pages do not yet exist
-- Timeline and AI summary pages do not yet exist
-- Current Arrival implementation does not yet prevent duplicate Arrival submissions
+- `/login` active and remains the authentication entry point.
+- `/` is now a functional Trip Hub that fetches the active trip and stored events and determines the next workflow step from authoritative database state.
+- `/` displays one clear primary CTA dynamically for Arrival → Check-in → Departure progression.
+- `/events/arrival` now performs a server-side authoritative check and redirects to `/` if Arrival is already recorded, preventing duplicate workflow entry.
+- `/test-day2` remains a testing utility and is not part of the driver workflow.
+- `/events/checkin`, `/events/departure`, and `/timeline` are not yet implemented; they may return 404 until their respective implementation tasks are completed.
+- AI Evidence Summary is not yet implemented.
+- No database schema changes were made during the Hub/navigation foundation implementation.
+- `npm run build` passes.
 
-These are implementation facts, not design decisions.
+The historical source-audit report describing the pre-fix state remains unchanged and should be treated as historical evidence, not as the current implementation state.
 
 ## 9. Execution strategy
 
@@ -181,15 +183,14 @@ The user's AI-agent workflow has already demonstrated significantly faster execu
 
 ## 10. Next implementation priority
 
-Before starting Check-in implementation:
+The Hub/navigation foundation is complete. The next priority is:
 
-1. Fix `/` into the Trip Hub.
-2. Connect `/` → Arrival.
-3. Define and enforce the current next-event state.
-4. Define safe Back/direct-route/refresh behavior.
-5. Prevent duplicate Arrival submission.
-6. Verify the navigation manually.
-7. Only then implement Check-in.
+1. Implement Check-in.
+2. Reuse the locked Arrival evidence pattern.
+3. Use `event_type = 'checkin'` with photo optional per current core scope.
+4. Preserve authoritative event ordering and immutable storage.
+5. After successful Check-in, return to `/` and let the Hub recompute the next state.
+6. Verify Check-in before moving to Departure.
 
 ## 11. Deferred product vision
 
@@ -218,8 +219,8 @@ This is **not part of the current implementation scope**. It is a future directi
 
 **LOCK:** Trip Hub is the navigation/state source of truth.
 
-**LOCK:** Complete and verify the current full loop before considering multi-stop expansion.
+**LOCK:** Hub/navigation foundation is implemented and verified at build/routing level; continue with the event-by-event implementation and manual verification sequence.
 
 **DEFER:** Multi-stop / full pickup-to-delivery journey until the current MVP is complete and only if remaining time makes it sensible.
 
-**NEXT:** Implement and verify Hub/navigation foundation, then proceed to Check-in.
+**NEXT:** Implement and verify Check-in, then proceed to Departure.
