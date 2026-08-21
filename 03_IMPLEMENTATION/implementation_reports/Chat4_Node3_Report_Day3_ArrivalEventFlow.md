@@ -14,6 +14,7 @@
   - `npm run build` completed successfully. Project compiles and builds green.
 - **Verification Status:**
   - **VERIFIED**: The `events` table migration was applied successfully in Supabase.
-  - **VERIFIED**: Ayush manually tested the full `/events/arrival` UI flow in the browser. The GPS capture, server timestamp fetch, photo upload, and database insertion all succeeded perfectly as evidenced by the UI success state and the files in the Supabase storage bucket.
+  - **VERIFIED**: Ayush manually tested the full `/events/arrival` UI flow in the browser. The GPS capture, server timestamp fetch, photo upload, and database insertion all succeeded perfectly.
+  - **VERIFIED**: Ayush manually tested the duplicate submission edge case. Attempting to submit a second arrival event for the same trip successfully triggered the 409 Conflict error, and the UI displayed the correct "Arrival already recorded for this trip" error message as intended.
 - **Deviations from Spec:**
   - No deviations. The Next.js logic strictly implements the Day 3 instructions, reusing Day 2's utilities unmodified.
