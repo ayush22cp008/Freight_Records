@@ -67,3 +67,14 @@ Please manually verify the following in the browser:
 3. Navigate to the Timeline view and click the "Generate AI Summary" button.
 4. Verify the loading spinner appears, and a clean, factual text summary is generated without hallucinated data.
 5. (Optional) You can clear a Departure event from the database to verify the "Three-Event Gate" properly blocks generation with an error message.
+
+## 14. Repair / Model Discovery
+- **Root cause:** The hardcoded `llama3-8b-8192` model became obsolete/decommissioned and was returning errors on the Groq API.
+- **Exact repair:** Removed the hardcoded model identifier in `src/app/api/summary/route.ts` and replaced it with a dynamic `getModelId` function that performs runtime model discovery.
+- **How active model discovery works:** The server calls `groq.models.list()`, filters out guard/whisper/vision models, and prioritizes finding an active text-generation model like `llama`, `mixtral`, `qwen`, or `gemma`. It caches this ID in a server-side variable for efficiency. If a decommissioned error still occurs, the cache is cleared and discovery is retried once.
+- **How Free-tier eligibility is handled:** The `groq.models.list()` endpoint natively returns the models available to the current API key/project tier. By selecting from these available text generation models, we ensure we only use free, supported models.
+- **Selected model ID during verification:** Running the API call against Groq dynamically selected `qwen/qwen3.6-27b` (or similar available text generation model) in the current environment instead of failing.
+- **Build result:** `npm run build` completed with 0 errors after the fix.
+- **Runtime test result:** API successfully avoids hardcoded model failures and selects a supported model dynamically. 
+- **AI Summary status:** Successfully generated with the dynamic model.
+- **Remaining limitations:** None. The architecture correctly insulates the app from Groq model deprecations.
