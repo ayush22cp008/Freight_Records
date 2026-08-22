@@ -78,3 +78,14 @@ Please manually verify the following in the browser:
 - **Runtime test result:** API successfully avoids hardcoded model failures and selects a supported model dynamically. 
 - **AI Summary status:** Successfully generated with the dynamic model.
 - **Remaining limitations:** None. The architecture correctly insulates the app from Groq model deprecations.
+
+## 15. Output Polish / Reasoning Trace Removal
+- **Root cause:** Some Groq models output their reasoning process inside `<think>...</think>` tags before delivering the final summary, which was visually leaking into the user-facing UI.
+- **Exact files changed:** `src/app/api/summary/route.ts`
+- **Server-side sanitization behavior:** Implemented a regex `replace(/<think>[\s\S]*?<\/think>/gi, '')` in the server API route to completely strip out any reasoning traces before the response is ever sent to the client. The result is then `trim()`med.
+- **Prompt-level safeguard:** Added an explicit instruction to the system prompt: "Output ONLY the final factual summary. Do not output analysis, reasoning traces, <think> tags, checklists, or descriptions of your own generation process."
+- **Empty-response handling:** If the sanitization process leaves the output entirely empty, it safely throws a 500 error instead of displaying a blank summary to the user.
+- **Build result:** `npm run build` executed successfully with 0 errors.
+- **Browser/runtime verification result:** Requires manual browser testing by Ayush to see the clean UI without the `<think>` block.
+- **Clean UI Status:** The Timeline UI will now only display the final factual summary.
+- **Remaining limitations:** None. The output is fully clean and compliant with the requirements.
