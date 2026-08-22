@@ -3,48 +3,70 @@
 **Last updated:** Aug 22, 2026
 
 ## Where we are
-**Chat5 Node 3 — Hub Navigation & State Foundation COMPLETE and LOCKED.**
+**Node 3 — Core MVP build execution COMPLETE and LOCKED.**
 
-The current single-facility, fixed 3-event MVP navigation foundation is implemented:
-- Trip Hub (`/`) is now the workflow state source of truth.
-- Hub fetches the active trip and its stored events from authoritative database state.
-- Hub determines the next workflow step in order: Arrival → Check-in → Departure.
-- Hub displays one clear primary CTA for the current next event.
-- `/events/arrival` now checks authoritative event state server-side and redirects back to `/` if Arrival is already recorded.
+The fixed single-facility, 3-event Core MVP workflow is now implemented end-to-end:
+- Login → Trip Hub → Arrival → Check-in → Departure → Timeline → AI Evidence Summary.
+- Trip Hub (`/`) is the workflow state source of truth.
+- Hub uses authoritative database state to determine the next event in order: Arrival → Check-in → Departure.
+- Arrival, Check-in, and Departure are recorded as immutable events with GPS + server timestamp; Arrival and Departure require photo evidence, Check-in remains optional-photo per Core MVP scope.
+- Timeline displays the recorded events chronologically with evidence.
+- AI Evidence Summary receives the deterministic Arrival + Check-in + Departure evidence and produces one concise factual summary through Groq.
+- AI summary truncation was fixed by increasing the output budget, disabling unnecessary Qwen reasoning where applicable, and retaining the server-side `<think>` sanitizer.
+- Groq API key remains server-side; model selection remains dynamically based on models available to the active API key/free tier.
 - `npm run build` passes.
-- No database schema changes were made during the Hub/navigation implementation.
-
-The implementation report is recorded in `03_IMPLEMENTATION/implementation_reports/Chat5_Node3_Report_HubNavigationAndState.md`.
 
 ### Verified / locked foundations
-Event 1 — Arrival remains fully built and manually verified by Ayush end-to-end:
+Event 1 — Arrival:
 - `events` table migration applied — locked schema, RLS enabled, UPDATE/DELETE revoked from ALL roles including `service_role` (true DB-level immutability)
 - `/api/events/arrival` route: service-role insert, `event_type` hardcoded server-side, UNIQUE constraint violation (23505) handled as clean 409
-- `/events/arrival` UI: mandatory photo, GPS + server timestamp + photo capture (Day 2 utils reused unmodified) → submit → confirmation
-- Full manual browser test: PASS (GPS, timestamp, photo, DB insert, confirmation UI)
-- Duplicate-arrival edge case: PASS (second arrival attempt correctly returns 409, UI shows correct error)
+- `/events/arrival` UI: mandatory photo, GPS + server timestamp + photo capture → submit → confirmation
+- Full manual browser test: PASS
+- Duplicate-arrival edge case: PASS
 
-Build (`npm run build`) was green for the Arrival implementation as well. Full detail: `03_IMPLEMENTATION/implementation_reports/Chat4_Node3_Report_Day3_ArrivalEventFlow.md`. Schema decision + rationale: `02_ARCHITECTURE/locked_decisions/Chat4_Node3_Decision_EventsTableSchema.md`.
+Event 2 — Check-in:
+- Check-in event capture implemented and manually verified
+- GPS + server timestamp recorded
+- Photo remains optional per locked Core MVP scope
+- Returns to Hub after successful recording
 
-Day 1 login + pre-seeded trip and Day 2 GPS/timestamp/photo utilities remain locked from before — see CHANGELOG.md.
+Event 3 — Departure:
+- Departure event capture implemented and manually verified
+- GPS + server timestamp recorded
+- Mandatory photo evidence retained
+- Trip completion state works correctly
+
+Timeline:
+- `/timeline` implemented
+- Chronological Arrival → Check-in → Departure display verified
+- Recorded timestamps, locations, and photo evidence are shown from authoritative event data
+
+AI Evidence Summary:
+- Single Groq generation path implemented
+- Three-event evidence gate remains intact: Arrival + Check-in + Departure must all exist before generation
+- Final browser verification confirms the summary contains Arrival, Check-in, and Departure details
+- Truncation fix verified
+- Server-side API key protection verified
+- No AI-generated evidence replaces deterministic database evidence
 
 ## Repos & infra set up
 - Records repo: `Freight_Records` (GitHub, public)
 - Records replica: Google Drive folder `Freight_hackathon_records`
-- Source code repo: `freight_hackathon` (GitHub, public) — Day 1, 2, 3 code implemented; Chat5 Hub/navigation foundation implemented
+- Source code repo: `freight_hackathon` (GitHub, public)
 - Supabase project: `freight_hackathon` (ap-south-1 Mumbai, Nano) — `drivers`, `trips`, `events` tables live, RLS enabled, `events` immutable at DB level; `event-photos` Storage bucket live
+- Groq API key configured server-side for AI Evidence Summary
 
 ## Current next step
-**Node 3 — Event 2: Check-in.**
+**Core MVP Freeze / full manual regression pass.**
 
-Implement Check-in using the locked Arrival pattern:
-- `event_type = 'checkin'`
-- GPS + server timestamp required
-- Photo optional per current Core MVP scope
-- Preserve authoritative event ordering and immutable storage
-- After successful Check-in, return to Hub and let the Hub compute the next state
-
-The Hub may currently display links/CTAs for later states, but `/events/checkin`, `/events/departure`, and `/timeline` are not yet implemented and may return 404 until their respective features are built. This is expected and documented in the Chat5 Hub implementation report.
+Before moving to stretch features:
+- Run the complete manual Core MVP workflow from login through AI Evidence Summary.
+- Verify Arrival → Check-in → Departure ordering and duplicate-event behavior.
+- Verify Timeline evidence rendering.
+- Verify AI Summary consistently contains all three events.
+- Record any remaining bugs before starting stretch work.
 
 ## Do not re-discuss
-Product definition, MVP scope, and stack are locked — see MASTER_ARCHITECTURE.md and ROADMAP.md. Day 1, Day 2, Day 3, and Chat5 Hub/navigation implementation details are recorded in CHANGELOG.md and their implementation reports; do not re-verify unless a new issue requires it. `events` table schema and immutability approach are locked and should not be redesigned without an explicit reason.
+Product definition, MVP scope, stack, event schema, RLS/immutability architecture, and core navigation are locked. Do not redesign them without an explicit reason logged in the project records. AI remains an interpretation/organization layer over deterministic evidence; it must not invent or replace GPS, timestamps, event types, or stored evidence.
+
+Implementation reports for today's completed work are recorded under `03_IMPLEMENTATION/implementation_reports/`, including the Arrival, Check-in, Departure, Timeline, AI Evidence Summary implementation, and AI Evidence Summary truncation-fix reports.
