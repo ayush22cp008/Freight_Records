@@ -5,7 +5,7 @@
 **Owner:** Ayush  
 **Report purpose:** Record the actual work completed across Hackathon Work Day 1 and Hackathon Work Day 2 in one place. This is a progress record, not a replacement for the detailed implementation reports.
 
-> **Important status rule:** Hackathon Work Day 2 is **currently IN PROGRESS**. Ayush has **not closed Day 2 yet**. The completed items below are recorded as work completed so far; Day 2 should only be marked CLOSED when Ayush explicitly closes it after the remaining validation/freeze work is finished.
+> **Final status:** Hackathon Work Day 1 and Hackathon Work Day 2 are **CLOSED**. The 2-day hackathon work period has officially ended. This report is now the final hackathon checkpoint and should be treated as the baseline for post-hackathon development.
 
 ---
 
@@ -64,11 +64,11 @@
 
 ---
 
-# Hackathon Work Day 2 — IN PROGRESS
+# Hackathon Work Day 2 — COMPLETE
 
-**Current status: 🔄 IN PROGRESS — Ayush has not closed Day 2 yet.**
+**Final status: ✅ CLOSED — Hackathon Work Day 2 officially completed.**
 
-The work below represents the Core MVP implementation completed during this work period. The roadmap dates are preserved separately in `ROADMAP.md`; this report records the actual work progress rather than pretending the original scheduled dates were followed literally.
+The work below represents the Core MVP implementation completed during the hackathon work period. The roadmap dates are preserved separately in `ROADMAP.md`; this report records the actual work progress rather than pretending the original scheduled dates were followed literally.
 
 ## 4. Event 2 — Check-in
 
@@ -127,13 +127,8 @@ The work below represents the Core MVP implementation completed during this work
 - Client does not supply the `trip_id`.
 - Events are fetched directly from the authoritative `events` table.
 - Events are explicitly ordered by `server_timestamp ASC`.
-- Timeline displays separate event cards for:
-  1. Arrival
-  2. Check-in
-  3. Departure
-- Each event displays its recorded event type.
-- Each event displays the server timestamp.
-- Each event displays GPS coordinates and GPS accuracy.
+- Timeline displays separate event cards for Arrival, Check-in, and Departure.
+- Each event displays its recorded event type, server timestamp, GPS coordinates, and GPS accuracy.
 - Photo evidence is displayed when present.
 - Check-in correctly supports the `No photo evidence provided` state.
 - Timeline performs only read operations and does not modify event data.
@@ -152,15 +147,8 @@ The work below represents the Core MVP implementation completed during this work
 - The client never receives or submits the Groq API key.
 - The server resolves the authenticated driver and active trip itself.
 - The server retrieves deterministic event data directly from Supabase.
-- AI generation is blocked unless all three events exist:
-  **Arrival + Check-in + Departure**.
-- Only deterministic evidence fields are passed to the LLM:
-  - event type
-  - server timestamp
-  - latitude
-  - longitude
-  - GPS accuracy
-  - whether photo evidence exists
+- AI generation is blocked unless all three events exist: **Arrival + Check-in + Departure**.
+- Only deterministic evidence fields are passed to the LLM: event type, server timestamp, latitude, longitude, GPS accuracy, and whether photo evidence exists.
 - Internal database IDs and unnecessary metadata are excluded from the AI payload.
 - System instructions require a concise factual summary and prohibit invention, causality claims, visual assumptions, and replacement of stored evidence.
 - The AI is an interpretation/organization layer only; it does not create GPS, timestamps, event types, or evidence.
@@ -197,22 +185,31 @@ The Timeline AI Evidence Summary now produces a concise factual summary containi
 
 No reasoning trace is exposed in the final UI.
 
-## Hackathon Work Day 2 — Current State
+---
 
-### Completed so far
-- ✅ Check-in
-- ✅ Departure
-- ✅ Core event-flow catch-up/buffer
-- ✅ Timeline
-- ✅ AI Evidence Summary
-- ✅ AI output investigation
-- ✅ AI truncation fix
-- ✅ Browser verification of final three-event summary
+## Hackathon Final Validation / Freeze
 
-### Day 2 is NOT CLOSED yet
-Ayush has not explicitly closed Hackathon Work Day 2.
+**Status: ✅ COMPLETE**
 
-**Remaining Day 2 responsibility:** complete the final Core MVP validation/freeze decision and explicitly close Day 2 only after Ayush is satisfied that the complete workflow is stable.
+The implemented Core MVP was exercised through the deployed application and the following end-to-end behavior was verified:
+
+- ✅ Driver authentication/session foundation works.
+- ✅ Dashboard / Hub navigation works.
+- ✅ Arrival works with mandatory photo evidence.
+- ✅ Check-in works with optional photo evidence.
+- ✅ Departure works with mandatory photo evidence.
+- ✅ Arrival → Check-in → Departure state progression works.
+- ✅ Duplicate-event protection works.
+- ✅ GPS evidence is recorded.
+- ✅ Server-authoritative timestamps are recorded.
+- ✅ Photo evidence is stored and displayed when present.
+- ✅ Timeline displays the immutable chronological evidence.
+- ✅ AI Evidence Summary generates a factual summary from deterministic evidence.
+- ✅ Production build verification passed.
+
+The hackathon implementation is therefore frozen as the **Core MVP baseline**.
+
+> **Post-hackathon work is intentionally tracked separately.** Future work may extend authentication, email delivery, custom domain configuration, company/role functionality, additional evidence features, production hardening, and other product scope without rewriting the historical hackathon record.
 
 ---
 
@@ -229,7 +226,7 @@ The official 25-day roadmap originally schedules the following work across roadm
 | 8 | Aug 28 | AI Evidence Summary — single LLM call | ✅ Completed early |
 | 9 | Aug 29 | AI Evidence Summary — polish + error handling | ✅ Completed early |
 
-These roadmap dates are planning dates. This report records that Ayush completed the corresponding work early during Hackathon Work Day 2.
+These roadmap dates are planning dates. This report records that Ayush completed the corresponding work during Hackathon Work Day 2.
 
 ---
 
@@ -252,6 +249,7 @@ Detailed technical evidence remains in the individual implementation reports:
 ## Report Status
 
 **Hackathon Work Day 1: ✅ COMPLETE**  
-**Hackathon Work Day 2: 🔄 IN PROGRESS — NOT CLOSED**  
+**Hackathon Work Day 2: ✅ COMPLETE / CLOSED**  
+**2-Day Hackathon: ✅ OFFICIALLY ENDED**  
 
-This file should be updated when Ayush explicitly closes Hackathon Work Day 2.
+This file is now the final hackathon progress record and the baseline for post-hackathon development.
