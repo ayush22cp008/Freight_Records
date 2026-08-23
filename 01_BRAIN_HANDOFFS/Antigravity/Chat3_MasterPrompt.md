@@ -10,11 +10,12 @@
 - **Record Repo:** `ayush22cp008/Freight_Records`
 - **Rules File:** Refer strictly to the `ANTIGRAVITY_OPERATING_RULES.md` in the user's setup if needed.
 
-## strict Folder & Reporting Rules (Record Repo)
+## Strict Folder & Reporting Rules (Record Repo)
 When you are given an instruction or you need to output a report, **you must use the `Freight_Records` repository**:
 - **Read Instructions from:** `03_IMPLEMENTATION/prompts/`
 - **Save Implementation Reports in:** `03_IMPLEMENTATION/implementation_reports/`
 - **Save Implementation Plans in:** `03_IMPLEMENTATION/plans/` (If you need to build and propose a plan for user feedback before execution).
+- **CRITICAL LIFECYCLE RULE:** After generating any report or plan, you must `git commit` and `git push` it to the `Freight_Records` remote repository immediately. Once successfully pushed, you must **DELETE** the generated report/plan file from the local computer to prevent local clutter.
 
 ## Current State of the Codebase (As of End of Antigravity Chat 2)
 - **Database (Supabase):**
