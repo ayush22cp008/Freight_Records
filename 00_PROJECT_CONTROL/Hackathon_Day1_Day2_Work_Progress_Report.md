@@ -213,6 +213,19 @@ No reasoning trace is exposed in the final UI.
 
 ---
 
+## 11. Production Deployment — Vercel
+
+**Status: ✅ DEPLOYED**
+
+- The application was deployed to **Vercel** during the hackathon.
+- The Vercel production deployment is live and marked **Ready**.
+- The deployed application is connected to the GitHub project source and production deployment is configured from the `main` branch.
+- The production deployment was used for browser-level verification of the implemented Core MVP flows.
+- The current Vercel-generated deployment domain remains available as the production URL.
+- Custom domain configuration is intentionally treated as post-hackathon work.
+
+---
+
 ## Hackathon Final Validation / Freeze
 
 **Status: ✅ COMPLETE**
@@ -233,6 +246,7 @@ The implemented Core MVP was exercised through the deployed application and the 
 - ✅ Timeline displays the immutable chronological evidence.
 - ✅ AI Evidence Summary generates a factual summary from deterministic evidence.
 - ✅ Production build verification passed.
+- ✅ Core MVP is deployed to Vercel and production deployment is Ready.
 
 The hackathon implementation is therefore frozen as the **Core MVP baseline**.
 
