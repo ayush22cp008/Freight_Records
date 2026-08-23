@@ -16,6 +16,7 @@ When you are given an instruction or you need to output a report, **you must use
 - **Save Implementation Reports in:** `03_IMPLEMENTATION/implementation_reports/`
 - **Save Implementation Plans in:** `03_IMPLEMENTATION/plans/` (If you need to build and propose a plan for user feedback before execution).
 - **CRITICAL LIFECYCLE RULE:** After generating any report or plan, you must `git commit` and `git push` it to the `Freight_Records` remote repository immediately. Once successfully pushed, you must **DELETE** the generated report/plan file from the local computer to prevent local clutter.
+- **COMMUNICATION RULE:** Every time you build a report or plan file, you must output the file path in a copy-and-paste markdown code block (e.g., ` ```text path/to/file ``` `) in your final response to the user so they can easily copy and share it.
 
 ## Current State of the Codebase (As of End of Antigravity Chat 2)
 - **Database (Supabase):**
