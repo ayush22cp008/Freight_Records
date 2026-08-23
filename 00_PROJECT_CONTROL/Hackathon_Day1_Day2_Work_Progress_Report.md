@@ -108,17 +108,43 @@ The work below represents the Core MVP implementation completed during the hacka
 - `npm run build` passed with 0 errors.
 - Ayush manually verified the Departure flow.
 
-## 6. Buffer / Catch-up — core event flow
+## 6. Authentication Redesign — Driver ID Authentication
+
+**Status: ✅ IMPLEMENTED**
+
+The authentication redesign was designed and implemented during Hackathon Work Day 2 as part of the Core MVP work.
+
+- Signup no longer asks the user to provide a `driver_code`; the Driver ID is generated automatically.
+- Added PostgreSQL sequence-based Driver ID generation starting at `DRV010` to avoid collisions with existing `DRV001`–`DRV003` records.
+- Added a `BEFORE INSERT` database trigger to assign the formatted `DRVXXX` Driver ID server/database-side.
+- Existing database uniqueness protection for `driver_code` remains active.
+- Signup now uses **Email + Password**, then returns the newly generated Driver ID to the UI.
+- Login now uses **Driver ID + Password** instead of asking the driver to enter the underlying email.
+- Driver ID login resolves the underlying identity entirely server-side through:
+  `driver_code → auth_id → auth.users.email → Supabase signInWithPassword`.
+- The client never receives the email during the Driver ID lookup.
+- Invalid Driver ID and invalid password use the same generic `401 Invalid Driver ID or password` response to reduce account enumeration risk.
+- No service-role key is exposed to the client.
+- Existing `auth_id` resolution and protected Arrival / Check-in / Departure ownership remain intact.
+- Authentication redesign files were implemented in the application and database migration layer.
+- `npm run build` passed with 0 errors.
+
+### Authentication Redesign Follow-up
+- Browser-level manual verification of the redesigned signup/login flow remains a verification step.
+- Dynamic Driver ID delivery through production email is not yet implemented; the current signup flow displays the generated Driver ID in the UI.
+- Custom SMTP/email delivery remains follow-up work.
+
+## 7. Buffer / Catch-up — core event flow
 
 **Status: ✅ COMPLETE / BUFFER NOT REQUIRED**
 
 - Check-in and Departure were completed ahead of their original roadmap dates.
 - The core event sequence is now implemented end-to-end:
   **Arrival → Check-in → Departure**.
-- No additional database redesign was required.
+- No additional database redesign was required for the event flow.
 - Existing event schema and immutable storage approach were preserved.
 
-## 7. Timeline — chronological evidence view
+## 8. Timeline — chronological evidence view
 
 **Status: ✅ IMPLEMENTED + VERIFIED**
 
@@ -136,7 +162,7 @@ The work below represents the Core MVP implementation completed during the hacka
 - `npm run build` passed with 0 errors.
 - Ayush manually verified the chronological timeline and evidence display.
 
-## 8. AI Evidence Summary — single LLM call wiring
+## 9. AI Evidence Summary — single LLM call wiring
 
 **Status: ✅ IMPLEMENTED + VERIFIED**
 
@@ -160,7 +186,7 @@ The work below represents the Core MVP implementation completed during the hacka
 - Model selection is based on models available to the active API key/project tier rather than a single permanently hardcoded model.
 - This preserves the free-tier requirement and reduces the risk of future model deprecation breaking the application.
 
-## 9. AI Evidence Summary — output investigation, polish, and error handling
+## 10. AI Evidence Summary — output investigation, polish, and error handling
 
 **Status: ✅ FIXED + VERIFIED**
 
@@ -194,6 +220,7 @@ No reasoning trace is exposed in the final UI.
 The implemented Core MVP was exercised through the deployed application and the following end-to-end behavior was verified:
 
 - ✅ Driver authentication/session foundation works.
+- ✅ Driver ID authentication redesign implemented.
 - ✅ Dashboard / Hub navigation works.
 - ✅ Arrival works with mandatory photo evidence.
 - ✅ Check-in works with optional photo evidence.
@@ -209,7 +236,7 @@ The implemented Core MVP was exercised through the deployed application and the 
 
 The hackathon implementation is therefore frozen as the **Core MVP baseline**.
 
-> **Post-hackathon work is intentionally tracked separately.** Future work may extend authentication, email delivery, custom domain configuration, company/role functionality, additional evidence features, production hardening, and other product scope without rewriting the historical hackathon record.
+> **Post-hackathon work is intentionally tracked separately.** Future work may extend email delivery, custom domain configuration, company/role functionality, additional evidence features, production hardening, and other product scope without rewriting the historical hackathon record.
 
 ---
 
@@ -245,6 +272,7 @@ Detailed technical evidence remains in the individual implementation reports:
 - `Chat6_Node3_Report_AIEvidenceSummaryImplementation.md`
 - `Chat6_Node3_Report_AIEvidenceSummaryOutputInvestigation.md`
 - `Chat6_Node3_Report_AIEvidenceSummaryFix.md`
+- `Chat7_Node3_Report_AuthenticationRedesignImplementation.md`
 
 ## Report Status
 
