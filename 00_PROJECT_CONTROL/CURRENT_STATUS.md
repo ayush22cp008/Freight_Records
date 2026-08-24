@@ -1,72 +1,183 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Aug 22, 2026
+**Last updated:** Aug 24, 2026
 
 ## Where we are
-**Node 3 — Core MVP build execution COMPLETE and LOCKED.**
 
-The fixed single-facility, 3-event Core MVP workflow is now implemented end-to-end:
+**Historical Core MVP — IMPLEMENTED / VERIFIED.**
+
+The original fixed single-facility, 3-event Core MVP remains completed and preserved:
+
 - Login → Trip Hub → Arrival → Check-in → Departure → Timeline → AI Evidence Summary.
-- Trip Hub (`/`) is the workflow state source of truth.
-- Hub uses authoritative database state to determine the next event in order: Arrival → Check-in → Departure.
-- Arrival, Check-in, and Departure are recorded as immutable events with GPS + server timestamp; Arrival and Departure require photo evidence, Check-in remains optional-photo per Core MVP scope.
-- Timeline displays the recorded events chronologically with evidence.
-- AI Evidence Summary receives the deterministic Arrival + Check-in + Departure evidence and produces one concise factual summary through Groq.
-- AI summary truncation was fixed by increasing the output budget, disabling unnecessary Qwen reasoning where applicable, and retaining the server-side `<think>` sanitizer.
-- Groq API key remains server-side; model selection remains dynamically based on models available to the active API key/free tier.
+- Trip Hub remains the workflow state source of truth for the original Core MVP.
+- Arrival, Check-in, and Departure are immutable evidence events with GPS + server timestamp.
+- Arrival and Departure require photo evidence; Check-in remains optional-photo under the original Core MVP scope.
+- Timeline displays recorded events chronologically with evidence.
+- AI Evidence Summary interprets deterministic Arrival + Check-in + Departure evidence.
+- AI summary truncation fix was implemented and browser-verified.
 - `npm run build` passes.
 
-### Verified / locked foundations
-Event 1 — Arrival:
-- `events` table migration applied — locked schema, RLS enabled, UPDATE/DELETE revoked from ALL roles including `service_role` (true DB-level immutability)
-- `/api/events/arrival` route: service-role insert, `event_type` hardcoded server-side, UNIQUE constraint violation (23505) handled as clean 409
-- `/events/arrival` UI: mandatory photo, GPS + server timestamp + photo capture → submit → confirmation
-- Full manual browser test: PASS
-- Duplicate-arrival edge case: PASS
+The Core MVP is **not being discarded**. It is the verified foundation being extended into the broader product model defined by the Chat8 roadmap rework.
 
-Event 2 — Check-in:
-- Check-in event capture implemented and manually verified
-- GPS + server timestamp recorded
-- Photo remains optional per locked Core MVP scope
-- Returns to Hub after successful recording
+## Current Product Direction
 
-Event 3 — Departure:
-- Departure event capture implemented and manually verified
-- GPS + server timestamp recorded
-- Mandatory photo evidence retained
-- Trip completion state works correctly
+The active product model is:
 
-Timeline:
-- `/timeline` implemented
-- Chronological Arrival → Check-in → Departure display verified
-- Recorded timestamps, locations, and photo evidence are shown from authoritative event data
+```text
+Company creates / publishes trip
+        ↓
+Eligible drivers see opportunity
+        ↓
+Driver evaluates trip economics/details
+        ↓
+Driver accepts
+        ↓
+Atomic first-valid acceptance wins
+        ↓
+Trip locks to winning driver
+        ↓
+Pickup
+        ↓
+Arrival / Check-in / Load / Depart
+        ↓
+In transit
+        ↓
+Destination / receiving company
+        ↓
+Arrival / Check-in / Unload / Delivery confirmation
+        ↓
+Delivery completed
+        ↓
+Immutable evidence timeline
+        ↓
+AI evidence-grounded summary
+```
 
-AI Evidence Summary:
-- Single Groq generation path implemented
-- Three-event evidence gate remains intact: Arrival + Check-in + Departure must all exist before generation
-- Final browser verification confirms the summary contains Arrival, Check-in, and Departure details
-- Truncation fix verified
-- Server-side API key protection verified
-- No AI-generated evidence replaces deterministic database evidence
+Important active direction:
 
-## Repos & infra set up
-- Records repo: `Freight_Records` (GitHub, public)
-- Records replica: Google Drive folder `Freight_hackathon_records`
-- Source code repo: `freight_hackathon` (GitHub, public)
-- Supabase project: `freight_hackathon` (ap-south-1 Mumbai, Nano) — `drivers`, `trips`, `events` tables live, RLS enabled, `events` immutable at DB level; `event-photos` Storage bucket live
-- Groq API key configured server-side for AI Evidence Summary
+- Company creates/publishes the trip opportunity; the driver does not create/own the trip.
+- Company creator/sender and receiving-company relationships are contextual per trip.
+- Eligible drivers evaluate available trips and choose whether to accept.
+- Exactly one valid driver must win simultaneous acceptance through backend/database atomicity.
+- After assignment, driver-side transport events must be authorized against the assigned driver/trip relationship.
+- AI remains an evidence-grounded interpretation layer and must not invent or replace deterministic evidence.
 
-## Current next step
-**Core MVP Freeze / full manual regression pass.**
+## Security / Authentication State
 
-Before moving to stretch features:
-- Run the complete manual Core MVP workflow from login through AI Evidence Summary.
-- Verify Arrival → Check-in → Departure ordering and duplicate-event behavior.
-- Verify Timeline evidence rendering.
-- Verify AI Summary consistently contains all three events.
-- Record any remaining bugs before starting stretch work.
+```text
+RLS investigation                    → CLOSED / VERIFIED
+Rate-limiting architecture            → DECIDED
+IDOR / API authorization              → OPEN
+Authentication implementation          → PAUSED
+```
 
-## Do not re-discuss
-Product definition, MVP scope, stack, event schema, RLS/immutability architecture, and core navigation are locked. Do not redesign them without an explicit reason logged in the project records. AI remains an interpretation/organization layer over deterministic evidence; it must not invent or replace GPS, timestamps, event types, or stored evidence.
+RLS should not be reopened unless new contradictory evidence appears.
 
-Implementation reports for today's completed work are recorded under `03_IMPLEMENTATION/implementation_reports/`, including the Arrival, Check-in, Departure, Timeline, AI Evidence Summary implementation, and AI Evidence Summary truncation-fix reports.
+Authentication implementation is paused until the current product, role, identity, trip lifecycle, eligibility, atomic acceptance, authorization matrix, and IDOR rules are locked and verified through the active Node 1 gate.
+
+## Active Roadmap
+
+The active execution roadmap is now **7 Nodes**:
+
+| Node | Objective | Baseline | Status |
+|---|---|---:|---|
+| Node 1 | Product + Authorization Rework | 2 days | 🔵 **CURRENT / NEXT** |
+| Node 2 | Authentication + Identity | 3 days | 🔵 BLOCKED |
+| Node 3 | Company Trip Creation + Publishing | 3 days | 🔵 FUTURE |
+| Node 4 | Driver Marketplace + Atomic Claim | 3 days | 🔵 FUTURE |
+| Node 5 | Whole Delivery Tracking | 5 days | 🔵 FUTURE |
+| Node 6 | Security + Evidence | 3 days | 🔵 FUTURE |
+| Node 7 | AI + Final Integration + Demo | 3 days | 🔵 FUTURE |
+
+Baseline total: **22 planned days**. These are estimates, not hard deadlines.
+
+### Current Node Gate
+
+**Node 1 — Product + Authorization Rework** is the immediate active milestone.
+
+Node 1 must lock:
+
+- Company / Driver roles
+- Auth user → Company/Driver identity mapping
+- Contextual creator/sending and receiving-company relationships
+- Trip relationships and required data
+- Trip state machine
+- Driver eligibility
+- Atomic first-valid acceptance rule
+- Complete authorization matrix
+- IDOR/API protection rules
+- Authentication requirements derived from the final model
+
+**Responsibility split:**
+
+```text
+Node 1 → design + lock authorization / IDOR rules
+Node 6 → implement + verify authorization / IDOR rules
+```
+
+Node 2 authentication implementation must not begin until the Node 1 gate is explicitly verified.
+
+## Subnode Rule
+
+A Subnode is used only for **significant unexpected work inside a Node**.
+
+```text
+Small bug
+→ fix inside current Node
+
+Significant unexpected issue
+→ create Subnode
+
+Major blocker / architecture change
+→ stop and reassess roadmap
+```
+
+Atomic first-winner acceptance is already a known Core requirement of Node 4 and is **not** treated as an unexpected Subnode.
+
+If one Node accumulates **3 or more Subnodes**, a roadmap reassessment is required.
+
+## Stretch Feature Strategy
+
+The previous standalone stretch list has been merged into the relevant Nodes rather than remaining as a separate execution track.
+
+- Node 3: company dashboard/role capabilities required by the locked trip-creation model.
+- Node 5: dwell-time, mandatory Check-in photo, repeatable Add Evidence, and geofence badge — conditional and lower priority than the core delivery lifecycle.
+- Node 7: public shareable evidence link and AI inconsistency detection — higher-value optional enhancements after baseline integration; video capture is lowest priority.
+
+Core Node acceptance criteria always take priority over stretch work.
+
+## Do Not Re-discuss / Preserve
+
+The following remain established foundations unless new evidence or an explicit recorded decision requires change:
+
+- Existing Core MVP evidence architecture
+- Event immutability architecture
+- Verified RLS findings
+- Existing deterministic evidence principle
+- Core navigation/evidence foundations already implemented
+
+The broader product/security model is now governed by the active `ROADMAP.md` and the Chat8 handoff records.
+
+## Next Action
+
+Do **not** resume authentication implementation yet.
+
+The next project action is to complete **Node 1 — Product + Authorization Rework** using the investigation-first workflow, then derive/lock the authentication requirements for Node 2.
+
+For implementation handoffs:
+
+```text
+03_IMPLEMENTATION/prompts/
+```
+
+For Antigravity implementation reports:
+
+```text
+03_IMPLEMENTATION/implementation_reports/
+```
+
+For investigations:
+
+```text
+05_DEBUGGING/investigations/
+```
