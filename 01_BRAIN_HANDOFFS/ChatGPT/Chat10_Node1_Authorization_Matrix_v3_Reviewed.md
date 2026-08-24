@@ -6,7 +6,7 @@
 
 ## Purpose
 
-This record supersedes the working matrix conceptually after review of Claude's Chat10 findings and Ayush's decisions 60–69. It is a reviewed design record, not an implementation prompt.
+This record supersedes the working matrix conceptually after review of Claude's Chat10 findings and Ayush's decisions 60–70. It is a reviewed design record, not an implementation prompt.
 
 Historical Chat10 review request remains preserved at:
 
@@ -108,6 +108,38 @@ PUBLISHED / AVAILABLE
 ```
 
 The release is preserved historically. The released Driver may later attempt to claim the trip again subject to normal eligibility and atomic claim rules.
+
+### Decision 70 — Atomic Cancel-vs-Release Race: 🔒 LOCKED
+
+Sending-Company cancellation and Assigned-Driver release of a `CLAIMED` trip are concurrency-safe atomic transitions.
+
+```text
+CLAIMED
+   ├── Sending Company → CANCEL
+   └── Assigned Driver → RELEASE
+            ↓
+   Atomic state transition
+            ↓
+   First valid transition that commits wins
+            ↓
+   Losing request → state-conflict response
+```
+
+If Company cancellation commits first:
+
+```text
+CLAIMED → CANCELLED
+Driver release → rejected due to state conflict
+```
+
+If Driver release commits first:
+
+```text
+CLAIMED → PUBLISHED / AVAILABLE
+Company cancellation → rejected due to state conflict
+```
+
+No silent overwrite and no ambiguous final state.
 
 ---
 
@@ -380,7 +412,7 @@ For simplicity, the application should expose role-appropriate dashboards rather
 | Unload / delivery | DENY | ALLOW if legal next state | DENY | DENY | DENY |
 | Delivery departure | DENY | ALLOW if legal next state | DENY | DENY | DENY |
 | Driver completion confirmation | DENY | ALLOW if legal next state | DENY | DENY | DENY |
-| Receiver delivery confirmation | DENY | DENY | ALLOW if legal next state | DENY | DENY |
+| Receiver delivery confirmation | DENY | DENY | ALLOW if legal next state | DENY | DENY | DENY |
 
 ### Issues
 
@@ -475,9 +507,12 @@ Critical transitions are atomic/concurrency-safe. At minimum:
 claim
 release
 start
+cancel
 emergency decisions
 final confirmations/completion
 ```
+
+For competing state-changing operations on the same resource, the first valid atomic transition that commits wins. A concurrent losing request receives a state-conflict response and cannot overwrite the committed state.
 
 Duplicate decisions/confirmations are rejected or treated idempotently as appropriate, and final side effects are idempotent.
 
@@ -497,6 +532,7 @@ Post-claim cancellation before IN_PROGRESS → LOCKED
 Company trip list visibility → LOCKED
 Driver trip/history list visibility → LOCKED
 Pre-claim actor = Any Authenticated Driver → LOCKED
+Cancel-vs-release concurrency → LOCKED as Decision 70
 ```
 
 ---
@@ -511,7 +547,7 @@ No implementation should begin from this record until Node 1 is formally locked 
 
 ```text
 Node 1 → ACTIVE
-Authorization Matrix → REVIEWED DRAFT v3
+Authorization Matrix → REVIEWED DRAFT v3 + Decision 70
 IDOR/API Authorization → substantially defined; final lock pending
 Authentication implementation → PAUSED
 Final Node 1 Lock → NOT YET
