@@ -1,76 +1,260 @@
-# Chat12 — Node 2 Investigation: Email Confirmation Policy
+# Chat12 — Node 2 Decision Report: Email Confirmation Policy
 
-## 1. Executive Conclusion
-The recommended Q2 policy is **Policy A (Email confirmation before verification)**. In standard Supabase Auth, unconfirmed users cannot obtain a session JWT. Without a session, they cannot authenticate to the application to upload their verification documents. Therefore, email confirmation acts as a hard platform-level gate before the verification workflow can even begin.
+## 1. Final Decision
 
-## 2. Evidence Collected
-- **Verified Supabase behavior:** When email confirmation is enabled, `supabase.auth.signUp()` creates the user in `auth.users` but does NOT return a session. Subsequent `signInWithPassword()` calls fail until the email is confirmed.
-- **Verified repository evidence:** The `auth.users` trigger (Model C) creates the `freight_identities` record immediately upon `signUp`, so the identity exists in a `PENDING` state while the email is unconfirmed.
-- **Inference:** Because unconfirmed users cannot log in, they cannot interact with the application UI to submit verification documents. Thus, the verification workflow cannot proceed until the email is confirmed.
+**Q2 = LOCKED — Email confirmation is required before normal authenticated onboarding and Active/Usable access.**
 
-## 3. State Model
+The policy is refined as follows:
+
 ```text
 Signup
- ↓ (auth.users and freight_identities created)
-Identity exists (PENDING, Unconfirmed)
- ↓ (User clicks email link)
-Email confirmed (PENDING, Confirmed)
- ↓ (User logs in, uploads documents)
-Evidence Submitted
- ↓ (Admin reviews)
-Verification VERIFIED (Trusted role assigned)
  ↓
-Active/Usable
+Auth User + Generic Freight Identity created atomically
+ ↓
+Email unconfirmed / Identity PENDING
+ ↓
+Email confirmed
+ ↓
+Authenticated evidence submission
+ ↓
+Verifier review
+ ↓
+VERIFIED + trusted_role
+ ↓
+ACTIVE / USABLE
 ```
 
-## 4. State Matrix
+Email confirmation is a prerequisite for the normal authenticated user flow and therefore for user evidence submission. It is not itself a prerequisite for an authorized verifier to review or approve evidence as a server-side/admin action.
 
-| Email | Verification | Trusted Role | Active? | Protected Business Access? | Notes |
+## 2. Evidence Basis
+
+### Verified Supabase behavior
+
+With Supabase Confirm Email enabled, signup creates the Auth user but does not return a session. The user must confirm the email before normal sign-in. Supabase also exposes `email_confirmed_at` on the Auth user; a null value means the email is not confirmed.
+
+### Verified project evidence
+
+The selected Model C architecture creates the generic Freight Identity immediately with the Auth User transaction, so identity existence is independent from email confirmation.
+
+### Independent review
+
+Claude independently reviewed the Q2 investigation and returned **NEEDS REVISION**. The core Policy A direction was accepted, but the review identified four material precision issues:
+
+1. “Verification before confirmation is technically infeasible” was too strong. An out-of-band server/admin workflow could technically receive or review evidence before confirmation, but that is excluded by Freight policy for the MVP.
+2. “Verification” was ambiguous and must be separated into evidence submission, verifier review, and trusted-role assignment.
+3. `UNCONFIRMED + VERIFIED` required an explicit policy. It is allowed only as a defensive inactive state, principally for an already-verified user whose email becomes unconfirmed after an email change.
+4. An `email_verified` JWT claim must not be treated as the sole authoritative enforcement mechanism for active access because token freshness must be considered. The exact enforcement mechanism remains an implementation-boundary question for later Node 2 work.
+
+Ayush approved these corrections and the refined Q2 policy.
+
+## 3. Exact Q2 Policy
+
+### Email confirmation
+
+Email confirmation is required before the user can obtain the normal authenticated session used for onboarding and evidence submission.
+
+### Evidence submission
+
+A user must have a confirmed email and authenticated session before submitting verification evidence through the normal Freight UI/API flow.
+
+### Verifier review
+
+Verifier review is a separate server-authorized action. It does not depend on the applicant's current session or email-confirmation state.
+
+### Trusted-role assignment
+
+A trusted role may be assigned only after authorized verification approval. `requested_role` remains user intent and is never authorization.
+
+### Active / usable account
+
+A Freight account is Active/Usable only when all three conditions hold:
+
+```text
+email_confirmed = true
+AND
+verification_status = VERIFIED
+AND
+trusted_role IS NOT NULL
+```
+
+Protected business access is equivalent to the Active/Usable gate.
+
+### Rejected users
+
+`REJECTED` identities do not receive a trusted role and do not receive protected business access.
+
+## 4. Verification Stage Separation
+
+The contract must treat verification as three distinct stages:
+
+```text
+1. Evidence submission
+   → user action; requires confirmed authenticated session
+
+2. Verifier review
+   → authorized verifier action; does not require applicant session
+
+3. Trusted-role assignment
+   → server-controlled result of approved verification
+```
+
+This prevents email confirmation from being incorrectly treated as a prerequisite for the verifier's own administrative action.
+
+## 5. State Model
+
+```text
+AUTH USER + IDENTITY CREATED
+        ↓
+EMAIL UNCONFIRMED / PENDING
+        ↓
+EMAIL CONFIRMED / PENDING
+        ↓
+EVIDENCE SUBMITTED
+        ↓
+VERIFIER REVIEW
+        ↓
+VERIFIED + TRUSTED ROLE
+        ↓
+ACTIVE / USABLE
+```
+
+Rejected path:
+
+```text
+PENDING
+   ↓
+REJECTED
+   ↓
+NO TRUSTED ROLE
+   ↓
+NO PROTECTED BUSINESS ACCESS
+```
+
+Defensive email-change path:
+
+```text
+ACTIVE
+   ↓
+email changes / requires reconfirmation
+   ↓
+UNCONFIRMED + VERIFIED + trusted_role
+   ↓
+INACTIVE / NO PROTECTED BUSINESS ACCESS
+   ↓
+email re-confirmed
+   ↓
+ACTIVE again, subject to the final session/enforcement mechanism
+```
+
+`UNCONFIRMED + VERIFIED` is therefore an allowed but inactive defensive state, not a normal onboarding state.
+
+## 6. State Matrix
+
+| Email | Verification | Trusted Role | Active? | Protected Business Access? | Meaning |
 |---|---|---|---|---|---|
-| Unconfirmed | PENDING | NULL | NO | NO | Cannot log in to submit evidence. |
-| Confirmed | PENDING | NULL | NO | NO | Logged in, can submit evidence. |
-| Unconfirmed | VERIFIED | Driver/Company | NO | NO | Edge case (email changed). RLS must block access if unconfirmed. |
-| Confirmed | VERIFIED | Driver/Company | YES | YES | Fully active and trusted. |
-| Unconfirmed | REJECTED | NULL | NO | NO | Cannot log in. |
-| Confirmed | REJECTED | NULL | NO | NO | Blocked from access. |
+| Unconfirmed | PENDING | NULL | NO | NO | New identity awaiting confirmation |
+| Confirmed | PENDING | NULL | NO | NO | Authenticated onboarding / evidence stage |
+| Unconfirmed | VERIFIED | Driver/Company | NO | NO | Defensive post-email-change state |
+| Confirmed | VERIFIED | Driver/Company | YES | YES | Fully active trusted account |
+| Unconfirmed | REJECTED | NULL | NO | NO | Rejected / unconfirmed |
+| Confirmed | REJECTED | NULL | NO | NO | Rejected |
 
-## 5. Candidate Comparison
-- **Policy A (Email confirmation before verification):** Safest and most aligned with Supabase defaults. Users must prove email ownership to log in and begin onboarding.
-- **Policy B (Verification before email confirmation):** Technically infeasible without custom auth flows. Unconfirmed users have no JWT to upload evidence securely.
-- **Policy C (Email confirmation not required):** Disqualified due to severe security risks (account enumeration, spam accounts, lack of ownership proof).
+## 7. Security Invariants
 
-## 6. Security Analysis
-Policy A ensures that we do not process verification documents from anonymous, unverified email addresses. It prevents spam signups from clogging the manual verification queue. RLS policies must strictly enforce `auth.jwt() -> 'email_verified' = true` (or equivalent) AND `verification_status = 'VERIFIED'` to prevent bypasses if a verified user later changes their email and becomes unconfirmed.
+```text
+Active
+  = email_confirmed = true
+  AND verification_status = VERIFIED
+  AND trusted_role IS NOT NULL
+```
 
-## 7. Supabase Behavior
-- `signUp` creates the user in `auth.users` (firing the DB trigger).
-- If confirmation is required, `session` is `null`.
-- The JWT contains email confirmation status.
-- Changing an email requires re-confirmation, meaning a VERIFIED user could temporarily lose access if their email becomes unconfirmed.
+```text
+trusted_role IS NOT NULL
+  requires
+verification_status = VERIFIED
+```
 
-## 8. Recommended Q2 Decision
-`Q2 = Policy A (Email confirmation before verification)`
+```text
+Protected Business Access
+  ↔ Active
+```
 
-- **Unconfirmed users:** Identity is `PENDING`, but they cannot log in.
-- **Verification timing:** Can only occur after email confirmation and login.
-- **Trusted-role assignment:** Only granted when `VERIFIED` by admin/OCR.
-- **Active status:** Requires `email_confirmed = true` AND `verification_status = 'VERIFIED'`.
-- **Rejected users:** Stay blocked permanently (or until re-evaluation).
+Email confirmation alone never grants authorization.
 
-## 9. Contract Changes Required
-In `Chat11_Node2_Authentication_Identity_Contract_DRAFT.md`:
-- Explicitly state that email confirmation is a hard prerequisite for verification document submission.
-- Define "Active Account" as requiring both confirmed email and `VERIFIED` identity status.
-- Specify that RLS policies must check both conditions.
+Verification alone never grants Active access without confirmed email.
 
-## 10. Acceptance Tests Required
-- **Test 1:** Attempt to submit verification documents without a valid JWT -> Fails (401).
-- **Test 2:** Sign up, do not confirm email, attempt to log in -> Fails.
-- **Test 3:** Confirm email, log in, attempt to access Driver protected route while PENDING -> Fails.
-- **Test 4:** Admin sets `VERIFIED`, user accesses Driver route -> Succeeds.
+Client-controlled `requested_role`, metadata role, `trusted_role`, or `verification_status` never constitutes authorization.
 
-## 11. Remaining Unknowns / Blockers
-- None.
+The final implementation must not rely on a potentially stale email-confirmation JWT claim alone as the authoritative Active-access guarantee. Exact enforcement and session-refresh mechanics remain implementation-design work for later Node 2 questions.
 
-## 12. Implementation Status
-`Implementation authorization = NOT GRANTED`
+## 8. Candidate Policy Decision
+
+### Policy A — Email confirmation before normal authenticated onboarding
+
+**SELECTED.**
+
+This provides the strongest ownership-assurance boundary while fitting the Supabase Auth model and the hackathon MVP.
+
+### Policy B — Verification before email confirmation
+
+**NOT SELECTED as Freight policy.**
+
+An out-of-band/admin path could technically process evidence before confirmation, but the MVP does not need this path and allowing it would weaken the intended email-ownership boundary.
+
+### Policy C — No email confirmation requirement
+
+**REJECTED.**
+
+It weakens account-ownership assurance and is not appropriate for the Freight authorization model.
+
+## 9. Acceptance Tests
+
+1. Signup with confirmation enabled creates Auth User + Freight Identity but no normal authenticated session.
+2. Unconfirmed user cannot sign in through the normal password flow.
+3. Confirmed user can authenticate but cannot access protected Driver/Company operations while PENDING.
+4. Confirmed user can submit verification evidence.
+5. Authorized verifier can review/approve a pending identity without depending on the applicant's session.
+6. VERIFIED + trusted role + confirmed email permits Active/Usable access.
+7. VERIFIED + trusted role + unconfirmed email does not permit Active/Usable or protected business access.
+8. PENDING or REJECTED identity cannot obtain protected business access through client-controlled fields.
+9. A trusted role cannot exist without `verification_status = VERIFIED`.
+10. Email confirmation alone cannot grant trusted role or Active status.
+11. Email change/reconfirmation behavior must preserve the invariant: an unconfirmed verified account is inactive until confirmation is restored.
+12. The eventual enforcement mechanism must prevent stale-session state from granting protected access after email confirmation state changes.
+
+## 10. Contract Changes Required
+
+Update Section 11 of:
+
+`02_ARCHITECTURE/Chat11_Node2_Authentication_Identity_Contract_DRAFT.md`
+
+to incorporate the final Q2 rules in this report.
+
+The contract must not prescribe a specific JWT/RLS implementation solely from Q2; exact enforcement belongs to the remaining Node 2 security/session design work.
+
+## 11. Independent Review Result
+
+Claude review:
+
+```text
+Initial review = NEEDS REVISION
+Core Policy A = ACCEPTED
+Required refinements = COMPLETED
+```
+
+Ayush decision:
+
+```text
+APPROVED
+```
+
+## 12. Final Status
+
+```text
+Q2 Email-confirmation policy = LOCKED
+Q1 Signup consistency        = LOCKED
+Q4 One-user/one-identity     = LOCKED
+Implementation authorization = NOT GRANTED
+```
+
+The Q2 decision is now final at the architecture/policy level. Implementation remains paused until the remaining Node 2 questions are resolved and the complete Node 2 contract is locked.
