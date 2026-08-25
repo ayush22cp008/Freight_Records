@@ -1,6 +1,6 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Aug 24, 2026
+**Last updated:** Aug 25, 2026
 
 ## Where we are
 
@@ -17,11 +17,11 @@ The original fixed single-facility, 3-event Core MVP remains completed and prese
 - AI summary truncation fix was implemented and browser-verified.
 - `npm run build` passes.
 
-The Core MVP is **not being discarded**. It is the verified foundation being extended into the broader product model defined by the Chat8 roadmap rework.
+The Core MVP is **not being discarded**. It is the verified foundation being extended into the broader product model defined by the active 7-Node roadmap.
 
 ## Current Product Direction
 
-The active product model is:
+The active product model remains:
 
 ```text
 Company creates / publishes trip
@@ -53,73 +53,128 @@ Immutable evidence timeline
 AI evidence-grounded summary
 ```
 
-Important active direction:
+The product rules and authorization model are governed by the Node 1 final lock:
 
-- Company creates/publishes the trip opportunity; the driver does not create/own the trip.
-- Company creator/sender and receiving-company relationships are contextual per trip.
-- Eligible drivers evaluate available trips and choose whether to accept.
-- Exactly one valid driver must win simultaneous acceptance through backend/database atomicity.
-- After assignment, driver-side transport events must be authorized against the assigned driver/trip relationship.
-- AI remains an evidence-grounded interpretation layer and must not invent or replace deterministic evidence.
+`01_BRAIN_HANDOFFS/ChatGPT/Chat10_Node1_FINAL_LOCK.md`
+
+## Node 1 — Product + Authorization Rework
+
+```text
+Status → 🔒 FINAL LOCKED / COMPLETE
+```
+
+The Node 1 final-lock record explicitly states that Node 1 is formally locked and complete, with Claude independent final review:
+
+```text
+APPROVE — NO BLOCKING FINDINGS
+```
+
+The locked model includes:
+
+- exactly 1 application identity per Auth User;
+- exactly 1 application role per Auth User;
+- role = Company OR Driver;
+- contextual trip participant relationships;
+- trip lifecycle and delivery sequence;
+- server-side authorization / IDOR rules;
+- concurrency rules;
+- authentication requirements derived from the locked model.
+
+This status is based on the existing Node 1 FINAL LOCK record; it does not claim that every later implementation acceptance criterion has been independently re-verified in this checkpoint.
+
+## Node 2 — Authentication + Identity
+
+```text
+Status → 🔵 ACTIVE DESIGN / NOT LOCKED
+```
+
+Node 2 broad authentication/identity investigations are complete. The current contract is:
+
+`02_ARCHITECTURE/Chat11_Node2_Authentication_Identity_Contract_DRAFT.md`
+
+Status:
+
+```text
+DRAFT / NOT LOCKED
+```
+
+Claude independently reviewed the draft and found it **NOT READY FOR LOCK** because several load-bearing decisions remain unresolved.
+
+### Resolved evidence stage
+
+```text
+Broad Node 2 investigation              ✅ COMPLETE
+Remaining auth evidence investigation  ✅ COMPLETE
+Signup/onboarding investigation         ✅ COMPLETE
+Claude independent contract review      ✅ COMPLETE
+```
+
+### Current Node 2 decisions still requiring resolution
+
+1. Signup / onboarding consistency
+2. Email-confirmation policy
+3. Session lifecycle / refresh
+4. One-user → one-identity enforcement mechanism
+5. Authentication rate-limiting policy
+6. RLS / service-role boundary for the Node 2 contract
+7. Final acceptance-test matrix
+
+### Signup / onboarding evidence
+
+The targeted investigation established that the current signup flow performs Auth User creation and application identity creation as separate operations rather than one database transaction.
+
+A verified current failure state is:
+
+```text
+Auth User EXISTS
+Application identity MISSING
+```
+
+The investigation also identified the reverse orphan risk associated with the current `ON DELETE SET NULL` relationship.
+
+No implementation fix has been authorized from this evidence.
 
 ## Security / Authentication State
 
 ```text
 RLS investigation                    → CLOSED / VERIFIED
 Rate-limiting architecture            → DECIDED
-IDOR / API authorization              → OPEN
+IDOR / API authorization              → LOCKED AS NODE 1 CONTRACT
 Authentication implementation          → PAUSED
 ```
 
 RLS should not be reopened unless new contradictory evidence appears.
 
-Authentication implementation is paused until the current product, role, identity, trip lifecycle, eligibility, atomic acceptance, authorization matrix, and IDOR rules are locked and verified through the active Node 1 gate.
+Authentication implementation remains paused until the Node 2 contract is designed, independently reviewed, and locked.
 
-## Active Roadmap
+## Active Roadmap Position
 
-The active execution roadmap is now **7 Nodes**:
-
-| Node | Objective | Baseline | Status |
-|---|---|---:|---|
-| Node 1 | Product + Authorization Rework | 2 days | 🔵 **CURRENT / NEXT** |
-| Node 2 | Authentication + Identity | 3 days | 🔵 BLOCKED |
-| Node 3 | Company Trip Creation + Publishing | 3 days | 🔵 FUTURE |
-| Node 4 | Driver Marketplace + Atomic Claim | 3 days | 🔵 FUTURE |
-| Node 5 | Whole Delivery Tracking | 5 days | 🔵 FUTURE |
-| Node 6 | Security + Evidence | 3 days | 🔵 FUTURE |
-| Node 7 | AI + Final Integration + Demo | 3 days | 🔵 FUTURE |
-
-Baseline total: **22 planned days**. These are estimates, not hard deadlines.
-
-### Current Node Gate
-
-**Node 1 — Product + Authorization Rework** is the immediate active milestone.
-
-Node 1 must lock:
-
-- Company / Driver roles
-- Auth user → Company/Driver identity mapping
-- Contextual creator/sending and receiving-company relationships
-- Trip relationships and required data
-- Trip state machine
-- Driver eligibility
-- Atomic first-valid acceptance rule
-- Complete authorization matrix
-- IDOR/API protection rules
-- Authentication requirements derived from the final model
-
-**Responsibility split:**
+The active execution roadmap remains the existing 7-Node roadmap in `ROADMAP.md`.
 
 ```text
-Node 1 → design + lock authorization / IDOR rules
-Node 6 → implement + verify authorization / IDOR rules
+Historical Core MVP                  → IMPLEMENTED / VERIFIED
+Node 1 Product + Authorization       → 🔒 COMPLETE / LOCKED
+Node 2 Authentication + Identity    → 🔵 ACTIVE DESIGN / NOT LOCKED
+Node 3 Company Trip Creation        → FUTURE
+Node 4 Driver Marketplace            → FUTURE
+Node 5 Whole Delivery Tracking       → FUTURE
+Node 6 Security + Evidence           → FUTURE
+Node 7 AI + Final Integration + Demo → FUTURE
 ```
 
-Node 2 authentication implementation must not begin until the Node 1 gate is explicitly verified.
+**No roadmap rewrite is made by this checkpoint.**
+
+## Checkpoint
+
+Chat11 checkpoint:
+
+`00_PROJECT_CONTROL/CHECKPOINTS/Chat11_Day4_Node2_Checkpoint.md`
+
+The checkpoint preserves the transition from the Node 1 lock into active Node 2 contract resolution without treating the Node 2 draft as locked.
 
 ## Subnode Rule
 
-A Subnode is used only for **significant unexpected work inside a Node**.
+A Subnode is used only for significant unexpected work inside a Node.
 
 ```text
 Small bug
@@ -132,52 +187,48 @@ Major blocker / architecture change
 → stop and reassess roadmap
 ```
 
-Atomic first-winner acceptance is already a known Core requirement of Node 4 and is **not** treated as an unexpected Subnode.
+If one Node accumulates 3 or more Subnodes, perform an explicit roadmap reassessment.
 
-If one Node accumulates **3 or more Subnodes**, a roadmap reassessment is required.
+## Record Routing
 
-## Stretch Feature Strategy
+ChatGPT ↔ Antigravity bridge:
 
-The previous standalone stretch list has been merged into the relevant Nodes rather than remaining as a separate execution track.
+```text
+GitHub Records repository
+```
 
-- Node 3: company dashboard/role capabilities required by the locked trip-creation model.
-- Node 5: dwell-time, mandatory Check-in photo, repeatable Add Evidence, and geofence badge — conditional and lower priority than the core delivery lifecycle.
-- Node 7: public shareable evidence link and AI inconsistency detection — higher-value optional enhancements after baseline integration; video capture is lowest priority.
-
-Core Node acceptance criteria always take priority over stretch work.
-
-## Do Not Re-discuss / Preserve
-
-The following remain established foundations unless new evidence or an explicit recorded decision requires change:
-
-- Existing Core MVP evidence architecture
-- Event immutability architecture
-- Verified RLS findings
-- Existing deterministic evidence principle
-- Core navigation/evidence foundations already implemented
-
-The broader product/security model is now governed by the active `ROADMAP.md` and the Chat8 handoff records.
-
-## Next Action
-
-Do **not** resume authentication implementation yet.
-
-The next project action is to complete **Node 1 — Product + Authorization Rework** using the investigation-first workflow, then derive/lock the authentication requirements for Node 2.
-
-For implementation handoffs:
+Implementation handoffs:
 
 ```text
 03_IMPLEMENTATION/prompts/
 ```
 
-For Antigravity implementation reports:
+Antigravity implementation reports:
 
 ```text
 03_IMPLEMENTATION/implementation_reports/
 ```
 
-For investigations:
+Investigations:
 
 ```text
 05_DEBUGGING/investigations/
 ```
+
+Architecture records:
+
+```text
+02_ARCHITECTURE/
+```
+
+Project-control records:
+
+```text
+00_PROJECT_CONTROL/
+```
+
+## Next Action
+
+Do **not** resume authentication implementation.
+
+The next project action is to resolve the Node 2 signup/onboarding consistency decision from the verified investigation evidence, then resolve the remaining Node 2 contract decisions before the contract is locked.
