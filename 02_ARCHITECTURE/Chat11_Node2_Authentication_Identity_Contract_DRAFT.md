@@ -1,15 +1,15 @@
-# Chat11 — Node 2 Authentication + Identity Contract — DRAFT
+# Chat12 — Node 2 Authentication + Identity Contract — DRAFT
 
 **Project:** Freight — AI Builders Hackathon  
 **Node:** Node 2 — Authentication + Identity  
 **Status:** DRAFT / NOT LOCKED / REQUIRES AYUSH REVIEW  
-**Chat:** Chat11  
+**Chat:** Chat12  
 
 ## 1. Purpose
 
 Define the authentication and application-identity contract required before authentication implementation resumes.
 
-This draft is derived from the locked Node 1 product/authorization model and the Chat11 Node 2 investigation reports.
+This draft is derived from the locked Node 1 product/authorization model and the Chat11/Chat12 Node 2 investigation records.
 
 This document is a design draft. It does not authorize implementation.
 
@@ -29,7 +29,7 @@ Node 2 must not redefine Node 1 authorization rules.
 
 ## 3. Current verified baseline
 
-The Chat11 investigations established:
+The Chat11/Chat12 investigations established:
 
 - Supabase Auth is used.
 - Driver authentication currently exists.
@@ -44,10 +44,14 @@ The Chat11 investigations established:
 - Authentication-related local source changes reported by Antigravity are not committed/pushed to the source repository.
 - Driver codes are sequential identifiers such as `DRV010`; they are database-unique but enumerable.
 - No application-level authentication rate limiter currently exists; current implementation relies on native Supabase Auth limits.
-- Server-side authentication code uses a service-role client for selected identity operations; the investigation reports that service-role credentials remain server-only.
+- Server-side authentication code uses a service-role client for selected identity operations; service-role credentials remain server-only.
 - No automated authentication/identity tests were found in the source repository.
+- Current signup creates Auth User and application Driver identity through separate operations and is therefore not atomic.
+- Current sequential signup can leave an orphaned Auth User if Driver identity creation fails.
+- Server-side compensation is technically available but is unsafe as the primary consistency mechanism for unknown-outcome failures because the current `ON DELETE SET NULL` relationship can leave an orphaned Driver record.
+- A PostgreSQL `auth.users` trigger is technically available and can create application identity within the Auth User insertion transaction.
 
-These are evidence findings, not proposed architecture.
+These are evidence findings, except where explicitly marked as a proposed contract decision below.
 
 ## 4. Contract goals
 
@@ -60,9 +64,10 @@ Node 2 must establish:
 5. No authorization trust in client-supplied identity or role fields.
 6. Authentication behavior that can safely feed Node 1 authorization.
 7. A defined signup/onboarding consistency model.
-8. A defined session lifecycle.
-9. A defined authentication abuse/rate-limiting boundary.
-10. Testable acceptance criteria.
+8. A defined email-confirmation and account-activation model.
+9. A defined session lifecycle.
+10. A defined authentication abuse/rate-limiting boundary.
+11. Testable acceptance criteria.
 
 ## 5. Proposed identity model — DRAFT
 
@@ -119,11 +124,9 @@ The client must not be able to select an arbitrary role on an authenticated requ
 
 Role enforcement must occur before protected role-specific business operations.
 
-## 8. Signup / onboarding — DRAFT
+## 8. Signup / onboarding consistency — PROPOSED DECISION, NOT YET LOCKED
 
-Signup must produce a consistent authentication/application-identity state.
-
-The contract must prevent a durable state where:
+The current sequential signup flow is not an acceptable final consistency boundary because it can leave:
 
 ```text
 Auth User exists
@@ -131,24 +134,77 @@ BUT
 required application identity does not exist
 ```
 
-If Auth User creation and application identity creation cannot be made one database transaction, the implementation must define an explicit compensating/cleanup/retry strategy and acceptance tests for partial failure.
+The preferred architecture decision from Chat12 investigation is **PostgreSQL-trigger-based atomic application-identity creation**.
 
-The exact onboarding sequence is still a design decision and must be approved before implementation.
+Conceptually:
 
-## 9. Email confirmation — DRAFT
+```text
+Supabase Auth User creation
+        ↓
+PostgreSQL transaction
+        ↓
+auth.users INSERT trigger
+        ↓
+Application Identity creation
+        ↓
+Both succeed → durable consistent state
 
-The final contract must explicitly define whether email confirmation is required before the user receives an active application identity/session.
+OR
 
-The application must not rely on an undocumented Supabase dashboard setting as an implicit security requirement.
+Identity creation fails
+        ↓
+Transaction rolls back
+        ↓
+No durable Auth User without identity
+```
 
-The final implementation contract must state:
+The trigger is a proposed identity-consistency mechanism. It is not yet implementation authorization.
 
-- confirmation-required behavior;
+Server-side compensation is not selected as the primary consistency mechanism because unknown-outcome timeouts can cause Auth deletion while leaving a Driver record through the current `ON DELETE SET NULL` relationship.
+
+The final implementation must preserve the Node 1 invariant:
+
+```text
+1 Auth User ↔ exactly 1 application identity
+```
+
+## 9. Email confirmation and account activation — DRAFT / OPEN POLICY DECISION
+
+Identity existence must not be treated as equivalent to an active or authorized account.
+
+The contract distinguishes:
+
+```text
+Identity exists
+    ≠
+Email confirmed
+    ≠
+Authorized
+    ≠
+Active/usable account
+```
+
+The proposed state model is:
+
+```text
+Auth User + Application Identity
+        ↓
+Email confirmation state
+        ↓
+Identity/role validity
+        ↓
+Protected application access only when required gates pass
+```
+
+The final contract must explicitly define:
+
+- whether email confirmation is required;
 - unconfirmed login behavior;
-- application identity creation timing;
-- failure behavior.
+- whether identity is created before or after confirmation;
+- when the account becomes active/usable;
+- failure behavior for each state.
 
-This is an OPEN decision in this draft.
+This remains OPEN until independently reviewed and approved.
 
 ## 10. Driver Code authentication — DRAFT
 
@@ -268,6 +324,13 @@ Before Node 2 can be accepted, tests/evidence must demonstrate at minimum:
 - every active application identity maps to exactly one Auth User;
 - role is server-trusted.
 
+### Signup / onboarding consistency
+
+- Auth User and required application identity are created atomically under the selected mechanism;
+- application identity creation failure does not leave a durable Auth User without identity;
+- duplicate/concurrent identity creation cannot create two identities for one Auth User;
+- email-confirmation state does not bypass required authorization gates.
+
 ### Authentication
 
 - valid authentication succeeds;
@@ -304,8 +367,8 @@ The following must be explicitly decided/reviewed before this document can becom
 
 1. Exact application identity database representation.
 2. Exact Company and Driver identity mapping.
-3. Exact signup/onboarding transaction or compensating strategy.
-4. Exact email-confirmation policy.
+3. Final approval of PostgreSQL-trigger-based atomic signup identity creation.
+4. Exact email-confirmation policy and activation-state semantics.
 5. Exact session refresh mechanism.
 6. Exact application-level authentication rate-limiting policy.
 7. Exact authentication failure status/error contract.
@@ -330,11 +393,12 @@ Those remain governed by the existing roadmap and locked records.
 ## 20. Status
 
 ```text
-Investigation          = COMPLETE
-Contract design        = DRAFT
-Contract lock          = NOT YET
-Ayush approval         = REQUIRED
-Implementation         = PAUSED
+Signup consistency investigation = COMPLETE
+Signup architecture decision      = PROPOSED
+Contract design                   = DRAFT
+Contract lock                     = NOT YET
+Ayush approval                    = REQUIRED
+Implementation                    = PAUSED
 ```
 
 This document must not be treated as an implementation authorization until explicitly locked/approved.
