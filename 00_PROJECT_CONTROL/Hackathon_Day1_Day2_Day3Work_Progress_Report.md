@@ -1,10 +1,10 @@
-# Hackathon Day 1–Day 3 — Work Progress Report
+# Hackathon Day 1–Day 4 — Work Progress Report
 
 **Project:** Freight — AI Builders Hackathon  
 **Owner:** Ayush  
-**Report purpose:** Maintain the consolidated project-progress record across Hackathon Work Day 1, Day 2, and Day 3, including implementation progress, investigations, architecture decisions, and the current post-hackathon execution plan.
+**Report purpose:** Maintain the consolidated project-progress record across Hackathon Work Day 1, Day 2, Day 3, and Day 4, including implementation progress, investigations, architecture decisions, and the current execution plan.
 
-> **Current status:** Hackathon Work Day 3 is now **CLOSED**. The original 2-day Core MVP implementation period is complete, and Day 3 was used to validate security/authentication behavior, clarify the real product model, and rebuild the execution plan before further implementation.
+> **Current status:** Hackathon Work Day 4 is now **CLOSED**. The original 2-day Core MVP implementation period is complete, Day 3 established the security/product rework checkpoint, and Day 4 completed the Node 2 investigation/evidence phase and moved the project into Node 2 contract decision work.
 
 ---
 
@@ -640,7 +640,7 @@ IDOR/API authorization            → 🔴 OPEN
 Product model                    → ✅ CLARIFIED
 Company/receiver role model      → ✅ CLARIFIED
 Atomic acceptance requirement    → ✅ REQUIRED / DESIGN NEXT
-Full delivery goal               → ✅ CLARIFIED
+Full delivery goal              → ✅ CLARIFIED
 Authentication implementation     → ⏸ PAUSED
 Node-based roadmap               → ✅ CREATED / BASELINE
 Node 1 rework                    → 🔵 NEXT
@@ -675,35 +675,132 @@ The Day 3 rework **does not erase or invalidate that work**. It changes the dire
 
 ---
 
-## Source / Supporting Records
+# Hackathon Work Day 4 — COMPLETE / CHECKPOINT
 
-Detailed technical evidence remains in the existing implementation reports, including:
+**Status: ✅ CLOSED — Day 4 checkpoint recorded**
 
-- `Chat4_Node3_Report_Day1_SetupAuthPreseededTrip.md`
-- `Chat4_Node3_Report_Day2_GPS_Timestamp_PhotoUpload.md`
-- `Chat4_Node3_Report_Day3_ArrivalEventFlow.md`
-- `Chat5_Node3_Report_AuthDashboardNavbar.md`
-- `Chat5_Node3_Report_HubNavigationAndState.md`
-- `Chat6_Node3_Report_CheckInImplementation.md`
-- `Chat6_Node3_Report_DepartureImplementation.md`
-- `Chat6_Node3_Report_TimelineImplementation.md`
-- `Chat6_Node3_Report_AIEvidenceSummaryImplementation.md`
-- `Chat6_Node3_Report_AIEvidenceSummaryOutputInvestigation.md`
-- `Chat6_Node3_Report_AIEvidenceSummaryFix.md`
-- `Chat7_Node3_Report_AuthenticationRedesignImplementation.md`
+Day 4 focused on transitioning from the locked Node 1 product/authorization model into the Node 2 Authentication + Identity design and investigation phase.
 
-Current ChatGPT architecture/product records:
+## 25. Node 1 Final Lock Confirmation
+
+**Status: 🔒 COMPLETE / LOCKED**
+
+- Node 1 final lock was confirmed through `01_BRAIN_HANDOFFS/ChatGPT/Chat10_Node1_FINAL_LOCK.md`.
+- Node 1 product, identity, role, authorization, IDOR, concurrency, lifecycle, and authentication requirements are governed by that final lock.
+- Claude independent final review was recorded as `APPROVE — NO BLOCKING FINDINGS`.
+
+## 26. Node 2 — Authentication + Identity Investigation
+
+**Status: ✅ INVESTIGATION COMPLETE**
+
+Completed during Day 4:
+
+- Node 2 Round 1 authentication/identity investigation.
+- Node 2 Round 2 missing-auth-evidence investigation.
+- Node 2 Round 3 remaining authentication-evidence investigation.
+- Targeted signup/onboarding consistency investigation.
+
+Evidence areas covered:
+
+- Supabase Auth flow.
+- Driver identity mapping.
+- Protected UI/API authentication checks.
+- Authenticated request context.
+- Session/cookie behavior.
+- Driver Code mechanism.
+- Authentication rate-limiting state.
+- RLS/service-role boundary.
+- Role enforcement state.
+- Existing authentication/identity testing evidence.
+- Local vs committed/pushed source state.
+- Signup/onboarding transaction boundaries and failure states.
+
+## 27. Node 2 Authentication + Identity Contract Draft
+
+**Status: 🔵 DRAFT / NOT LOCKED**
+
+Created:
+
+`02_ARCHITECTURE/Chat11_Node2_Authentication_Identity_Contract_DRAFT.md`
+
+The draft defines the proposed authentication/application-identity contract required to satisfy the locked Node 1 model.
+
+## 28. Claude Independent Contract Review
+
+**Status: ✅ COMPLETE**
+
+Claude independently reviewed the Node 2 contract draft.
+
+Review result:
 
 ```text
-01_BRAIN_HANDOFFS/ChatGPT/Chat8_New_Update_Product_Model_and_Security_Direction.md
-01_BRAIN_HANDOFFS/ChatGPT/Chat8_New_Update_Authentication_Implementation_Pause_Checkpoint.md
-01_BRAIN_HANDOFFS/ChatGPT/Chat8_New_Update_Hackathon_Node_Roadmap_Rework.md
+NOT READY FOR LOCK
 ```
+
+Remaining load-bearing decisions include:
+
+- signup/onboarding consistency;
+- email-confirmation policy;
+- session lifecycle/refresh;
+- one-user → one-identity enforcement;
+- authentication rate limiting;
+- RLS/service-role boundary;
+- final acceptance-test matrix.
+
+## 29. Signup / Onboarding Consistency Investigation
+
+**Status: ✅ INVESTIGATION COMPLETE**
+
+The targeted investigation verified that the current signup flow creates:
+
+```text
+Supabase Auth User
+        ↓
+separate application identity insert
+```
+
+These operations are not one database transaction.
+
+A verified failure state is:
+
+```text
+Auth User EXISTS
+Application identity MISSING
+```
+
+The investigation also identified the reverse orphan risk associated with the current `ON DELETE SET NULL` relationship.
+
+No implementation fix was authorized from this evidence.
+
+## 30. Day 4 Project Checkpoint
+
+Checkpoint created:
+
+`00_PROJECT_CONTROL/CHECKPOINTS/Chat11_Day4_Node2_Checkpoint.md`
+
+Project-control records were reconciled to reflect:
+
+```text
+Node 1 → COMPLETE / LOCKED
+Node 2 → ACTIVE DESIGN / NOT LOCKED
+Authentication implementation → PAUSED
+```
+
+## Day 4 Final Status
+
+**✅ COMPLETE — checkpoint recorded**
+
+Node 2 implementation remains paused until the Authentication + Identity Contract is resolved, independently reviewed, and locked.
+
+---
 
 ## Report Status
 
 **Hackathon Work Day 1: ✅ COMPLETE**  
 **Hackathon Work Day 2: ✅ COMPLETE / CLOSED**  
 **Hackathon Work Day 3: ✅ COMPLETE / CLOSED**  
+**Hackathon Work Day 4: ✅ COMPLETE / CLOSED**  
 **Core MVP: ✅ COMPLETE**  
-**Post-hackathon Node 1: 🔵 NEXT**
+**Node 1: 🔒 COMPLETE / LOCKED**  
+**Node 2: 🔵 ACTIVE DESIGN / NOT LOCKED**  
+**Authentication implementation: ⏸ PAUSED**
