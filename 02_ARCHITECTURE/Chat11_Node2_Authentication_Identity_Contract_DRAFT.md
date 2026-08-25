@@ -7,9 +7,9 @@
 
 ## 1. Purpose
 
-Define the authentication and application-identity contract required before authentication implementation resumes.
+Define the authentication, application-identity, role-establishment, and verification contract required before authentication implementation resumes.
 
-This draft is derived from the locked Node 1 product/authorization model and the Chat11/Chat12 Node 2 investigation records.
+This draft is derived from the locked Node 1 product/authorization model and the Chat11/Chat12 investigation records.
 
 This document is a design draft. It does not authorize implementation.
 
@@ -49,7 +49,8 @@ The Chat11/Chat12 investigations established:
 - Current signup creates Auth User and application Driver identity through separate operations and is therefore not atomic.
 - Current sequential signup can leave an orphaned Auth User if Driver identity creation fails.
 - Server-side compensation is technically available but is unsafe as the primary consistency mechanism for unknown-outcome failures because the current `ON DELETE SET NULL` relationship can leave an orphaned Driver record.
-- A PostgreSQL `auth.users` trigger is technically available and can create application identity within the Auth User insertion transaction.
+- A PostgreSQL `auth.users` trigger is technically available and can create an application identity within the Auth User insertion transaction.
+- The pending-identity investigation found Model C (generic pending Freight Identity → verification → trusted role) to be the strongest fit for the Node 1 invariant and the trigger consistency model.
 
 These are evidence findings, except where explicitly marked as a proposed contract decision below.
 
@@ -58,73 +59,141 @@ These are evidence findings, except where explicitly marked as a proposed contra
 Node 2 must establish:
 
 1. A single trustworthy application identity for each authenticated user.
-2. Exactly one application role for each authenticated user.
+2. Exactly one application role for each authenticated user after verification.
 3. Explicit Company vs Driver identity semantics.
-4. Server-derived identity context for protected requests.
-5. No authorization trust in client-supplied identity or role fields.
-6. Authentication behavior that can safely feed Node 1 authorization.
-7. A defined signup/onboarding consistency model.
-8. A defined email-confirmation and account-activation model.
-9. A defined session lifecycle.
-10. A defined authentication abuse/rate-limiting boundary.
-11. Testable acceptance criteria.
+4. A controlled verification process for establishing the trusted role.
+5. Server-derived identity context for protected requests.
+6. No authorization trust in client-supplied identity or trusted-role fields.
+7. Authentication behavior that can safely feed Node 1 authorization.
+8. A defined signup/onboarding consistency model.
+9. A defined email-confirmation and account-activation model.
+10. A defined session lifecycle.
+11. A defined authentication abuse/rate-limiting boundary.
+12. Testable acceptance criteria.
 
-## 5. Proposed identity model — DRAFT
+## 5. Proposed identity model — MODEL C / PROPOSED
 
-The conceptual model should be:
+The leading model is a generic Freight Identity created atomically with the Auth User:
 
 ```text
 Supabase Auth User
         │
         │ exactly one
         ▼
-Application Identity
+Generic Freight Identity
         │
-        ├── role = Company
-        │       └── Company identity
-        │
-        └── role = Driver
-                └── Driver identity
+        ├── requested_role = Company / Driver
+        ├── verification_status = PENDING / VERIFIED / REJECTED
+        └── trusted_role = NULL until verification
+```
+
+After successful verification:
+
+```text
+Generic Freight Identity
+        ↓
+verification_status = VERIFIED
+        ↓
+trusted_role = Company OR Driver
+        ↓
+Role-specific application identity/access
 ```
 
 The application identity must be derived from the authenticated Supabase Auth user, not from a client-provided user/driver/company ID.
 
-The exact database representation (single identity table, role-specific mapping, or another design) remains a decision to be finalized before lock. This draft intentionally does not prescribe an unreviewed schema.
+The exact database schema and role-specific mapping remain subject to independent review and final contract lock.
 
-## 6. One-user / one-identity invariant — DRAFT
+## 6. One-user / one-identity invariant — PROPOSED
 
-The system must enforce, at the application/database boundary as appropriate:
+The system must enforce:
 
 ```text
 ONE auth.users.id
         ↓
-ONE application identity
-        ↓
-ONE role
+ONE Freight application identity
 ```
 
-A single Auth User must not simultaneously become both a Company and Driver identity.
+The user must not simultaneously become both Company and Driver.
 
-A single Auth User must not own multiple application identities.
+The requested role is not the trusted role.
 
-The enforcement mechanism must be explicit and testable.
+The trusted role is established only by the server-controlled verification process.
 
-## 7. Role model — DRAFT
+## 7. Requested role vs trusted role — PROPOSED
 
-Allowed application roles:
+At signup, the user may request:
 
 ```text
-Company
-Driver
+requested_role = Company
 ```
 
-Role must be server-trusted application state.
+or:
 
-The client must not be able to select an arbitrary role on an authenticated request and thereby gain that role's authorization.
+```text
+requested_role = Driver
+```
 
-Role enforcement must occur before protected role-specific business operations.
+This is **user-provided intent, not authorization**.
 
-## 8. Signup / onboarding consistency — PROPOSED DECISION, NOT YET LOCKED
+The system must never treat a client-controlled requested role, user metadata role, or client-supplied role field as proof of authorization.
+
+The server-controlled fields are conceptually:
+
+```text
+verification_status = PENDING | VERIFIED | REJECTED
+trusted_role = NULL | Company | Driver
+```
+
+Only an authorized verification action may transition a pending identity to a trusted role.
+
+## 8. Verification model — PROPOSED / HACKATHON MVP
+
+For the hackathon MVP, verification is a controlled human-review workflow.
+
+```text
+User signup
+    ↓
+Select requested role
+    ↓
+Provide official evidence
+    ↓
+verification_status = PENDING
+    ↓
+Ayush reviews evidence
+    ↓
+APPROVE or REJECT
+    ↓
+If approved:
+verification_status = VERIFIED
+trusted_role = requested_role
+```
+
+Evidence currently selected for the MVP:
+
+```text
+Driver  → Driving Licence evidence
+Company → GST evidence/details
+```
+
+The user cannot approve their own verification and cannot directly modify `verification_status` or `trusted_role`.
+
+The exact reviewer interface and audit-log implementation remain to be finalized before implementation.
+
+## 9. Pending identity security boundary — PROPOSED
+
+A PENDING identity may exist for consistency and verification workflow purposes but is not an authorized Driver or Company.
+
+A PENDING identity must not:
+
+- perform protected Driver-only operations;
+- perform protected Company-only operations;
+- appear as an eligible Driver in marketplace queries;
+- create/own protected business resources requiring a trusted role;
+- bypass verification through client-supplied role fields.
+
+Role-specific business tables should be structurally or policy-wise isolated from PENDING identities where practical.
+
+## 10. Signup / onboarding consistency — PROPOSED DECISION, NOT YET LOCKED
 
 The current sequential signup flow is not an acceptable final consistency boundary because it can leave:
 
@@ -134,7 +203,7 @@ BUT
 required application identity does not exist
 ```
 
-The preferred architecture decision from Chat12 investigation is **PostgreSQL-trigger-based atomic application-identity creation**.
+The preferred architecture direction is **PostgreSQL-trigger-based atomic creation of the generic Freight Identity**.
 
 Conceptually:
 
@@ -145,7 +214,7 @@ PostgreSQL transaction
         ↓
 auth.users INSERT trigger
         ↓
-Application Identity creation
+Generic Freight Identity (PENDING)
         ↓
 Both succeed → durable consistent state
 
@@ -155,20 +224,14 @@ Identity creation fails
         ↓
 Transaction rolls back
         ↓
-No durable Auth User without identity
+No durable Auth User without Freight Identity
 ```
 
 The trigger is a proposed identity-consistency mechanism. It is not yet implementation authorization.
 
 Server-side compensation is not selected as the primary consistency mechanism because unknown-outcome timeouts can cause Auth deletion while leaving a Driver record through the current `ON DELETE SET NULL` relationship.
 
-The final implementation must preserve the Node 1 invariant:
-
-```text
-1 Auth User ↔ exactly 1 application identity
-```
-
-## 9. Email confirmation and account activation — DRAFT / OPEN POLICY DECISION
+## 11. Email confirmation and account activation — OPEN POLICY DECISION
 
 Identity existence must not be treated as equivalent to an active or authorized account.
 
@@ -179,38 +242,30 @@ Identity exists
     ≠
 Email confirmed
     ≠
+Verification completed
+    ≠
 Authorized
     ≠
 Active/usable account
-```
-
-The proposed state model is:
-
-```text
-Auth User + Application Identity
-        ↓
-Email confirmation state
-        ↓
-Identity/role validity
-        ↓
-Protected application access only when required gates pass
 ```
 
 The final contract must explicitly define:
 
 - whether email confirmation is required;
 - unconfirmed login behavior;
-- whether identity is created before or after confirmation;
-- when the account becomes active/usable;
+- whether verification may proceed before email confirmation;
+- when a verified identity becomes active/usable;
 - failure behavior for each state.
 
 This remains OPEN until independently reviewed and approved.
 
-## 10. Driver Code authentication — DRAFT
+## 12. Driver Code authentication — DRAFT
 
 Driver Code is an identifier, not a secret.
 
 The current sequential format (`DRV###`) is enumerable and therefore must not be treated as sufficient authentication protection by itself.
+
+A pending identity must not receive a trusted Driver code if that code would expose it as an active Driver.
 
 The authentication contract therefore requires:
 
@@ -221,7 +276,7 @@ The authentication contract therefore requires:
 
 The final rate-limiting design remains an OPEN decision in this draft.
 
-## 11. Authentication rate limiting — DRAFT
+## 13. Authentication rate limiting — DRAFT
 
 Authentication abuse protection must exist at the application/security boundary appropriate to the chosen implementation.
 
@@ -236,7 +291,7 @@ The final contract must define at least:
 
 The current absence of application-level rate limiting is a verified gap, not an approved final architecture.
 
-## 12. Authenticated request context — DRAFT
+## 14. Authenticated request context — DRAFT
 
 A protected server request must derive identity from the verified authentication session.
 
@@ -247,20 +302,40 @@ Request
   ↓
 Verified Supabase Auth session/user
   ↓
-Application identity lookup
+Freight Identity lookup
   ↓
-Role + identity context
+Verification status + trusted role
   ↓
 Node 1 authorization
   ↓
 Business operation
 ```
 
-Client-supplied `driver_id`, `company_id`, or `role` may be input data but must never be accepted as proof of the caller's identity or authorization scope.
+Client-supplied `driver_id`, `company_id`, `role`, `trusted_role`, or `verification_status` must never be accepted as proof of identity or authorization scope.
 
-The exact helper/context API remains an implementation detail to be defined after this contract is approved.
+## 15. Verification authority boundary — PROPOSED
 
-## 13. Session lifecycle — DRAFT
+The hackathon MVP uses a single controlled human verifier: Ayush.
+
+The verifier action must occur through a server-authorized path rather than direct client/database manipulation.
+
+Conceptually:
+
+```text
+Ayush / authorized verifier
+        ↓
+Server-side verification action
+        ↓
+Validate pending identity + evidence
+        ↓
+PENDING → VERIFIED or REJECTED
+        ↓
+Set trusted_role only on approval
+```
+
+The verifier permission mechanism, audit evidence, and exact server endpoint/interface remain to be finalized before implementation lock.
+
+## 16. Session lifecycle — DRAFT
 
 The authentication contract must define:
 
@@ -274,19 +349,19 @@ The authentication contract must define:
 
 The current investigation identified a possible session-refresh limitation in the absence of middleware. This must be resolved/verified during implementation planning before lock.
 
-## 14. Service-role boundary — DRAFT
+## 17. Service-role boundary — DRAFT
 
 Supabase `service_role` credentials are server-only.
 
 They must never be exposed to browser/client bundles.
 
-Any elevated operation used for identity/authentication must remain behind a server-side trust boundary.
+Any elevated operation used for identity/verification/authentication must remain behind a server-side trust boundary.
 
 The final implementation must minimize elevated operations and must not use service-role access as a substitute for application authorization.
 
 Node 1 authorization remains authoritative for business-resource authorization.
 
-## 15. Authentication failure behavior — DRAFT
+## 18. Authentication failure behavior — DRAFT
 
 Authentication failures should use generic externally visible responses where revealing whether a credential/account/identity exists would create enumeration risk.
 
@@ -296,7 +371,7 @@ Wrong-role requests must not fall through to the other role's business logic.
 
 Exact HTTP status/error contracts remain to be finalized before implementation lock.
 
-## 16. Role-specific access — DRAFT
+## 19. Role-specific access — DRAFT
 
 The system must distinguish:
 
@@ -309,27 +384,40 @@ A Driver must not obtain Company authorization merely by supplying Company ident
 
 A Company must not obtain Driver authorization merely by supplying Driver identifiers.
 
+A PENDING or REJECTED identity must not obtain either trusted role through client-controlled fields.
+
 The authenticated role/identity context must be server-derived.
 
 Detailed business-resource authorization remains Node 1's responsibility.
 
-## 17. Testing contract — DRAFT
+## 20. Testing contract — DRAFT
 
 Before Node 2 can be accepted, tests/evidence must demonstrate at minimum:
 
 ### Identity invariants
 
-- one Auth User cannot create two application identities;
-- one Auth User cannot hold both Company and Driver roles;
-- every active application identity maps to exactly one Auth User;
-- role is server-trusted.
+- one Auth User cannot create two Freight identities;
+- one Auth User cannot hold both Company and Driver trusted roles;
+- every Auth User has exactly one Freight identity after successful signup transaction;
+- trusted role is server-controlled.
+
+### Verification
+
+- requested role alone cannot authorize the user;
+- PENDING cannot perform protected Company/Driver operations;
+- user cannot modify verification status;
+- user cannot modify trusted role;
+- only authorized verifier action can change PENDING → VERIFIED/REJECTED;
+- approved Driver evidence produces trusted Driver role;
+- approved Company GST evidence produces trusted Company role;
+- rejected verification cannot gain trusted role access.
 
 ### Signup / onboarding consistency
 
-- Auth User and required application identity are created atomically under the selected mechanism;
-- application identity creation failure does not leave a durable Auth User without identity;
+- Auth User and generic Freight Identity are created atomically under the selected mechanism;
+- identity creation failure does not leave a durable Auth User without Freight Identity;
 - duplicate/concurrent identity creation cannot create two identities for one Auth User;
-- email-confirmation state does not bypass required authorization gates.
+- verification state cannot bypass email/authorization requirements.
 
 ### Authentication
 
@@ -343,40 +431,33 @@ Before Node 2 can be accepted, tests/evidence must demonstrate at minimum:
 
 - Company cannot access Driver-only operations;
 - Driver cannot access Company-only operations;
-- client-supplied role cannot escalate privileges.
+- client-supplied role cannot escalate privileges;
+- PENDING/REJECTED cannot access trusted role operations.
 
 ### Identity handoff
 
-- authenticated request resolves the correct application identity;
+- authenticated request resolves the correct Freight Identity;
 - client-supplied identity cannot replace authenticated identity;
 - Node 1 authorization receives trusted identity context.
 
-### Abuse protection
+## 21. Open decisions before contract lock
 
-- authentication rate limiting behaves according to the final selected policy;
-- enumeration-sensitive responses remain generic.
+The following must still be explicitly decided/reviewed before this document can become LOCKED:
 
-### Security boundary
+1. Exact Freight Identity database representation.
+2. Exact Company and Driver role-specific mapping after verification.
+3. Final approval and security design of the PostgreSQL trigger.
+4. Exact email-confirmation policy and state ordering.
+5. Exact verifier authorization mechanism and audit trail.
+6. Exact evidence validation checklist for Driver licence and Company GST evidence.
+7. Exact session refresh mechanism.
+8. Exact application-level authentication rate-limiting policy.
+9. Exact authentication failure status/error contract.
+10. Exact server-side identity-context helper/interface.
+11. Exact Node 2 automated acceptance-test set.
+12. Exact document/evidence retention and access policy.
 
-- service-role credentials are server-only;
-- protected APIs do not trust client identity fields as authorization proof.
-
-## 18. Open decisions before contract lock
-
-The following must be explicitly decided/reviewed before this document can become LOCKED:
-
-1. Exact application identity database representation.
-2. Exact Company and Driver identity mapping.
-3. Final approval of PostgreSQL-trigger-based atomic signup identity creation.
-4. Exact email-confirmation policy and activation-state semantics.
-5. Exact session refresh mechanism.
-6. Exact application-level authentication rate-limiting policy.
-7. Exact authentication failure status/error contract.
-8. Exact server-side identity-context helper/interface.
-9. Exact role enforcement boundary.
-10. Exact Node 2 automated acceptance-test set.
-
-## 19. Non-goals
+## 22. Non-goals
 
 Node 2 does not redefine:
 
@@ -390,15 +471,18 @@ Node 2 does not redefine:
 
 Those remain governed by the existing roadmap and locked records.
 
-## 20. Status
+## 23. Status
 
 ```text
-Signup consistency investigation = COMPLETE
-Signup architecture decision      = PROPOSED
-Contract design                   = DRAFT
-Contract lock                     = NOT YET
-Ayush approval                    = REQUIRED
-Implementation                    = PAUSED
+Signup consistency investigation              = COMPLETE
+Pending identity vs verification investigation = COMPLETE
+Leading identity model                         = MODEL C / PROPOSED
+Verification model                             = HACKATHON MANUAL REVIEW / PROPOSED
+Contract design                                = DRAFT
+Independent final review                       = PENDING
+Ayush approval                                 = PENDING
+Contract lock                                  = NOT YET
+Implementation                                 = PAUSED
 ```
 
-This document must not be treated as an implementation authorization until explicitly locked/approved.
+This document must not be treated as implementation authorization until explicitly locked/approved.
