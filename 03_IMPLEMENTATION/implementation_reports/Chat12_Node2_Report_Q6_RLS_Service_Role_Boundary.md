@@ -59,7 +59,12 @@ The recommendation is that protected Freight business tables have RLS enabled un
 
 Typical identity binding should use `auth.uid()` through the appropriate ownership/relationship columns, but policies must be designed per table rather than assuming one universal `auth_id` column exists everywhere.
 
-**Table-owner bypass:** PostgreSQL RLS does not normally apply to the table owner unless `FORCE ROW LEVEL SECURITY` is enabled. Therefore, protected tables must use `FORCE ROW LEVEL SECURITY` **or** an equivalent architecture in which the table owner role cannot be reached by any untrusted application path. The implementation audit must verify both the table-owner role and FORCE RLS status for every protected table.
+**Table-owner bypass:** PostgreSQL RLS does not normally apply to the table owner. Therefore, for every protected table, the implementation must either:
+
+- enable `FORCE ROW LEVEL SECURITY`, **or**
+- prove through architecture that the table-owner role cannot be reached by any untrusted application path.
+
+The implementation audit **MUST** verify both the table-owner role and FORCE RLS status for every protected table and record any approved exception.
 
 ## 5. Service-Role Responsibility
 
@@ -111,7 +116,7 @@ Identify affected resources/operations
 Remediate and document the incident
 ```
 
-Credential rotation is required after a confirmed or reasonably suspected leak; it is not merely a periodic housekeeping recommendation. Rotation cadence for routine credential hygiene must follow the project's secret-management policy.
+Credential rotation is **mandatory** after a confirmed or reasonably suspected leak. The incident response must assume the exposed credential had full RLS-bypass capability for the resources available to it until the audit proves otherwise.
 
 ## 6. Access Matrix
 
@@ -169,7 +174,7 @@ A privileged verification/admin operation may use `service_role`, but only after
 
 Auth-trigger-based identity creation may use database-level privileges as appropriate, but this is a separate controlled mechanism and should not be used as evidence that arbitrary application routes may use `service_role`.
 
-If an Auth trigger/function uses `SECURITY DEFINER`, its execution role, narrowly scoped privileges, `search_path`, and callable surface must be explicitly verified before implementation acceptance.
+If an Auth trigger/function uses `SECURITY DEFINER`, its execution role, narrowly scoped privileges, explicit `search_path`, callable surface, and function body writes **MUST** be explicitly verified before implementation acceptance. The review must confirm that it cannot be abused for privilege escalation or unchecked writes.
 
 ## 9. IDOR / Cross-User Attack Analysis
 
@@ -210,7 +215,8 @@ If a privileged route legitimately requires service-role access, it must not tru
 7. **Mandatory auditability:** Every privileged mutation of `verification_status`, `trusted_role`, or administrative approval state **MUST** produce an audit record containing actor identity, target resource, and timestamp. These records must be protected from ordinary user modification.
 8. **No architecture shortcut:** Do not use `service_role` merely to avoid fixing an RLS policy.
 9. **Service-role compromise response:** If exposure is suspected, immediately rotate/revoke the affected credential, restrict affected privileged paths if necessary, audit the exposure window, identify affected resources, and document remediation.
-10. **Privileged service-role usage audit:** Verify that the service-role-backed client is imported only by approved privileged routes/jobs/functions and is not reachable through ordinary user-facing CRUD paths.
+10. **Privileged service-role usage allowlist:** Only explicitly approved server-side modules/routes/jobs/functions may import or use the service-role client. Ordinary user-facing CRUD modules are **disallowed** from importing it.
+11. **Enforcement mechanism:** The implementation must enforce the service-role allowlist through a repository-level lint/CI check (or an equivalent automated static check) that fails when an unapproved path imports the service-role client. Manual review alone is insufficient.
 
 ## 11. Rejected Alternatives
 
@@ -228,25 +234,36 @@ Rejected. Different Freight tables and operations have different ownership/relat
 
 ## 12. Acceptance-Test Matrix
 
-At minimum, the eventual implementation must prove:
+### Suite A — RLS-only boundary tests
+
+These tests verify the database row-access boundary independently of Node 1 business authorization:
 
 1. User A cannot `SELECT` User B's protected rows through a normal authenticated client.
 2. User A cannot `UPDATE` User B's protected rows through a normal authenticated client.
 3. User A cannot modify their own `verification_status` or `trusted_role` through ordinary user access.
-4. A correctly authorized privileged verification workflow can update security-sensitive state.
-5. An unauthorized caller cannot invoke a privileged service-role operation successfully.
-6. A privileged endpoint rejects client-controlled IDs when the caller lacks authorization for the referenced resource/action.
-7. `service_role` is absent from browser/client bundles and client-visible responses.
-8. No public/user-facing route uses `service_role` merely for ordinary CRUD that RLS can safely enforce.
-9. Protected tables have RLS enabled and expected SELECT/INSERT/UPDATE/DELETE policies.
-10a. **RLS-only test:** User A is blocked from User B's protected row even when a hypothetical Node 1 authorization decision would otherwise permit the requested business operation.
-10b. **Node 1-only test:** User A can satisfy the applicable RLS row-access condition, but is blocked by Node 1 when the requested business operation is forbidden by role, trip state, or other locked business rules.
-11. A protected table with RLS enabled but no applicable policy denies access for ordinary non-owner roles; this default-deny behavior is verified explicitly.
-12. Protected table owner roles and `FORCE ROW LEVEL SECURITY` status are verified so that an untrusted application path cannot bypass RLS through table ownership.
-13. Privileged background/webhook operations are constrained to their explicitly approved scope.
-14. Privileged mutations of `verification_status`, `trusted_role`, or administrative approval state produce a mandatory audit record containing actor identity, target resource, and timestamp.
-15. If service-role credential exposure is simulated/confirmed, the documented immediate rotation/restriction and post-exposure audit procedure is followed.
-16. The service-role-backed client is not imported by unapproved user-facing CRUD routes.
+4. A protected table with RLS enabled but no applicable policy denies access for ordinary non-owner roles.
+5. Protected table owner roles and `FORCE ROW LEVEL SECURITY` status are verified so an untrusted application path cannot bypass RLS through table ownership.
+6. `service_role` is absent from browser/client bundles and client-visible responses.
+
+### Suite B — Node 1 authorization boundary tests
+
+These tests verify operation-level authorization independently of the RLS row-isolation tests:
+
+1. A user who can satisfy the applicable RLS row-access condition is still blocked by Node 1 when the requested business operation is forbidden by role, trip state, or other locked business rules.
+2. An explicitly authorized privileged verification workflow can perform its approved security-sensitive mutation.
+3. An unauthorized caller cannot invoke a privileged service-role operation successfully.
+4. A privileged endpoint rejects client-controlled IDs when the caller lacks authorization for the referenced resource/action.
+5. Privileged background/webhook operations are constrained to their explicitly approved scope.
+
+### Combined boundary checks
+
+1. A row blocked by RLS is never reachable even if Node 1 would otherwise allow the business operation.
+2. Passing RLS never bypasses Node 1 authorization.
+3. No public/user-facing route uses `service_role` merely for ordinary CRUD that RLS can safely enforce.
+4. Privileged mutations of `verification_status`, `trusted_role`, or administrative approval state produce a mandatory audit record containing actor identity, target resource, and timestamp.
+5. If service-role credential exposure is simulated/confirmed, the documented immediate rotation/restriction and post-exposure audit procedure is followed.
+6. The service-role allowlist/lint/CI check rejects an unapproved import.
+7. For any `SECURITY DEFINER` Auth trigger/function, the acceptance review verifies execution role, `search_path`, privileges, callable surface, and function-body writes.
 
 ## 13. Remaining Unknowns / Verification Items
 
@@ -259,7 +276,8 @@ Q6 policy is decision-ready, but these implementation-time facts must be verifie
 5. Actual source locations where `service_role` is currently imported/used, including whether `src/lib/supabase-server.ts` is imported outside verified privileged routes/jobs.
 6. Whether any existing trigger/function already performs an equivalent privileged identity operation.
 7. `FORCE ROW LEVEL SECURITY` status and table-owner role for each protected table.
-8. For any Auth trigger/function using `SECURITY DEFINER`, verify execution role, `search_path`, privileges, and callable surface.
+8. For any Auth trigger/function using `SECURITY DEFINER`, verify execution role, `search_path`, privileges, callable surface, and function body writes.
+9. Identify the concrete lint/CI mechanism and approved service-role import allowlist before implementation acceptance.
 
 These are verification items, not permission to add new privileged paths.
 
@@ -277,6 +295,7 @@ Privileged operations that genuinely require RLS bypass
 → explicit authentication + authorization
 → narrowly scoped service_role use
 → mandatory audit logging for security-sensitive privileged mutations
+→ approved import allowlist enforced by automated lint/CI
 
 service_role
 ≠ authorization
