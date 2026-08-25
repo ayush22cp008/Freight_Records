@@ -103,7 +103,7 @@ The application identity must be derived from the authenticated Supabase Auth us
 
 The exact database schema and role-specific mapping remain subject to independent review and final contract lock.
 
-## 6. One-user / one-identity invariant — PROPOSED
+## 6. One-user / one-identity invariant — **DECIDED / LOCKED FOR NODE 2**
 
 The system must enforce:
 
@@ -113,11 +113,25 @@ ONE auth.users.id
 ONE Freight application identity
 ```
 
+The **database must enforce uniqueness** of the Auth User reference in the Freight Identity table. Conceptually:
+
+```text
+freight_identities.auth_user_id = UNIQUE
+```
+
+This database-level uniqueness is the authoritative enforcement mechanism for the one-user/one-identity invariant. The PostgreSQL Auth trigger is the atomic creation mechanism, but the trigger alone is not considered sufficient enforcement.
+
 The user must not simultaneously become both Company and Driver.
 
 The requested role is not the trusted role.
 
 The trusted role is established only by the server-controlled verification process.
+
+### Q4 Independent review
+
+Claude reviewed Q4 and returned **CONCERN**, specifically because the previous draft did not explicitly specify a DB-level uniqueness guarantee. The decision is now resolved by explicitly requiring a unique database constraint on the Auth User reference before implementation/lock. No Q4 blocker was identified. The independent review is recorded in:
+
+`03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Claude_Report_Review_Q1_Q4.md`
 
 ## 7. Requested role vs trusted role — PROPOSED
 
@@ -193,7 +207,7 @@ A PENDING identity must not:
 
 Role-specific business tables should be structurally or policy-wise isolated from PENDING identities where practical.
 
-## 10. Signup / onboarding consistency — PROPOSED DECISION, NOT YET LOCKED
+## 10. Signup / onboarding consistency — **DECIDED / LOCKED FOR NODE 2**
 
 The current sequential signup flow is not an acceptable final consistency boundary because it can leave:
 
@@ -203,7 +217,7 @@ BUT
 required application identity does not exist
 ```
 
-The preferred architecture direction is **PostgreSQL-trigger-based atomic creation of the generic Freight Identity**.
+The selected architecture direction is **PostgreSQL-trigger-based atomic creation of the generic Freight Identity**.
 
 Conceptually:
 
@@ -227,9 +241,13 @@ Transaction rolls back
 No durable Auth User without Freight Identity
 ```
 
-The trigger is a proposed identity-consistency mechanism. It is not yet implementation authorization.
+The trigger is the selected atomic identity-creation mechanism. It is not yet implementation authorization by itself.
 
 Server-side compensation is not selected as the primary consistency mechanism because unknown-outcome timeouts can cause Auth deletion while leaving a Driver record through the current `ON DELETE SET NULL` relationship.
+
+### Q1 Independent review
+
+Claude reviewed Q1 and returned **APPROVE**. Claude agreed that trigger-based atomic creation correctly closes the verified Auth User/application identity orphan gap. The remaining exact trigger implementation/error handling is implementation detail and must still be validated before implementation is considered verified.
 
 ## 11. Email confirmation and account activation — OPEN POLICY DECISION
 
@@ -399,7 +417,8 @@ Before Node 2 can be accepted, tests/evidence must demonstrate at minimum:
 - one Auth User cannot create two Freight identities;
 - one Auth User cannot hold both Company and Driver trusted roles;
 - every Auth User has exactly one Freight identity after successful signup transaction;
-- trusted role is server-controlled.
+- trusted role is server-controlled;
+- DB-level uniqueness on `freight_identities.auth_user_id` rejects duplicate identity rows for one Auth User.
 
 ### Verification
 
@@ -442,11 +461,11 @@ Before Node 2 can be accepted, tests/evidence must demonstrate at minimum:
 
 ## 21. Open decisions before contract lock
 
-The following must still be explicitly decided/reviewed before this document can become LOCKED:
+The following remain open and must be resolved before the complete Node 2 contract can become LOCKED:
 
-1. Exact Freight Identity database representation.
+1. Exact Freight Identity database representation beyond the now-required unique Auth User reference.
 2. Exact Company and Driver role-specific mapping after verification.
-3. Final approval and security design of the PostgreSQL trigger.
+3. Exact trigger implementation/security/error handling, while the atomic-trigger architecture and DB uniqueness requirement are decided.
 4. Exact email-confirmation policy and state ordering.
 5. Exact verifier authorization mechanism and audit trail.
 6. Exact evidence validation checklist for Driver licence and Company GST evidence.
@@ -474,15 +493,18 @@ Those remain governed by the existing roadmap and locked records.
 ## 23. Status
 
 ```text
-Signup consistency investigation              = COMPLETE
+Q1 Signup consistency                        = DECIDED / LOCKED FOR NODE 2
+Q4 One-user → one-identity enforcement       = DECIDED / LOCKED FOR NODE 2
+Q4 DB uniqueness requirement                 = DECIDED
 Pending identity vs verification investigation = COMPLETE
-Leading identity model                         = MODEL C / PROPOSED
-Verification model                             = HACKATHON MANUAL REVIEW / PROPOSED
-Contract design                                = DRAFT
-Independent final review                       = PENDING
-Ayush approval                                 = PENDING
-Contract lock                                  = NOT YET
-Implementation                                 = PAUSED
+Leading identity model                       = MODEL C / PROPOSED
+Verification model                           = HACKATHON MANUAL REVIEW / PROPOSED
+Contract design                              = DRAFT
+Independent Q1/Q4 review                     = COMPLETE
+Ayush approval for Q1/Q4                     = APPROVED
+Remaining Node 2 blocking questions          = Q2, Q3, Q5, Q6, Q7
+Complete Node 2 contract lock                = NOT YET
+Implementation                                = PAUSED
 ```
 
-This document must not be treated as implementation authorization until explicitly locked/approved.
+This document must not be treated as full Node 2 implementation authorization until the remaining blocking decisions are resolved and the complete contract is explicitly locked/approved.
