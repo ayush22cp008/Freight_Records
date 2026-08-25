@@ -1,8 +1,18 @@
-# Chat12 Node 2 — Q6 Investigation: RLS / Service-Role Boundary
+# Chat12 Node 2 — Q6 Decision Record: RLS / Service-Role Boundary
 
-## 1. Executive Conclusion
+## Final Status
 
-The recommended policy for Q6 is a **Strict RLS + Privileged Server Boundary Pattern**.
+**Q6 = 🔒 LOCKED**
+
+**Independent review evidence:** Grok APPROVE  
+**Claude status:** Temporarily inconclusive/unavailable due to repeated stale/mismatched review output.  
+**Implementation authorization:** ❌ NOT GRANTED
+
+The Q6 architecture is locked as the current Node 2 policy based on the completed investigation and Grok's independent approval. Claude may be revisited later if a fresh review becomes available or if new evidence creates a genuine conflict.
+
+## 1. Final Decision
+
+The locked Q6 policy is the **Strict RLS + Privileged Server Boundary Pattern**.
 
 1. **Direct client database access:** Browser Supabase clients use authenticated sessions and are always subject to RLS.
 2. **User-facing Next.js routes:** Prefer a user-scoped Supabase client that propagates the user's session and therefore evaluates RLS. A route must not use `service_role` merely for convenience.
@@ -19,7 +29,7 @@ Prior repository evidence indicates:
 - Earlier API code used a service-role-backed server client for some identity creation operations, creating a potential RLS bypass path.
 - `src/lib/supabase/server.ts` provides user-scoped server access, while `src/lib/supabase-server.ts` exposes a service-role-backed client and therefore requires strict usage controls.
 
-These observations are evidence about the current codebase, not permission to implement changes during this investigation.
+These observations are evidence about the current codebase. They do not authorize implementation outside the locked policy below.
 
 ## 3. Threat Model
 
@@ -143,17 +153,6 @@ Node 1 authorization
 → operation-level business authorization
 ```
 
-Example:
-
-```text
-RLS
-→ Driver A cannot read Driver B's protected row.
-
-Node 1
-→ Driver A may read their own row, but may still be forbidden
-  from performing a particular operation because of trip state/role/context.
-```
-
 A request passing RLS does not automatically satisfy Node 1 authorization.
 
 A privileged service-role operation must perform its required Node 1/admin authorization checks before the database action; bypassing RLS does not bypass the business contract.
@@ -265,9 +264,9 @@ These tests verify operation-level authorization independently of the RLS row-is
 6. The service-role allowlist/lint/CI check rejects an unapproved import.
 7. For any `SECURITY DEFINER` Auth trigger/function, the acceptance review verifies execution role, `search_path`, privileges, callable surface, and function-body writes.
 
-## 13. Remaining Unknowns / Verification Items
+## 13. Remaining Verification Items
 
-Q6 policy is decision-ready, but these implementation-time facts must be verified before coding/acceptance:
+These are implementation-time verification items, not unresolved Q6 policy questions:
 
 1. Exact current Freight table list and ownership relationships.
 2. Exact RLS policy coverage for each protected table and CRUD operation.
@@ -279,12 +278,14 @@ Q6 policy is decision-ready, but these implementation-time facts must be verifie
 8. For any Auth trigger/function using `SECURITY DEFINER`, verify execution role, `search_path`, privileges, callable surface, and function body writes.
 9. Identify the concrete lint/CI mechanism and approved service-role import allowlist before implementation acceptance.
 
-These are verification items, not permission to add new privileged paths.
+These checks do not reopen Q6 unless new evidence creates a genuine conflict.
 
-## 14. Proposed Q6 Decision
+## 14. Locked Decision
 
 ```text
-Q6 = Strict RLS + Privileged Server Boundary
+Q6 = 🔒 LOCKED
+
+Strict RLS + Privileged Server Boundary Pattern
 
 Normal user operations
 → authenticated user-scoped client
@@ -303,7 +304,21 @@ service_role
 ≠ browser credential
 ```
 
-## 15. Final Status
+## 15. Review / Lock Evidence
+
+Grok independently reviewed the Q6 report and returned:
+
+```text
+Verdict: APPROVE
+Remaining corrections: None
+Final recommendation: Lock Q6 as Strict RLS + Privileged Server Boundary Pattern.
+```
+
+Claude's repeated review output was inconclusive because it continued reporting an older/stale version that did not match the corrected repository record. Claude is therefore recorded as **temporarily unavailable/inconclusive**, not as an approval.
+
+This does not change the locked Q6 policy. If a future fresh independent review produces a genuine architectural conflict, Q6 may be reopened under the project's evidence/conflict rule.
+
+## 16. Project Status
 
 ```text
 Q1 = 🔒 LOCKED
@@ -311,22 +326,14 @@ Q2 = 🔒 LOCKED
 Q3 = 🔒 LOCKED
 Q4 = 🔒 LOCKED
 Q5 = 🔒 LOCKED
-Q6 = 🟡 INVESTIGATED / READY FOR FINAL INDEPENDENT REVIEW
+Q6 = 🔒 LOCKED — Grok-approved temporary independent review
 Implementation = ⏸️ PAUSED
 ```
 
-**No code changes or database-policy changes are authorized by this investigation.**
+**No implementation is authorized by this Q6 lock.**
 
-Next:
+## Next
 
-```text
-Q6 corrected report
-        ↓
-Independent Claude final review
-        ↓
-Ayush approval
-        ↓
-Q6 LOCK
-        ↓
-Move to Q7
-```
+**Q7 — Final Node 2 acceptance-test matrix / remaining Node 2 decision work.**
+
+Follow the same project-control workflow for any remaining Node 2 question.
