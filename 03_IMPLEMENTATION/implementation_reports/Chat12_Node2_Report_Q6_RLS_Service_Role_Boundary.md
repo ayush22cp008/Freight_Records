@@ -47,13 +47,18 @@ INSERT policy?
 UPDATE policy?
 DELETE policy?
 Relationship/ownership rule?
+FORCE ROW LEVEL SECURITY status?
 ```
 
 RLS does not automatically guarantee security merely because it is enabled. The actual policy expressions must be correct and restrictive.
 
+**Important default-deny rule:** when RLS is enabled on a table, access for ordinary non-owner roles is denied unless an applicable policy grants it. Therefore, an RLS-enabled table with no policy is a fail-closed state for those roles; the project must still verify that every required operation has an intentional policy rather than treating `ENABLE ROW LEVEL SECURITY` alone as sufficient.
+
 The recommendation is that protected Freight business tables have RLS enabled unless a documented architecture exception is approved.
 
 Typical identity binding should use `auth.uid()` through the appropriate ownership/relationship columns, but policies must be designed per table rather than assuming one universal `auth_id` column exists everywhere.
+
+**Table-owner verification:** PostgreSQL RLS does not normally apply to the table owner unless `FORCE ROW LEVEL SECURITY` is used. The implementation audit must therefore verify the owner role and `FORCE ROW LEVEL SECURITY` status for each protected table, or otherwise prove that the table-owner role cannot be reached through an untrusted application path.
 
 ## 5. Service-Role Responsibility
 
@@ -69,6 +74,8 @@ Authenticate caller / verify trusted origin where applicable
 Authorize exact privileged operation
       ↓
 Use service_role only for the required database action
+      ↓
+Audit privileged mutation where required
 ```
 
 ### Forbidden pattern
@@ -89,14 +96,14 @@ The exact privileged operation must be explicitly defined and narrowly scoped.
 
 | Operation | Browser / User Client | User-scoped Next.js route | Privileged Server / service_role |
 |---|---|---|---|
-| Read own permitted data | ALLOWED via RLS | ALLOWED via RLS | Not preferred |
+| Read own permitted data | ALLOWED via RLS | ALLOWED via RLS | **DISALLOWED except via approved exception** |
 | Read another user's protected data | BLOCKED by correct RLS | BLOCKED by correct RLS | Only if an explicitly authorized privileged operation requires it |
-| Modify own ordinary permitted data | ALLOWED only where RLS policy permits | ALLOWED only where RLS policy permits | Not preferred |
+| Modify own ordinary permitted data | ALLOWED only where RLS policy permits | ALLOWED only where RLS policy permits | **DISALLOWED except via approved exception** |
 | Modify verification/trusted-role state | BLOCKED by policy | BLOCKED by policy | ALLOWED only through an explicitly authorized privileged workflow |
 | Administrative verification | NOT ALLOWED | NOT ALLOWED unless route has explicit admin authorization | ALLOWED after trusted authorization |
 | Background cleanup | NOT APPLICABLE | NOT APPLICABLE | ALLOWED in controlled server job |
 
-The matrix deliberately does not treat `service_role` as “allowed” for arbitrary operations. Each privileged use must have a defined business reason and authorization boundary.
+The matrix deliberately does not treat `service_role` as a general-purpose alternative. Privileged use is **DISALLOWED except via an approved exception** with a documented business purpose and authorization boundary.
 
 ## 7. Node 1 Authorization Interaction
 
@@ -177,8 +184,9 @@ If a privileged route legitimately requires service-role access, it must not tru
 4. **Privileged endpoints require authorization:** A service-role route must establish the caller's trusted identity and exact authorization before using the credential.
 5. **Server-only secret:** `service_role` must never be exposed to browser/client code, public environment variables, logs, or client responses.
 6. **No client-controlled trust:** A privileged route must not equate possession of a user-supplied ID with permission to act on that object.
-7. **Auditability:** Privileged operations should be identifiable in logs/audit records where appropriate.
+7. **Mandatory auditability for security-sensitive privileged mutations:** Any privileged operation that mutates `verification_status`, `trusted_role`, or other administrative approval state **MUST** be logged with actor identity, target resource, and timestamp. Other privileged operations should be logged where appropriate.
 8. **No architecture shortcut:** Do not use `service_role` merely to avoid fixing an RLS policy.
+9. **Service-role compromise response:** If exposure of the service-role credential is suspected, rotate/revoke the credential immediately through the Supabase project controls, then audit recent privileged-operation logs for the exposure window and investigate affected resources.
 
 ## 11. Rejected Alternatives
 
@@ -207,9 +215,13 @@ At minimum, the eventual implementation must prove:
 7. `service_role` is absent from browser/client bundles and client-visible responses.
 8. No public/user-facing route uses `service_role` merely for ordinary CRUD that RLS can safely enforce.
 9. Protected tables have RLS enabled and expected SELECT/INSERT/UPDATE/DELETE policies.
-10. RLS and Node 1 authorization both apply where required; passing one does not bypass the other.
-11. A missing or intentionally restrictive RLS policy fails closed for protected data rather than silently exposing rows.
-12. Privileged background/webhook operations are constrained to their explicitly approved scope.
+10a. A row that passes RLS (for example, User A reading User A's permitted row) can still be rejected by Node 1 authorization when the business operation is forbidden by role, trip state, or other locked business rules.
+10b. A row blocked by RLS is never reachable even if Node 1 authorization would otherwise allow the business operation.
+11. A protected table with RLS enabled but no applicable policy denies access for ordinary non-owner roles; this default-deny behavior is verified explicitly.
+12. Protected table owner roles and `FORCE ROW LEVEL SECURITY` status are verified so that an untrusted application path cannot bypass RLS through table ownership.
+13. Privileged background/webhook operations are constrained to their explicitly approved scope.
+14. Privileged mutations of `verification_status`, `trusted_role`, or administrative approval state produce an audit record containing actor identity, target resource, and timestamp.
+15. If service-role credential exposure is simulated/confirmed, the documented rotation and post-exposure audit procedure is followed.
 
 ## 13. Remaining Unknowns / Verification Items
 
@@ -221,6 +233,7 @@ Q6 policy is decision-ready, but these implementation-time facts must be verifie
 4. Exact authentication/authorization mechanism for each privileged endpoint or webhook.
 5. Actual source locations where `service_role` is currently imported/used.
 6. Whether any existing trigger/function already performs an equivalent privileged identity operation.
+7. `FORCE ROW LEVEL SECURITY` status and table-owner role for each protected table.
 
 These are verification items, not permission to add new privileged paths.
 
@@ -237,6 +250,7 @@ Privileged operations that genuinely require RLS bypass
 → trusted server-only path
 → explicit authentication + authorization
 → narrowly scoped service_role use
+→ mandatory audit logging for security-sensitive privileged mutations
 
 service_role
 ≠ authorization
@@ -252,7 +266,7 @@ Q2 = 🔒 LOCKED
 Q3 = 🔒 LOCKED
 Q4 = 🔒 LOCKED
 Q5 = 🔒 LOCKED
-Q6 = 🟡 INVESTIGATED / READY FOR INDEPENDENT REVIEW
+Q6 = 🟡 INVESTIGATED / READY FOR FINAL INDEPENDENT REVIEW
 Implementation = ⏸️ PAUSED
 ```
 
@@ -261,9 +275,9 @@ Implementation = ⏸️ PAUSED
 Next:
 
 ```text
-Q6 refined report
+Q6 corrected report
         ↓
-Independent Claude review
+Independent Claude final review
         ↓
 Ayush approval
         ↓
