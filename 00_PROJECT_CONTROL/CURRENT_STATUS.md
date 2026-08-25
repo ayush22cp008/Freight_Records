@@ -108,16 +108,16 @@ Remaining auth evidence investigation  ✅ COMPLETE
 Signup/onboarding investigation         ✅ COMPLETE
 Claude Q1/Q4 independent review         ✅ COMPLETE
 Q1 Signup consistency                   🔒 LOCKED DECISION
-Q4 One-user/one-identity                🔒 LOCKED DECISION
 Q2 Email-confirmation policy             🔒 LOCKED DECISION
+Q3 Session lifecycle / refresh           🔒 LOCKED DECISION
+Q4 One-user/one-identity                🔒 LOCKED DECISION
 ```
 
 ### Current Node 2 decisions still requiring resolution
 
-1. Session lifecycle / refresh
-2. Authentication rate limiting
-3. RLS / service-role boundary
-4. Final acceptance-test matrix
+1. Authentication rate limiting
+2. RLS / service-role boundary
+3. Final acceptance-test matrix
 
 ### Q2 — Email-confirmation policy
 
@@ -162,6 +162,78 @@ Claude's independent review is:
 `03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Report_Claude_Review_Q2_Email_Confirmation_Policy.md`
 
 Q2 was approved after the Claude-identified precision corrections were incorporated.
+
+### Q3 — Session lifecycle / refresh
+
+**STATUS → 🔒 DECIDED / LOCKED FOR NODE 2**
+
+Final policy:
+
+```text
+Policy B — Middleware-centered session refresh
++
+live Freight DB Active gate
+```
+
+The session/authentication boundary is explicitly separated from Freight authorization:
+
+```text
+Valid Session
+    = authenticated identity
+
+Freight DB Active Gate
+    = current account / verification state
+
+Node 1 Authorization
+    = operation-level authorization
+```
+
+Five approved Q3 decisions:
+
+```text
+1. Active status
+   → live Freight DB state on every protected business request.
+
+2. JWT
+   → authentication/identity information only; never the sole Freight Active decision.
+
+3. CSRF
+   → SameSite cookie protection + Origin validation for cookie-authenticated state-changing requests.
+
+4. PENDING / REJECTED
+   → session may remain valid, but protected business access is immediately denied by the live DB Active gate.
+
+5. Middleware
+   → scoped to the authenticated/protected application surface; public/static routes bypass unnecessary auth processing.
+```
+
+Q3 security invariant:
+
+```text
+Valid Session
+    ≠ Active Freight Account
+    ≠ Authorized for every operation
+```
+
+Q3 also explicitly requires the live Freight Identity state to prevent stale JWT/session claims from preserving business access after verification or email-confirmation changes.
+
+The refined Q3 decision report is:
+
+`03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Report_Q3_Session_Lifecycle_Refresh.md`
+
+Claude's final independent approval is:
+
+`03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Report_Q3_Session_Lifecycle_Refresh_Claude_approved.md`
+
+Claude verdict:
+
+```text
+APPROVE
+```
+
+The minor forward notes from Claude are preserved for contract/implementation work: keep the `getUser()` refresh caveat explicit and make Origin-header validation explicit in the eventual acceptance test/implementation wording.
+
+Q3 is now locked at the architecture/policy level. Implementation remains paused.
 
 ### Signup / onboarding evidence
 
@@ -217,6 +289,8 @@ Chat12 Day 5 checkpoint remains the historical continuation record:
 The Q2 lock and transition to Q3 are recorded in:
 
 `00_PROJECT_CONTROL/CHECKPOINTS/Chat12_Day5_Node2_Q2_Lock_Checkpoint.md`
+
+The Q3 lock is now recorded by the finalized Q3 decision report and Claude approval record. A dedicated Q3 lock checkpoint may be created as the next recordkeeping step if required by the project-control workflow.
 
 ## Subnode Rule
 
@@ -275,16 +349,16 @@ Project-control records:
 
 ## Next Action
 
-**NEXT: Q3 — Session lifecycle / refresh.**
+**NEXT: Q5 — Authentication rate limiting.**
 
 Do not resume authentication implementation.
 
-Q3 must be investigated and decided through the same workflow:
+Q5 must be investigated and decided through the same workflow:
 
 ```text
 Read authoritative records
         ↓
-Investigate Q3
+Investigate Q5
         ↓
 Evidence
         ↓
@@ -294,9 +368,9 @@ Independent review where appropriate
         ↓
 Ayush approval
         ↓
-Record Q3 decision
+Record Q5 decision
         ↓
 Continue to the next unresolved Node 2 question
 ```
 
-Q1, Q2, and Q4 are now locked decisions and must not be reopened unless new evidence creates a genuine conflict.
+Q1, Q2, Q3, and Q4 are now locked decisions and must not be reopened unless new evidence creates a genuine conflict.
