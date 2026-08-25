@@ -1,98 +1,162 @@
-# Chat12 — Node 2 Investigation: Q5 Authentication Rate Limiting
+# Chat12 — Node 2 Decision Record: Q5 Authentication Rate Limiting
 
-**Status:** 🟡 INVESTIGATED / NOT LOCKED  
+**Status:** 🔒 LOCKED  
 **Implementation authorization:** ❌ NOT GRANTED
 
-## 1. Executive Conclusion
+## Final Decision
 
-### Recommended MVP policy
+**Q5 = Supabase-native Auth rate limiting for the MVP.**
 
-**Use Supabase Auth's native authentication rate limiting as the primary abuse-control mechanism for the MVP. Do not add a custom Redis/Upstash rate limiter unless new evidence shows that the application's proxy architecture creates a material protection gap.**
-
-Do **not** describe Supabase's built-in controls as an exact implementation of Freight's own production Policy B. Supabase provides endpoint-specific rate limits using different dimensions and mechanisms. A future production hardening phase may add a layered application-level limiter if the threat model and deployment architecture require it.
-
-Final candidate policy:
+Freight will use Supabase Auth's built-in, endpoint-specific rate limiting as the primary authentication abuse-control mechanism for the MVP.
 
 ```text
 Q5 MVP
 = Supabase-native Auth rate limiting
++ no custom Redis/Upstash limiter initially
 + no hard account lockout
-+ generic authentication responses
-+ correct client-IP forwarding where required
-+ 429 handling
-+ no custom distributed limiter unless evidence requires it
++ generic authentication/recovery responses
++ correct secure client-IP forwarding where required
++ correct 429 handling
 ```
 
-## 2. Evidence
+A custom layered application-level limiter may be considered later only if new evidence demonstrates a material protection gap in the deployed architecture.
 
-### Verified Supabase evidence
+## Claude Independent Review
 
-Current official Supabase documentation confirms:
+Claude independently reviewed the Q5 investigation and approved the underlying policy.
 
-- Auth enforces rate limits on authentication endpoints.
-- IP-limited operations use a token-bucket algorithm; a bucket can permit brief bursts before sustained traffic is throttled.
-- Exceeding a rate limit produces HTTP `429 Too Many Requests`.
-- Signup/sign-in requests have a documented IP-based quota.
-- Token refresh, verification, MFA challenge/verify, and other Auth operations have their own endpoint-specific limits.
-- Email sending has separate project-wide and per-user cooldown controls depending on the endpoint and configuration.
-- Supabase supports client-IP forwarding for server-side frameworks/proxies using the `Sb-Forwarded-For` header, when IP forwarding is explicitly enabled and the request uses a supported secret API key.
+Claude verdict:
 
-Source used for current platform behavior:
+```text
+LOCK Q5 after two factual corrections
+```
 
-`https://supabase.com/docs/guides/auth/rate-limits`
+The required corrections are incorporated in this locked record:
 
-The exact values are platform configuration details and may change. The project should not hard-code current Supabase defaults into the Node 2 architecture contract unless the application intentionally configures and owns those values.
+1. The previous `sign-in/sign-up: 30 requests per 5-minute interval` statement is removed. Current Supabase behavior is endpoint-specific; password sign-in flows through `/auth/v1/token`, whose documented IP rate-limit behavior is separate from the earlier incorrect claim. Exact platform values must be re-verified at implementation time.
+2. MFA challenge/verify rate limits are explicitly acknowledged as separate Supabase Auth controls. MFA is outside the current MVP scope and must be re-verified if MFA is introduced later.
 
-### Verified repository evidence
+## Locked Constraints
 
-The current application architecture uses Next.js authentication routes that proxy authentication operations to Supabase. Therefore, the investigation must verify the actual deployed request path and IP-forwarding behavior before claiming that Supabase sees the original client IP.
+Do not reopen:
 
-### Security best-practice evidence
+```text
+Q1 = LOCKED — atomic Auth User → Freight Identity creation
+Q2 = LOCKED — email confirmation before normal authenticated onboarding and Active access
+Q3 = LOCKED — Middleware-centered session refresh + live Freight DB Active gate
+Q4 = LOCKED — exactly one Freight Identity per Auth User + DB UNIQUE(auth_user_id)
+```
 
-Hard account lockout is rejected as the primary brute-force control because an attacker can intentionally cause denial of service against a known victim account. Rate limiting and generic authentication responses provide safer abuse control.
+## 1. What Q5 Controls
 
-### Inference
-
-For the hackathon MVP, relying on Supabase's existing Auth controls is lower-risk and simpler than introducing a new distributed rate-limiting dependency.
-
-## 3. Threat Model
-
-Relevant threats:
+Q5 controls authentication abuse traffic such as:
 
 - password brute force;
 - credential stuffing;
-- repeated login attempts against one account;
-- many accounts targeted from one IP;
-- distributed login attempts across many IPs;
+- repeated login attempts;
 - signup abuse;
-- password-reset email abuse;
+- password-reset abuse;
 - confirmation/OTP resend abuse;
-- authentication resource exhaustion;
-- account enumeration;
-- account-lockout denial of service.
+- authentication resource exhaustion.
 
-Rate limiting materially helps with burst/sustained request abuse, but it does not by itself solve every distributed-botnet or credential-stuffing scenario. Additional bot protection such as CAPTCHA/Turnstile may be considered later if the threat model requires it.
+Rate limiting is an **abuse-control layer**. It is not an authentication substitute, Active-state mechanism, or authorization mechanism.
 
-## 4. Candidate Policy Comparison
+## 2. Supabase vs Freight Responsibility
 
-| Policy | Assessment | Decision |
-|---|---|---|
-| A — IP-only custom limiter | Useful but incomplete against distributed attacks and creates new infrastructure | Not selected |
-| B — Layered IP + account/identifier + endpoint custom limiter | Stronger production architecture but adds shared-state infrastructure and complexity | Future option |
-| C — Supabase-native Auth controls | Already present, endpoint-specific, low implementation complexity | **SELECTED for MVP** |
-| D — Hard account lockout | Creates account-lockout DoS risk | **Rejected** |
-
-Important correction:
+### Supabase owns for MVP
 
 ```text
-Supabase native controls
-≠
-Freight's complete custom Policy B
+Auth endpoint rate-limit enforcement
+Auth rate-limit counters
+429 rate-limit responses
+Auth email/OTP cooldowns and quotas
+Endpoint-specific Auth abuse controls
 ```
 
-Supabase provides substantial built-in protection, but the exact limiting dimension varies by Auth operation. Freight should not claim that every operation is simultaneously limited by both IP and account.
+### Freight owns
 
-## 5. Recommended Architecture
+```text
+Q2 Active policy
+Q3 session lifecycle policy
+Node 1 authorization
+Generic application responses where required
+Secure proxy/IP handling
+Application security logging/observability
+```
+
+Freight must not claim that Supabase implements Freight's complete custom production Policy B. Supabase's controls are endpoint-specific and use different limiting dimensions/mechanisms.
+
+## 3. No Custom Distributed Limiter for MVP
+
+Do not add Redis, Upstash, or another custom distributed rate-limit dependency for the MVP unless new evidence demonstrates a material protection gap.
+
+Reason:
+
+```text
+Supabase already provides Auth abuse controls
+        ↓
+Custom limiter adds infrastructure + complexity
+        ↓
+No demonstrated MVP requirement
+        ↓
+Do not add it yet
+```
+
+If production evidence later requires layered controls, create a new architecture decision rather than silently expanding Q5.
+
+## 4. No Hard Account Lockout
+
+Hard account lockout is explicitly rejected as the normal brute-force defense.
+
+```text
+Attacker knows victim email
+        ↓
+Repeated bad passwords
+        ↓
+Hard lockout
+        ↓
+Victim denied legitimate access
+```
+
+Rate limiting/429 behavior is preferred because it limits abuse without giving an attacker a simple account-lockout DoS mechanism.
+
+## 5. Threshold Policy
+
+Freight will **not hard-code guessed Supabase rate-limit values into application logic**.
+
+Supabase's current Auth limits are platform/configuration details and can change. Implementation and acceptance testing must verify the current project configuration and current official Supabase behavior.
+
+Important verified behavior:
+
+- IP-limited Auth operations use a token-bucket model, so short bursts can occur before sustained traffic is throttled.
+- Exceeding a configured rate limit results in `429 Too Many Requests` where the underlying Auth operation returns the rate-limit response.
+- Auth endpoints have separate quotas/cooldowns depending on the operation.
+- Email sending and confirmation/recovery flows have their own project/user cooldown behavior.
+- MFA challenge/verify has separate Auth rate limiting, but MFA is outside the current MVP scope.
+
+Do not treat any example/default number as a permanent Freight architecture constant.
+
+## 6. Secure Client-IP Handling
+
+The actual Next.js → Supabase Auth request path must be verified before implementation acceptance testing.
+
+If Supabase must rate-limit using the actual end-user IP through a server-side framework/proxy, use the supported secure server-side forwarding mechanism:
+
+```text
+Client IP
+   ↓
+Trusted Next.js / proxy
+   ↓
+Sb-Forwarded-For
+   ↓
+Supabase Auth
+```
+
+Do **not** blindly copy a client-controlled `x-forwarded-for` value into `Sb-Forwarded-For`.
+
+The actual deployment/proxy architecture must establish the trusted client-IP source before forwarding.
+
+## 7. Authentication Request Flow
 
 ```text
 Client
@@ -105,7 +169,7 @@ If quota exceeded → 429
    ↓
 If allowed → authentication operation
    ↓
-Session established/updated
+Session established / updated
    ↓
 Q3 session lifecycle
    ↓
@@ -114,157 +178,41 @@ Q2 Active gate for protected business access
 Node 1 authorization
 ```
 
-### Important proxy/IP requirement
+Rate-limit approval does not grant business access.
 
-Because server-side frameworks can hide the original client IP behind the server/proxy, the actual deployment path must be verified.
+## 8. Failure Responses / Enumeration
 
-If Freight needs Supabase Auth to rate-limit using the end-user IP, the current Supabase mechanism is:
+When the underlying Auth operation returns a rate-limit response:
 
 ```text
-Client IP
-   ↓
-Next.js / trusted proxy
-   ↓
-Sb-Forwarded-For
-   ↓
-Supabase Auth
+429 Too Many Requests
 ```
 
-Supabase currently requires IP forwarding to be explicitly enabled and the forwarded request to use a supported secret API key. The exact implementation must be verified against the actual Freight deployment before any change is authorized.
+Authentication and recovery flows must remain non-enumerating.
 
-Do not blindly copy an `x-forwarded-for` value from an untrusted client into `Sb-Forwarded-For`.
+Do not reveal whether an email/account exists through different authentication or recovery responses.
 
-## 6. Threshold Policy
+`Retry-After` should only be surfaced/handled when the actual underlying response provides an appropriate retry interval; Freight must not invent a fixed retry value.
 
-### MVP
+## 9. Fail-Open / Fail-Closed
 
-Freight should **rely on Supabase's configured Auth rate limits rather than hard-coding guessed values in application code**.
-
-Current official documentation gives examples such as:
-
-- sign-in/sign-up: IP-based quota of 30 requests per 5-minute interval by default;
-- token refresh: IP-based 1800 requests/hour;
-- verification requests: IP-based 360 requests/hour;
-- built-in email provider: 2 emails/hour project-wide;
-- signup confirmation and password-reset requests: 60-second per-user cooldown by default;
-- OTP: endpoint-specific configurable limits.
-
-These values are platform defaults/configuration details and must be re-verified at implementation time.
-
-### Future custom limiter
-
-If evidence later justifies an application-level limiter, thresholds must be selected from the actual threat model and deployment pattern. Do not lock an arbitrary value such as `5 attempts / 15 minutes` into the architecture without evidence.
-
-## 7. State / Behavior Matrix
-
-| Endpoint | Scenario | Limiter State | Authentication Result | Expected Response | Account Existence Leaked? |
-|---|---|---|---|---|---|
-| Login | normal valid attempt | under limit | provider processes | normal success | No |
-| Login | sustained excessive traffic | limit exceeded | blocked by Auth | 429 | No |
-| Login | invalid credentials under limit | under limit | authentication fails normally | generic auth failure | No |
-| Login | many IPs targeting one account | platform controls apply according to endpoint behavior | may be allowed or throttled | generic auth result / 429 when quota exceeded | No |
-| Signup | repeated attempts | endpoint quota/cooldown | blocked when limit exceeded | 429 or provider-specific response | No |
-| Password reset | normal request | under limit | provider processes | generic success behavior | No |
-| Password reset | repeated request | cooldown/quota exceeded | blocked/throttled | 429 or provider-specific response | No |
-| Email/OTP resend | repeated request | cooldown/quota exceeded | blocked/throttled | 429 or provider-specific response | No |
-| Token refresh | normal refresh | under limit | refresh proceeds | normal session response | No |
-| Token refresh | excessive traffic | limit exceeded | refresh blocked | 429 | No |
-| Custom limiter not present | MVP | Supabase remains primary limiter | provider handles | provider response | No |
-| Future custom limiter unavailable | future architecture | depends on explicitly approved policy | must follow separately approved fail behavior | policy-defined | No |
-
-## 8. Fail-Open / Fail-Closed Policy
-
-For the MVP there is no separate custom distributed limiter whose outage must be handled.
-
-Therefore:
+For the MVP, there is no separate custom distributed limiter whose outage requires a Freight-specific fail-open/fail-closed policy.
 
 ```text
 Custom limiter unavailable
         ↓
 Not applicable to MVP
         ↓
-Supabase Auth remains the primary rate-limit boundary
+Supabase Auth remains primary rate-limit boundary
 ```
 
-If a custom application-level limiter is introduced later, fail behavior must be decided as part of that separate architecture change. Do not automatically declare universal fail-open behavior.
+If a custom application-level limiter is introduced later, fail behavior must be decided as part of that new architecture decision.
 
-A future fail-open design would preserve availability but reduce the additional application-level abuse control during an outage. A future fail-closed design would strengthen abuse resistance but risks making authentication unavailable when the limiter infrastructure fails.
-
-## 9. Request Ordering
-
-The safe MVP boundary is:
-
-```text
-Authentication request
-        ↓
-Supabase Auth rate limiting
-        ↓
-Supabase authentication operation
-        ↓
-Session establishment / refresh
-        ↓
-Freight identity / Q2 Active gate
-        ↓
-Node 1 authorization
-```
-
-The application must not perform unnecessary account-specific lookups before the abuse-control boundary if doing so can create a resource-exhaustion or enumeration side channel.
-
-## 10. Failure Responses and Enumeration
-
-Rate-limit responses should use `429 Too Many Requests` where the underlying Auth operation returns a rate-limit error.
-
-Authentication failures should remain generic and must not reveal whether an account exists.
-
-Password-reset and similar recovery flows should preserve the existing non-enumerating user experience rather than changing responses based on account existence.
-
-`Retry-After` should be surfaced/handled only where the actual Auth response provides an appropriate retry interval; do not invent a fixed value.
-
-## 11. Account Lockout Policy
-
-### Decision
-
-**Do not implement hard account lockout as the normal brute-force defense.**
-
-Reason:
-
-```text
-Attacker knows victim email
-        ↓
-Repeated bad passwords
-        ↓
-Hard account lockout
-        ↓
-Victim denied legitimate access
-```
-
-Supabase rate limiting should remain the first-line MVP control.
-
-## 12. Distributed Attack Analysis
-
-The MVP policy materially addresses common bursts and sustained traffic covered by Supabase's endpoint-specific limits.
-
-It does not guarantee protection against every distributed credential-stuffing attack because no single IP limiter can reliably identify a distributed botnet.
-
-If later evidence shows the threat level requires stronger controls, consider:
-
-```text
-Application-level layered limiter
-+
-CAPTCHA / Turnstile
-+
-WAF / edge controls
-+
-security monitoring
-```
-
-Such additions require a new architecture decision; they are not part of the current MVP implementation authorization.
-
-## 13. Q2 / Q3 Interaction
+## 10. Q2 / Q3 / Node 1 Interaction
 
 ### Q2
 
-Rate limiting occurs at authentication/abuse-control boundaries. Passing the limiter does **not** grant Active access.
+Passing the rate limiter does **not** make the user Active.
 
 The locked Q2 invariant remains:
 
@@ -277,7 +225,7 @@ AND trusted_role IS NOT NULL
 
 ### Q3
 
-Rate limiting protects authentication and Auth endpoint operations. It does not replace Q3 session validation/refresh.
+Rate limiting protects Auth operations; it does not replace session validation or refresh.
 
 The locked Q3 separation remains:
 
@@ -287,124 +235,123 @@ Valid Session
     ≠ Authorized for every operation
 ```
 
-Token refresh has its own Supabase Auth rate-limit behavior and must not be subjected to an unnecessarily aggressive custom login limit.
+Token refresh has its own Auth rate-limit behavior and must not accidentally be subjected to an aggressive custom login limiter.
 
 ### Node 1
 
-Rate limiting does not replace Node 1 authorization. A request that passes rate limiting still requires the normal authentication, Active, and operation-level authorization checks.
+A request that passes rate limiting must still pass normal authentication, Active, and operation-level authorization checks.
 
-## 14. Supabase vs Freight Responsibility
-
-### Supabase owns for MVP
+## 11. Security Boundary
 
 ```text
-Auth endpoint abuse controls
-Auth rate-limit counters
-429 rate-limit enforcement
-Auth email/OTP cooldowns and quotas
-```
-
-### Freight owns
-
-```text
-Q2 Active policy
-Q3 session lifecycle policy
+Rate limiting
+    ↓
+Authentication
+    ↓
+Q3 session lifecycle
+    ↓
+Q2 Active gate
+    ↓
 Node 1 authorization
-Generic application responses where required
-Correct proxy/IP handling
-Application-level security logging/observability
 ```
 
-### Future
+No layer may be skipped because another layer succeeded.
 
-Freight may add an application-level layered limiter if new evidence demonstrates that Supabase's controls are insufficient for the deployed architecture.
+## 12. Acceptance Tests
 
-## 15. Acceptance Tests
+The following are the required Q5 acceptance tests. Tests must use the project's actual Supabase configuration at implementation time rather than relying on guessed default numbers.
 
-Do not use arbitrary burst counts as deterministic tests because Supabase's IP-based controls use token-bucket behavior and may allow short bursts before sustained traffic is throttled.
-
-### Required tests
-
-1. Verify sustained login traffic beyond the documented/configured quota eventually produces `429`.
-2. Verify normal legitimate login succeeds while under the configured quota.
-3. Verify invalid credentials return generic authentication errors and do not reveal account existence.
-4. Verify repeated password-reset requests respect the documented/configured cooldown/quota.
-5. Verify repeated signup requests respect the documented/configured quota/cooldown.
-6. Verify repeated confirmation/OTP requests respect the documented/configured quota/cooldown.
-7. Verify token refresh is not accidentally subjected to an aggressive custom login limiter.
-8. Verify a rate-limited request cannot create a protected session/business operation.
-9. Verify a request that passes rate limiting still reaches Q2 Active enforcement where protected access is attempted.
-10. Verify Node 1 authorization still runs after authentication/Active checks.
-11. Verify password-reset/recovery responses do not disclose whether an account exists.
-12. Verify the deployed proxy path preserves the intended client-IP identity for Supabase rate limiting, using the supported `Sb-Forwarded-For` mechanism if required.
-13. Verify an untrusted client cannot directly choose the forwarded-IP value used for server-side rate limiting.
-14. Verify `429` responses are handled correctly by the application without converting them into misleading authentication or authorization errors.
+1. Sustained authentication traffic beyond the documented/configured quota eventually produces `429`.
+2. Normal legitimate login succeeds while under the configured quota.
+3. Invalid credentials return generic authentication errors and do not reveal account existence.
+4. Repeated password-reset requests respect the configured/documented cooldown/quota.
+5. Repeated signup requests respect the configured/documented quota/cooldown.
+6. Repeated confirmation/OTP requests respect the configured/documented quota/cooldown.
+7. Token refresh is not accidentally subjected to an aggressive custom login limiter.
+8. A rate-limited request cannot create a protected session/business operation.
+9. A request that passes rate limiting still reaches Q2 Active enforcement when protected access is attempted.
+10. Node 1 authorization still runs after authentication/Active checks.
+11. Password-reset/recovery responses do not disclose whether an account exists.
+12. The deployed proxy path preserves the intended client-IP identity for Supabase rate limiting, using the supported `Sb-Forwarded-For` mechanism if required.
+13. An untrusted client cannot directly choose the forwarded-IP value used for server-side rate limiting.
+14. `429` responses are handled correctly without converting them into misleading authentication or authorization errors.
 15. If a future custom limiter is introduced, separately test its concurrency, shared-state, outage, fail-open/fail-closed, and multi-instance behavior.
+16. If MFA is introduced later, verify the applicable Supabase MFA rate limits before enabling/accepting the feature.
 
-## 16. Remaining Unknowns / Required Verification
+## 13. Remaining Implementation Verification
 
-The following are genuine implementation-time verification items, not blockers to the MVP policy:
+These are implementation-time verification items, not unresolved policy decisions:
 
-1. Confirm the exact Next.js → Supabase Auth request path used by the current application.
-2. Confirm whether Supabase currently sees the actual end-user IP or the Next.js/proxy IP.
-3. If client-IP forwarding is required, verify the secure server-side mechanism using `Sb-Forwarded-For` and a supported secret API key.
-4. Confirm the project's currently configured Supabase Auth rate-limit values before implementation/testing.
-5. Confirm which authentication endpoints are actually exposed by Freight beyond the currently identified login/signup/recovery flows.
+1. Confirm the exact Next.js → Supabase Auth request path.
+2. Confirm whether Supabase sees the actual end-user IP or the Next.js/proxy IP.
+3. If client-IP forwarding is required, verify the secure `Sb-Forwarded-For` mechanism.
+4. Confirm the project's configured Supabase Auth rate limits before acceptance testing.
+5. Confirm which Auth endpoints are actually exposed by Freight.
 
-These must be verified before implementation acceptance testing, but they do not justify adding a custom rate-limiter dependency now.
+These checks do not authorize adding a custom rate limiter.
 
-## 17. Contract Changes Required
+## 14. Contract Requirements
 
-If Q5 is locked, the Node 2 contract should state:
+The Node 2 contract must eventually state:
 
-1. The MVP relies on Supabase Auth's native endpoint-specific rate limiting.
-2. Freight does not implement a custom distributed rate limiter unless a new evidence-based architecture decision authorizes it.
+1. MVP uses Supabase Auth's native endpoint-specific rate limiting.
+2. No custom distributed limiter unless a new evidence-based decision authorizes it.
 3. Hard account lockout is not the normal brute-force control.
 4. Authentication/recovery responses must not reveal account existence.
-5. `429 Too Many Requests` is the expected rate-limit response where Supabase returns it.
-6. The application must correctly handle the actual Next.js/proxy → Supabase IP path.
-7. Client-IP forwarding must use the supported secure server-side mechanism if required.
-8. Q5 rate limiting is an abuse-control layer and does not replace Q2 Active or Node 1 authorization.
-9. Exact platform rate-limit defaults are configuration evidence, not immutable application constants.
+5. `429` is handled as an Auth rate-limit response where returned by the platform.
+6. Secure client-IP forwarding must be used where required by the deployment architecture.
+7. Q5 does not replace Q2 Active or Node 1 authorization.
+8. Platform defaults are not immutable Freight application constants.
 
-Do not modify the Node 2 contract until Q5 is formally locked.
-
-## 18. Final Recommendation
+## 15. Final Locked Decision
 
 ```text
-Q5 = SUPABASE-NATIVE AUTH RATE LIMITING FOR MVP
+Q5 = 🔒 LOCKED
 
+Supabase-native Auth rate limiting for MVP.
 No custom Redis/Upstash limiter initially.
 No hard account lockout.
-Use generic authentication/recovery responses.
-Handle 429 correctly.
-Verify secure client-IP forwarding through the actual proxy architecture.
-Reassess layered application-level controls only if new evidence requires them.
+Generic authentication/recovery responses.
+Correct 429 handling.
+Secure client-IP forwarding where required.
+Future layered application controls require a new evidence-based decision.
 ```
 
-## 19. Final Status
+## 16. Project Status
 
 ```text
 Q1 = 🔒 LOCKED
 Q2 = 🔒 LOCKED
 Q3 = 🔒 LOCKED
 Q4 = 🔒 LOCKED
-Q5 = 🟡 INVESTIGATED — READY FOR INDEPENDENT REVIEW
+Q5 = 🔒 LOCKED
 Implementation = ⏸️ PAUSED
 ```
 
-Next workflow:
+Q1–Q5 must not be reopened unless new evidence creates a genuine conflict.
+
+## Next
+
+**Q6 — RLS / service-role boundary.**
+
+Follow the same workflow:
 
 ```text
-Corrected Q5 report
+Read authoritative records
         ↓
-Independent Claude review
+Investigate Q6
+        ↓
+Evidence
+        ↓
+Decision
+        ↓
+Independent review
         ↓
 Ayush approval
         ↓
-Q5 LOCK
+Q6 LOCK
         ↓
-Move to Q6
+Continue to Q7
 ```
 
-**Do not implement Q5 yet.**
+**No implementation is authorized by this Q5 lock.**
