@@ -112,12 +112,12 @@ Q2 Email-confirmation policy            🔒 LOCKED DECISION
 Q3 Session lifecycle / refresh          🔒 LOCKED DECISION
 Q4 One-user/one-identity                🔒 LOCKED DECISION
 Q5 Authentication rate limiting         🔒 LOCKED DECISION
+Q6 RLS / service-role boundary          🔒 LOCKED DECISION
 ```
 
 ### Current Node 2 decisions still requiring resolution
 
-1. RLS / service-role boundary
-2. Final acceptance-test matrix
+1. Final acceptance-test matrix
 
 ### Q2 — Email-confirmation policy
 
@@ -231,8 +231,6 @@ Claude verdict:
 APPROVE
 ```
 
-The minor forward notes from Claude are preserved for contract/implementation work: keep the `getUser()` refresh caveat explicit and make Origin-header validation explicit in the eventual acceptance test/implementation wording.
-
 Q3 is now locked at the architecture/policy level. Implementation remains paused.
 
 ### Q5 — Authentication rate limiting
@@ -270,6 +268,37 @@ Claude independently reviewed Q5 and approved the underlying policy after two fa
 
 Q5 does not replace Q2 Active enforcement, Q3 session lifecycle, or Node 1 authorization.
 
+### Q6 — RLS / service-role boundary
+
+**STATUS → 🔒 LOCKED FOR NODE 2**
+
+Final policy:
+
+```text
+Strict RLS + Privileged Server Boundary Pattern
+```
+
+Normal user operations use an authenticated user-scoped client and RLS. Privileged operations that genuinely require RLS bypass use a trusted server-only path with explicit authentication/authorization and narrowly scoped `service_role` access.
+
+The locked Q6 record is:
+
+`03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Report_Q6_RLS_Service_Role_Boundary.md`
+
+The dedicated lock record is:
+
+`01_BRAIN_HANDOFFS/Grok/Chat12_Node2_Q6_RLS_Service_Role_Boundary_LOCK.md`
+
+Grok independently reviewed Q6 and returned:
+
+```text
+APPROVE
+Remaining corrections: None
+```
+
+Claude's repeated review output was inconclusive because it continued reporting an older/stale version that did not match the corrected repository record. Claude is recorded as temporarily unavailable/inconclusive, not as an approval.
+
+Q6 remains an architecture/policy lock only. Implementation-time verification still includes table-by-table RLS audit, FORCE RLS/table-owner verification, service-role usage audit, SECURITY DEFINER trigger/function audit, approved import allowlist enforcement, and acceptance testing.
+
 ## Signup / onboarding evidence
 
 The targeted investigation established that the current signup flow performs Auth User creation and application identity creation as separate operations rather than one database transaction.
@@ -289,12 +318,10 @@ No implementation fix has been authorized from this evidence.
 
 ```text
 Q5 authentication rate limiting       → 🔒 LOCKED
-Q6 RLS / service-role boundary        → 🔵 OPEN / INVESTIGATION NEXT
+Q6 RLS / service-role boundary        → 🔒 LOCKED
 IDOR / API authorization              → 🔒 LOCKED AS NODE 1 CONTRACT
 authentication implementation          → PAUSED
 ```
-
-The existing historical RLS investigation evidence is not itself a Q6 lock. Q6 must determine the final **RLS / service-role boundary policy** and reconcile it with the current architecture before implementation resumes.
 
 ## Active Roadmap Position
 
@@ -323,7 +350,7 @@ The Q2 lock and transition to Q3 are recorded in:
 
 `00_PROJECT_CONTROL/CHECKPOINTS/Chat12_Day5_Node2_Q2_Lock_Checkpoint.md`
 
-Q3 and Q5 locks are recorded by their finalized decision reports and Claude approval/review records. Dedicated lock checkpoints may be created as required by the project-control workflow.
+Q3, Q5, and Q6 locks are recorded by their finalized decision reports and independent review/lock records.
 
 ## Subnode Rule
 
@@ -382,28 +409,8 @@ Project-control records:
 
 ## Next Action
 
-**NEXT: Q6 — RLS / service-role boundary.**
+**NEXT: Final Node 2 acceptance-test matrix / remaining Node 2 decision work.**
 
-Do not resume authentication implementation.
+Do not resume authentication implementation yet.
 
-Q6 must be investigated and decided through the same workflow:
-
-```text
-Read authoritative records
-        ↓
-Investigate Q6
-        ↓
-Evidence
-        ↓
-Decision
-        ↓
-Independent review where appropriate
-        ↓
-Ayush approval
-        ↓
-Record Q6 decision
-        ↓
-Continue to the next unresolved Node 2 question
-```
-
-Q1, Q2, Q3, Q4, and Q5 are now locked decisions and must not be reopened unless new evidence creates a genuine conflict.
+Q1, Q2, Q3, Q4, Q5, and Q6 are locked decisions and must not be reopened unless new evidence creates a genuine conflict.
