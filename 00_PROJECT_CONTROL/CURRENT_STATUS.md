@@ -1,6 +1,6 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Aug 25, 2026
+**Last updated:** Aug 26, 2026
 
 ## Where we are
 
@@ -98,26 +98,70 @@ Status:
 DRAFT / NOT LOCKED
 ```
 
-Claude independently reviewed the draft and found it **NOT READY FOR LOCK** because several load-bearing decisions remain unresolved.
+Claude independently reviewed the Node 2 contract and found it not ready for full lock because several load-bearing decisions remain unresolved.
 
-### Resolved evidence stage
+### Resolved evidence / decisions
 
 ```text
 Broad Node 2 investigation              ✅ COMPLETE
 Remaining auth evidence investigation  ✅ COMPLETE
 Signup/onboarding investigation         ✅ COMPLETE
-Claude independent contract review      ✅ COMPLETE
+Claude Q1/Q4 independent review         ✅ COMPLETE
+Q1 Signup consistency                   🔒 LOCKED DECISION
+Q4 One-user/one-identity                🔒 LOCKED DECISION
+Q2 Email-confirmation policy             🔒 LOCKED DECISION
 ```
 
 ### Current Node 2 decisions still requiring resolution
 
-1. Signup / onboarding consistency
-2. Email-confirmation policy
-3. Session lifecycle / refresh
-4. One-user → one-identity enforcement mechanism
-5. Authentication rate-limiting policy
-6. RLS / service-role boundary for the Node 2 contract
-7. Final acceptance-test matrix
+1. Session lifecycle / refresh
+2. Authentication rate limiting
+3. RLS / service-role boundary
+4. Final acceptance-test matrix
+
+### Q2 — Email-confirmation policy
+
+**STATUS → 🔒 DECIDED / LOCKED FOR NODE 2**
+
+Final policy:
+
+```text
+Email confirmation is required before the normal authenticated
+user onboarding/evidence-submission flow and before Active/Usable access.
+```
+
+The verification stages are explicitly separated:
+
+```text
+1. Evidence submission
+   → user action; requires confirmed authenticated session
+
+2. Verifier review
+   → authorized verifier action; does not require applicant session
+
+3. Trusted-role assignment
+   → server-controlled result of approved verification
+```
+
+Active/usable access requires all three:
+
+```text
+email_confirmed = true
+AND verification_status = VERIFIED
+AND trusted_role IS NOT NULL
+```
+
+`UNCONFIRMED + VERIFIED + trusted_role` is an allowed defensive state after an email-change/reconfirmation event, but it is always inactive and cannot access protected business operations.
+
+The final decision report is:
+
+`03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Report_Email_Confirmation_Policy.md`
+
+Claude's independent review is:
+
+`03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Report_Claude_Review_Q2_Email_Confirmation_Policy.md`
+
+Q2 was approved after the Claude-identified precision corrections were incorporated.
 
 ### Signup / onboarding evidence
 
@@ -140,12 +184,12 @@ No implementation fix has been authorized from this evidence.
 RLS investigation                    → CLOSED / VERIFIED
 Rate-limiting architecture            → DECIDED
 IDOR / API authorization              → LOCKED AS NODE 1 CONTRACT
-Authentication implementation          → PAUSED
+authentication implementation          → PAUSED
 ```
 
 RLS should not be reopened unless new contradictory evidence appears.
 
-Authentication implementation remains paused until the Node 2 contract is designed, independently reviewed, and locked.
+Authentication implementation remains paused until the complete Node 2 contract is designed, independently reviewed, and locked.
 
 ## Active Roadmap Position
 
@@ -162,15 +206,17 @@ Node 6 Security + Evidence           → FUTURE
 Node 7 AI + Final Integration + Demo → FUTURE
 ```
 
-**No roadmap rewrite is made by this checkpoint.**
+**No roadmap rewrite is made by this update.**
 
 ## Checkpoint
 
-Chat11 checkpoint:
+Chat12 Day 5 checkpoint remains the historical continuation record:
 
-`00_PROJECT_CONTROL/CHECKPOINTS/Chat11_Day4_Node2_Checkpoint.md`
+`00_PROJECT_CONTROL/CHECKPOINTS/Chat12_Day5_Node2_Checkpoint.md`
 
-The checkpoint preserves the transition from the Node 1 lock into active Node 2 contract resolution without treating the Node 2 draft as locked.
+The Q2 lock and transition to Q3 are recorded in:
+
+`00_PROJECT_CONTROL/CHECKPOINTS/Chat12_Day5_Node2_Q2_Lock_Checkpoint.md`
 
 ## Subnode Rule
 
@@ -229,6 +275,28 @@ Project-control records:
 
 ## Next Action
 
-Do **not** resume authentication implementation.
+**NEXT: Q3 — Session lifecycle / refresh.**
 
-The next project action is to resolve the Node 2 signup/onboarding consistency decision from the verified investigation evidence, then resolve the remaining Node 2 contract decisions before the contract is locked.
+Do not resume authentication implementation.
+
+Q3 must be investigated and decided through the same workflow:
+
+```text
+Read authoritative records
+        ↓
+Investigate Q3
+        ↓
+Evidence
+        ↓
+Decision
+        ↓
+Independent review where appropriate
+        ↓
+Ayush approval
+        ↓
+Record Q3 decision
+        ↓
+Continue to the next unresolved Node 2 question
+```
+
+Q1, Q2, and Q4 are now locked decisions and must not be reopened unless new evidence creates a genuine conflict.
