@@ -108,16 +108,16 @@ Remaining auth evidence investigation  ✅ COMPLETE
 Signup/onboarding investigation         ✅ COMPLETE
 Claude Q1/Q4 independent review         ✅ COMPLETE
 Q1 Signup consistency                   🔒 LOCKED DECISION
-Q2 Email-confirmation policy             🔒 LOCKED DECISION
-Q3 Session lifecycle / refresh           🔒 LOCKED DECISION
+Q2 Email-confirmation policy            🔒 LOCKED DECISION
+Q3 Session lifecycle / refresh          🔒 LOCKED DECISION
 Q4 One-user/one-identity                🔒 LOCKED DECISION
+Q5 Authentication rate limiting         🔒 LOCKED DECISION
 ```
 
 ### Current Node 2 decisions still requiring resolution
 
-1. Authentication rate limiting
-2. RLS / service-role boundary
-3. Final acceptance-test matrix
+1. RLS / service-role boundary
+2. Final acceptance-test matrix
 
 ### Q2 — Email-confirmation policy
 
@@ -235,7 +235,42 @@ The minor forward notes from Claude are preserved for contract/implementation wo
 
 Q3 is now locked at the architecture/policy level. Implementation remains paused.
 
-### Signup / onboarding evidence
+### Q5 — Authentication rate limiting
+
+**STATUS → 🔒 DECIDED / LOCKED FOR NODE 2**
+
+Final MVP policy:
+
+```text
+Supabase-native Auth rate limiting
++
+no custom Redis/Upstash limiter initially
++
+no hard account lockout
++
+generic authentication/recovery responses
++
+secure client-IP forwarding where required
++
+correct 429 handling
+```
+
+Supabase's Auth controls remain the primary authentication abuse-control mechanism for the MVP. Exact platform defaults are configuration details and must be re-verified at implementation time; they are not hard-coded Freight architecture constants.
+
+The locked Q5 record is:
+
+`03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Report_Q5_Authentication_Rate_Limiting.md`
+
+Claude independently reviewed Q5 and approved the underlying policy after two factual corrections were incorporated:
+
+```text
+1. Correct the inaccurate sign-in/sign-up rate-limit number.
+2. Explicitly acknowledge separate MFA challenge/verify rate limits; MFA remains outside the current MVP scope.
+```
+
+Q5 does not replace Q2 Active enforcement, Q3 session lifecycle, or Node 1 authorization.
+
+## Signup / onboarding evidence
 
 The targeted investigation established that the current signup flow performs Auth User creation and application identity creation as separate operations rather than one database transaction.
 
@@ -253,15 +288,13 @@ No implementation fix has been authorized from this evidence.
 ## Security / Authentication State
 
 ```text
-RLS investigation                    → CLOSED / VERIFIED
-Rate-limiting architecture            → DECIDED
-IDOR / API authorization              → LOCKED AS NODE 1 CONTRACT
+Q5 authentication rate limiting       → 🔒 LOCKED
+Q6 RLS / service-role boundary        → 🔵 OPEN / INVESTIGATION NEXT
+IDOR / API authorization              → 🔒 LOCKED AS NODE 1 CONTRACT
 authentication implementation          → PAUSED
 ```
 
-RLS should not be reopened unless new contradictory evidence appears.
-
-Authentication implementation remains paused until the complete Node 2 contract is designed, independently reviewed, and locked.
+The existing historical RLS investigation evidence is not itself a Q6 lock. Q6 must determine the final **RLS / service-role boundary policy** and reconcile it with the current architecture before implementation resumes.
 
 ## Active Roadmap Position
 
@@ -271,7 +304,7 @@ The active execution roadmap remains the existing 7-Node roadmap in `ROADMAP.md`
 Historical Core MVP                  → IMPLEMENTED / VERIFIED
 Node 1 Product + Authorization       → 🔒 COMPLETE / LOCKED
 Node 2 Authentication + Identity    → 🔵 ACTIVE DESIGN / NOT LOCKED
-Node 3 Company Trip Creation        → FUTURE
+Node 3 Company Trip Creation         → FUTURE
 Node 4 Driver Marketplace            → FUTURE
 Node 5 Whole Delivery Tracking       → FUTURE
 Node 6 Security + Evidence           → FUTURE
@@ -290,7 +323,7 @@ The Q2 lock and transition to Q3 are recorded in:
 
 `00_PROJECT_CONTROL/CHECKPOINTS/Chat12_Day5_Node2_Q2_Lock_Checkpoint.md`
 
-The Q3 lock is now recorded by the finalized Q3 decision report and Claude approval record. A dedicated Q3 lock checkpoint may be created as the next recordkeeping step if required by the project-control workflow.
+Q3 and Q5 locks are recorded by their finalized decision reports and Claude approval/review records. Dedicated lock checkpoints may be created as required by the project-control workflow.
 
 ## Subnode Rule
 
@@ -349,16 +382,16 @@ Project-control records:
 
 ## Next Action
 
-**NEXT: Q5 — Authentication rate limiting.**
+**NEXT: Q6 — RLS / service-role boundary.**
 
 Do not resume authentication implementation.
 
-Q5 must be investigated and decided through the same workflow:
+Q6 must be investigated and decided through the same workflow:
 
 ```text
 Read authoritative records
         ↓
-Investigate Q5
+Investigate Q6
         ↓
 Evidence
         ↓
@@ -368,9 +401,9 @@ Independent review where appropriate
         ↓
 Ayush approval
         ↓
-Record Q5 decision
+Record Q6 decision
         ↓
 Continue to the next unresolved Node 2 question
 ```
 
-Q1, Q2, Q3, and Q4 are now locked decisions and must not be reopened unless new evidence creates a genuine conflict.
+Q1, Q2, Q3, Q4, and Q5 are now locked decisions and must not be reopened unless new evidence creates a genuine conflict.
