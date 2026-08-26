@@ -1,6 +1,6 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Aug 26, 2026 — Hackathon Day 5 CLOSED
+**Last updated:** Aug 27, 2026 — Chat13 / Day 5 reconciliation checkpoint
 
 ## Current Project Position
 
@@ -39,9 +39,10 @@ The lock covers the identity model, Company/Driver roles, contextual trip relati
 ```text
 Decision / architecture stage → 🔒 COMPLETE
 Implementation stage         → ⏸️ NOT STARTED / NEXT
+Current reconciliation       → ✅ SUBSTANTIALLY COMPLETE / BASELINE DECIDED
 ```
 
-The Node 2 decision sequence is now complete:
+The Node 2 decision sequence is complete:
 
 ```text
 Q1 Signup consistency             🔒 LOCKED
@@ -50,14 +51,10 @@ Q3 Session lifecycle / refresh    🔒 LOCKED
 Q4 One-user / one-identity        🔒 LOCKED
 Q5 Authentication rate limiting   🔒 LOCKED
 Q6 RLS / service-role boundary    🔒 LOCKED
-Q7 Final acceptance-test matrix   🔒 APPROVED / READY TO LOCK
+Q7 Final acceptance-test matrix   🔒 APPROVED
 ```
 
-### Q1–Q6
-
-Q1–Q6 are locked decisions and must not be reopened unless new evidence creates a genuine architectural conflict.
-
-Key locked Node 2 invariants include:
+### Locked Node 2 invariants
 
 ```text
 1 Auth User ↔ exactly 1 application identity
@@ -77,31 +74,28 @@ RLS = normal database row-isolation boundary
 service_role = server-only privileged exception
 ```
 
-Q6 was independently approved by Grok. Claude's repeated review was inconclusive because it continued returning stale/mismatched review output; it is recorded as temporarily unavailable/inconclusive rather than as an approval.
+Q3 is formally treated as locked based on the Claude-approved report:
+
+`03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Report_Q3_Session_Lifecycle_Refresh_Claude_approved.md`
+
+Claude verdict:
+
+```text
+APPROVE
+```
+
+Q6 independent review evidence remains:
+
+```text
+Grok → APPROVE
+Claude → temporarily inconclusive/unavailable due to stale/mismatched review output
+```
 
 Q6 lock record:
 
 `01_BRAIN_HANDOFFS/Grok/Chat12_Node2_Q6_RLS_Service_Role_Boundary_LOCK.md`
 
-### Q7 — Final Acceptance-Test Matrix
-
-**Status → ✅ CLAUDE APPROVED / READY FOR LOCK**
-
-Q7 converts the locked Q1–Q6 decisions into an implementation acceptance matrix covering:
-
-- signup atomicity and one-to-one identity;
-- email confirmation + live Active gate;
-- session/refresh/logout/CSRF;
-- authentication rate limiting and 429 handling;
-- RLS and service-role boundary;
-- FORCE RLS/table-owner handling;
-- privileged audit logging;
-- SECURITY DEFINER verification;
-- service-role import allowlist/CI enforcement;
-- RLS vs Node 1 authorization separation;
-- wrong-role, stale-session, IDOR, and cross-user cases.
-
-Claude's independent review record:
+Q7 independent review:
 
 `01_BRAIN_HANDOFFS/Claude/Chat12_Node2_Report_Q7_Final_Acceptance_Test_Matrix_claude_approved.md`
 
@@ -111,28 +105,72 @@ Claude verdict:
 APPROVE
 ```
 
-The Q7 report is ready for the final lock record. Q7 does not reopen Q1–Q6.
+## Chat13 — Current Codebase Reconciliation
 
-## Day 5 — Node 2 Decision Closure
+A dedicated reconciliation was performed before implementation because the localhost code and the deployed/GitHub baseline were not initially identical.
 
-Hackathon Day 5 is now **CLOSED**.
+Application source repository under investigation:
 
-Completed during Day 5:
+`ayush22cp008/freight_hackathon`
 
-1. Completed Q6 correction cycle and recorded Grok independent approval.
-2. Created the Q6 lock record under `01_BRAIN_HANDOFFS/Grok/`.
-3. Updated project-control status for the Q6 lock.
-4. Investigated Q7 as the final Node 2 acceptance-test question.
-5. Corrected Q7 acceptance tests so they match the locked Q2, Q5, and Q6 policies.
-6. Added explicit Q6 acceptance coverage for FORCE RLS, audit logging, SECURITY DEFINER, service-role allowlist/CI, and compromise response.
-7. Claude independently reviewed the corrected Q7 matrix and returned `APPROVE`.
-8. Node 2 decision/architecture work is now complete; authentication implementation is the next execution phase.
+Production URL recorded by the source repository:
 
-## Authentication / Verification Implementation Boundary
+`https://freighthackathon.vercel.app`
 
-Authentication implementation is **not yet complete**.
+The reconciliation record is:
 
-The implementation phase must include the minimum verification capability required by the locked identity model. Document verification cannot operate without an authorized verifier/admin mechanism. The MVP should provide a minimum verifier interface/workflow for:
+`05_DEBUGGING/investigations/Chat13_Node2_Report_Vercel_GitHub_Localhost_vs_Locked_Design.md`
+
+### Reconciliation conclusion
+
+The previous localhost-only authentication experiment introduced:
+
+```text
+- auto-generated Driver Code
+- Driver ID / Driver Code login
+- Driver ID → email lookup → Supabase authentication proxy
+```
+
+The investigation found that this experimental login design should **not** become the Node 2 target because it adds unnecessary login indirection and creates security/identity-enumeration concerns.
+
+The safer baseline for Node 2 implementation is the existing GitHub/Vercel Email + Password authentication flow, with the locked Node 2 architecture implemented on top.
+
+Important distinction:
+
+```text
+GitHub/Vercel baseline
+→ preserve as starting point
+
+Experimental localhost Driver-ID login
+→ do not push as Node 2 implementation
+```
+
+The investigation found the following Node 2 gaps in the current baseline:
+
+```text
+Q1 atomic Auth User → Freight Identity creation → MISSING
+Q2 live Active Gate → MISSING
+Q4 generic Freight Identity anchor → MISSING
+Q6 current service-role signup boundary → REQUIRES REWORK
+```
+
+The existing Supabase SSR/Middleware foundation and native Supabase Auth rate limiting are retained as the starting points for Q3/Q5 implementation, subject to the locked acceptance criteria.
+
+### Reconciliation safety rule
+
+Do not blindly reset/delete local work until the actual local working-tree state is confirmed.
+
+Do not push the experimental Driver-ID login changes.
+
+Do not apply the experimental Driver-Code migration as part of the current Node 2 baseline.
+
+The Vercel deployment commit could not be directly verified from the available environment during reconciliation and therefore remains `UNKNOWN` unless later confirmed from deployment metadata.
+
+## Node 2 Implementation Boundary
+
+Authentication implementation must preserve the locked Node 2 decisions and include the minimum verification capability required for document verification.
+
+Minimum verifier workflow:
 
 ```text
 Authorized verifier
@@ -146,14 +184,14 @@ Approve / Reject + reason
 Server-controlled verification_status / trusted_role update
 ```
 
-This is a minimum verification capability, not permission to expand into a full unrelated admin dashboard.
+This is a minimum verifier interface/workflow, not permission to create an unrelated full admin dashboard.
 
 ## Active Roadmap Position
 
 ```text
 Historical Core MVP                  → IMPLEMENTED / VERIFIED
 Node 1 Product + Authorization       → 🔒 COMPLETE / LOCKED
-Node 2 Authentication + Identity    → 🟡 DECISIONS COMPLETE / IMPLEMENTATION NEXT
+Node 2 Authentication + Identity    → 🟡 IMPLEMENTATION NEXT
 Node 3 Company Trip Creation         → FUTURE
 Node 4 Driver Marketplace            → FUTURE
 Node 5 Whole Delivery Tracking       → FUTURE
@@ -180,11 +218,9 @@ Day 1 → Core MVP foundation / implementation       ✅
 Day 2 → Core MVP completion                        ✅
 Day 3 → Security/product rework checkpoint         ✅
 Day 4 → Node 2 investigation/contract work         ✅
-Day 5 → Node 2 Q1–Q7 decision closure              ✅
+Day 5 → Node 2 Q1–Q7 decision closure + codebase reconciliation ✅
 Day 6 → Node 2 authentication implementation       NEXT
 ```
-
-Node 2 implementation is expected to remain within its roadmap allocation, with implementation + acceptance targeted for the remaining Node 2 window.
 
 ## Execution Bridge
 
@@ -200,6 +236,14 @@ Implementation reports:
 
 `03_IMPLEMENTATION/implementation_reports/`
 
+Investigations:
+
+`05_DEBUGGING/investigations/`
+
+Architecture records:
+
+`02_ARCHITECTURE/`
+
 Project-control records:
 
 `00_PROJECT_CONTROL/`
@@ -213,16 +257,20 @@ Q3 🔒
 Q4 🔒
 Q5 🔒
 Q6 🔒
-Q7 ✅ CLAUDE APPROVED / READY FOR LOCK
+Q7 ✅ APPROVED
 
 Node 2 decision stage → ✅ COMPLETE
-Node 2 implementation  → 🔨 NEXT
+Node 2 codebase reconciliation → ✅ COMPLETE FOR BASELINE DECISION
+Node 2 implementation → 🔨 NEXT
 
-Hackathon Day 5 → ✅ CLOSED
+Day 5 → ✅ CLOSED
+Day 6 → Node 2 implementation
 ```
 
 ## Next Action
 
-**Start Node 2 Authentication + Identity implementation on Hackathon Day 6.**
+**Begin Node 2 Authentication + Identity implementation from the clean GitHub/Vercel baseline.**
+
+Before implementation execution, confirm the local working-tree state and synchronize local source with the GitHub `main` baseline without pushing the rejected Driver-ID experiment. Then create the Chat13 Node 2 implementation bridge prompt and proceed through Antigravity → implementation report → build/test evidence → Ayush manual verification.
 
 Do not reopen Q1–Q7 unless new evidence creates a genuine conflict. Do not move to Node 3 until Node 2 implementation and acceptance are complete.
