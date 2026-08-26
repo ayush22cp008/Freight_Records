@@ -1,10 +1,10 @@
-# Hackathon Day 1–Day 4 — Work Progress Report
+# Hackathon Day 1–Day 5 — Work Progress Report
 
 **Project:** Freight — AI Builders Hackathon  
 **Owner:** Ayush  
-**Report purpose:** Maintain the consolidated project-progress record across Hackathon Work Day 1, Day 2, Day 3, and Day 4, including implementation progress, investigations, architecture decisions, and the current execution plan.
+**Report purpose:** Maintain the consolidated project-progress record across Hackathon Work Day 1 through Day 5, including implementation progress, investigations, architecture decisions, and the current execution plan.
 
-> **Current status:** Hackathon Work Day 4 is now **CLOSED**. The original 2-day Core MVP implementation period is complete, Day 3 established the security/product rework checkpoint, and Day 4 completed the Node 2 investigation/evidence phase and moved the project into Node 2 contract decision work.
+> **Current status:** Hackathon Work Day 5 is now **CLOSED**. Day 5 completed the remaining Node 2 decision/acceptance work. Node 2 authentication implementation has **not** yet started and is the next execution phase.
 
 ---
 
@@ -629,50 +629,6 @@ ChatGPT architecture/product handoffs belong in:
 01_BRAIN_HANDOFFS/ChatGPT/
 ```
 
-## 23. Current Project Status at End of Day 3
-
-```text
-Core MVP implementation          → ✅ COMPLETE
-Vercel production deployment     → ✅ LIVE
-RLS investigation                → ✅ CLOSED / VERIFIED
-Rate-limiting architecture       → ✅ DECIDED
-IDOR/API authorization            → 🔴 OPEN
-Product model                    → ✅ CLARIFIED
-Company/receiver role model      → ✅ CLARIFIED
-Atomic acceptance requirement    → ✅ REQUIRED / DESIGN NEXT
-Full delivery goal              → ✅ CLARIFIED
-Authentication implementation     → ⏸ PAUSED
-Node-based roadmap               → ✅ CREATED / BASELINE
-Node 1 rework                    → 🔵 NEXT
-```
-
-## 24. Day 3 Closing Decision
-
-**Do not start authentication implementation immediately after Day 3.**
-
-The next task is **Node 1 — Product + Authorization Rework**.
-
-The objective is to lock the updated product/data/role/permission model and only then resume authentication implementation against that model.
-
-The historical Core MVP remains preserved. This Day 3 update is the new post-hackathon execution baseline.
-
----
-
-# Historical Hackathon Freeze
-
-The originally implemented Core MVP remains the historical baseline:
-
-- Driver authentication
-- Arrival → Check-in → Departure
-- GPS + server timestamps
-- Photo evidence
-- Immutable events
-- Timeline
-- AI Evidence Summary
-- Production Vercel deployment
-
-The Day 3 rework **does not erase or invalidate that work**. It changes the direction of the next implementation phase toward the clarified company/driver/receiver marketplace and full-delivery model.
-
 ---
 
 # Hackathon Work Day 4 — COMPLETE / CHECKPOINT
@@ -681,7 +637,7 @@ The Day 3 rework **does not erase or invalidate that work**. It changes the dire
 
 Day 4 focused on transitioning from the locked Node 1 product/authorization model into the Node 2 Authentication + Identity design and investigation phase.
 
-## 25. Node 1 Final Lock Confirmation
+## 23. Node 1 Final Lock Confirmation
 
 **Status: 🔒 COMPLETE / LOCKED**
 
@@ -689,7 +645,7 @@ Day 4 focused on transitioning from the locked Node 1 product/authorization mode
 - Node 1 product, identity, role, authorization, IDOR, concurrency, lifecycle, and authentication requirements are governed by that final lock.
 - Claude independent final review was recorded as `APPROVE — NO BLOCKING FINDINGS`.
 
-## 26. Node 2 — Authentication + Identity Investigation
+## 24. Node 2 — Authentication + Identity Investigation
 
 **Status: ✅ INVESTIGATION COMPLETE**
 
@@ -715,7 +671,7 @@ Evidence areas covered:
 - Local vs committed/pushed source state.
 - Signup/onboarding transaction boundaries and failure states.
 
-## 27. Node 2 Authentication + Identity Contract Draft
+## 25. Node 2 Authentication + Identity Contract Draft
 
 **Status: 🔵 DRAFT / NOT LOCKED**
 
@@ -725,7 +681,7 @@ Created:
 
 The draft defines the proposed authentication/application-identity contract required to satisfy the locked Node 1 model.
 
-## 28. Claude Independent Contract Review
+## 26. Claude Independent Contract Review
 
 **Status: ✅ COMPLETE**
 
@@ -737,7 +693,7 @@ Review result:
 NOT READY FOR LOCK
 ```
 
-Remaining load-bearing decisions include:
+Remaining load-bearing decisions included:
 
 - signup/onboarding consistency;
 - email-confirmation policy;
@@ -747,7 +703,7 @@ Remaining load-bearing decisions include:
 - RLS/service-role boundary;
 - final acceptance-test matrix.
 
-## 29. Signup / Onboarding Consistency Investigation
+## 27. Signup / Onboarding Consistency Investigation
 
 **Status: ✅ INVESTIGATION COMPLETE**
 
@@ -772,7 +728,7 @@ The investigation also identified the reverse orphan risk associated with the cu
 
 No implementation fix was authorized from this evidence.
 
-## 30. Day 4 Project Checkpoint
+## 28. Day 4 Project Checkpoint
 
 Checkpoint created:
 
@@ -786,21 +742,130 @@ Node 2 → ACTIVE DESIGN / NOT LOCKED
 Authentication implementation → PAUSED
 ```
 
-## Day 4 Final Status
+### Day 4 Final Status
 
 **✅ COMPLETE — checkpoint recorded**
 
-Node 2 implementation remains paused until the Authentication + Identity Contract is resolved, independently reviewed, and locked.
+---
+
+# Hackathon Work Day 5 — COMPLETE / NODE 2 DECISION CLOSURE
+
+**Status: ✅ CLOSED — Day 5 completed the Node 2 decision/acceptance stage.**
+
+Day 5 focused on completing the remaining Node 2 questions, locking the architecture/policy decisions, and converting those decisions into a final acceptance-test matrix. No authentication implementation was started on Day 5.
+
+## 29. Q6 — RLS / Service-Role Boundary Correction + Lock
+
+**Status: 🔒 LOCKED**
+
+Completed:
+
+- Corrected the Q6 investigation report to make all required controls explicit.
+- Required `FORCE ROW LEVEL SECURITY` / table-owner bypass handling.
+- Required service-role compromise rotation/restriction procedure.
+- Required audit logging for security-sensitive privileged mutations.
+- Required separate RLS-only and Node 1 authorization test boundaries.
+- Required `SECURITY DEFINER` trigger/function security verification.
+- Required service-role import allowlist enforced by lint/CI.
+- Grok independently reviewed the corrected Q6 policy and returned `APPROVE` with no remaining corrections.
+- Created the dedicated lock record:
+
+`01_BRAIN_HANDOFFS/Grok/Chat12_Node2_Q6_RLS_Service_Role_Boundary_LOCK.md`
+
+Q6 remains an architecture/policy lock. Implementation-time verification is still required later.
+
+## 30. Q7 — Final Acceptance-Test Matrix
+
+**Status: ✅ CLAUDE APPROVED / READY FOR LOCK**
+
+Created and corrected:
+
+`03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Report_Q7_Final_Acceptance_Test_Matrix.md`
+
+The matrix covers:
+
+- Q1 signup atomicity and one-to-one identity;
+- Q2 email confirmation and the live DB Active gate;
+- Q3 session lifecycle, refresh, logout, CSRF, and middleware scope;
+- Q5 Supabase Auth native rate limiting, 429 handling, and trusted client-IP forwarding;
+- Q6 RLS/service-role boundary, FORCE RLS/table-owner handling, privileged audit logging, SECURITY DEFINER review, service-role allowlist/CI, and compromise response;
+- RLS vs Node 1 authorization separation;
+- wrong-role, stale-session, IDOR, and cross-user cases;
+- Node 2 minimum completion gate and evidence requirements.
+
+Claude independently reviewed the corrected Q7 matrix and returned:
+
+```text
+APPROVE
+```
+
+Claude's review record:
+
+`01_BRAIN_HANDOFFS/Claude/Chat12_Node2_Report_Q7_Final_Acceptance_Test_Matrix_claude_approved.md`
+
+Q7 is therefore **ready for the final lock record** and does not reopen Q1–Q6.
+
+## 31. Node 2 Decision Stage — CLOSED
+
+At the end of Hackathon Day 5:
+
+```text
+Q1 🔒
+Q2 🔒
+Q3 🔒
+Q4 🔒
+Q5 🔒
+Q6 🔒
+Q7 ✅ APPROVED
+
+Node 2 decision/architecture stage → ✅ COMPLETE
+Authentication implementation     → 🔨 NEXT
+```
+
+The locked Node 2 policy includes the minimum verifier/admin capability needed for document verification:
+
+```text
+Authorized verifier
+      ↓
+Pending verification submissions
+      ↓
+Review submitted documents
+      ↓
+Approve / Reject + reason
+      ↓
+Server-controlled verification_status / trusted_role update
+```
+
+This is a minimum verification workflow, not a commitment to build a large unrelated admin dashboard inside Node 2.
+
+## 32. Day 5 Final Status
+
+```text
+Hackathon Day 5              → ✅ CLOSED
+Node 1                       → 🔒 COMPLETE
+Node 2 decisions             → ✅ COMPLETE
+Q1–Q6                        → 🔒 LOCKED
+Q7                           → ✅ CLAUDE APPROVED / READY FOR LOCK
+Authentication implementation → ⏸ NOT STARTED
+
+NEXT → Hackathon Day 6:
+       Node 2 Authentication + Identity implementation
+```
 
 ---
 
-## Report Status
+## Consolidated Hackathon Status
 
-**Hackathon Work Day 1: ✅ COMPLETE**  
-**Hackathon Work Day 2: ✅ COMPLETE / CLOSED**  
-**Hackathon Work Day 3: ✅ COMPLETE / CLOSED**  
-**Hackathon Work Day 4: ✅ COMPLETE / CLOSED**  
-**Core MVP: ✅ COMPLETE**  
-**Node 1: 🔒 COMPLETE / LOCKED**  
-**Node 2: 🔵 ACTIVE DESIGN / NOT LOCKED**  
-**Authentication implementation: ⏸ PAUSED**
+```text
+Day 1 → COMPLETE
+Day 2 → COMPLETE
+Day 3 → COMPLETE
+Day 4 → COMPLETE
+Day 5 → COMPLETE
+
+Core MVP → ✅ COMPLETE / VERIFIED
+Node 1   → 🔒 COMPLETE / LOCKED
+Node 2   → 🟡 DECISION STAGE COMPLETE / IMPLEMENTATION NEXT
+```
+
+**Next execution phase:** Node 2 Authentication + Identity implementation on Hackathon Day 6.

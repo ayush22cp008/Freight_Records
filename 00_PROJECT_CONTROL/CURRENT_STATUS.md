@@ -1,61 +1,20 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Aug 26, 2026
+**Last updated:** Aug 26, 2026 — Hackathon Day 5 CLOSED
 
-## Where we are
+## Current Project Position
 
 **Historical Core MVP — IMPLEMENTED / VERIFIED.**
 
-The original fixed single-facility, 3-event Core MVP remains completed and preserved:
+The original Core MVP remains preserved and verified:
 
 - Login → Trip Hub → Arrival → Check-in → Departure → Timeline → AI Evidence Summary.
-- Trip Hub remains the workflow state source of truth for the original Core MVP.
-- Arrival, Check-in, and Departure are immutable evidence events with GPS + server timestamp.
-- Arrival and Departure require photo evidence; Check-in remains optional-photo under the original Core MVP scope.
-- Timeline displays recorded events chronologically with evidence.
-- AI Evidence Summary interprets deterministic Arrival + Check-in + Departure evidence.
-- AI summary truncation fix was implemented and browser-verified.
-- `npm run build` passes.
+- GPS + authoritative server timestamps.
+- Photo evidence and immutable event records.
+- AI evidence-grounded summary.
+- Production deployment and build verification were completed earlier.
 
-The Core MVP is **not being discarded**. It is the verified foundation being extended into the broader product model defined by the active 7-Node roadmap.
-
-## Current Product Direction
-
-The active product model remains:
-
-```text
-Company creates / publishes trip
-        ↓
-Eligible drivers see opportunity
-        ↓
-Driver evaluates trip economics/details
-        ↓
-Driver accepts
-        ↓
-Atomic first-valid acceptance wins
-        ↓
-Trip locks to winning driver
-        ↓
-Pickup
-        ↓
-Arrival / Check-in / Load / Depart
-        ↓
-In transit
-        ↓
-Destination / receiving company
-        ↓
-Arrival / Check-in / Unload / Delivery confirmation
-        ↓
-Delivery completed
-        ↓
-Immutable evidence timeline
-        ↓
-AI evidence-grounded summary
-```
-
-The product rules and authorization model are governed by the Node 1 final lock:
-
-`01_BRAIN_HANDOFFS/ChatGPT/Chat10_Node1_FINAL_LOCK.md`
+The active roadmap now extends that foundation into the broader Company → Driver → Receiver delivery product.
 
 ## Node 1 — Product + Authorization Rework
 
@@ -63,167 +22,88 @@ The product rules and authorization model are governed by the Node 1 final lock:
 Status → 🔒 FINAL LOCKED / COMPLETE
 ```
 
-The Node 1 final-lock record explicitly states that Node 1 is formally locked and complete, with Claude independent final review:
+Node 1 is formally locked in:
+
+`01_BRAIN_HANDOFFS/ChatGPT/Chat10_Node1_FINAL_LOCK.md`
+
+Claude independent final review:
 
 ```text
 APPROVE — NO BLOCKING FINDINGS
 ```
 
-The locked model includes:
-
-- exactly 1 application identity per Auth User;
-- exactly 1 application role per Auth User;
-- role = Company OR Driver;
-- contextual trip participant relationships;
-- trip lifecycle and delivery sequence;
-- server-side authorization / IDOR rules;
-- concurrency rules;
-- authentication requirements derived from the locked model.
-
-This status is based on the existing Node 1 FINAL LOCK record; it does not claim that every later implementation acceptance criterion has been independently re-verified in this checkpoint.
+The lock covers the identity model, Company/Driver roles, contextual trip relationships, lifecycle, delivery sequence, IDOR/API authorization, and concurrency rules.
 
 ## Node 2 — Authentication + Identity
 
 ```text
-Status → 🔵 ACTIVE DESIGN / NOT LOCKED
+Decision / architecture stage → 🔒 COMPLETE
+Implementation stage         → ⏸️ NOT STARTED / NEXT
 ```
 
-Node 2 broad authentication/identity investigations are complete. The current contract is:
-
-`02_ARCHITECTURE/Chat11_Node2_Authentication_Identity_Contract_DRAFT.md`
-
-Status:
+The Node 2 decision sequence is now complete:
 
 ```text
-DRAFT / NOT LOCKED
+Q1 Signup consistency             🔒 LOCKED
+Q2 Email-confirmation policy      🔒 LOCKED
+Q3 Session lifecycle / refresh    🔒 LOCKED
+Q4 One-user / one-identity        🔒 LOCKED
+Q5 Authentication rate limiting   🔒 LOCKED
+Q6 RLS / service-role boundary    🔒 LOCKED
+Q7 Final acceptance-test matrix   🔒 APPROVED / READY TO LOCK
 ```
 
-Claude independently reviewed the Node 2 contract and found it not ready for full lock because several load-bearing decisions remain unresolved.
+### Q1–Q6
 
-### Resolved evidence / decisions
+Q1–Q6 are locked decisions and must not be reopened unless new evidence creates a genuine architectural conflict.
 
-```text
-Broad Node 2 investigation              ✅ COMPLETE
-Remaining auth evidence investigation  ✅ COMPLETE
-Signup/onboarding investigation         ✅ COMPLETE
-Claude Q1/Q4 independent review         ✅ COMPLETE
-Q1 Signup consistency                   🔒 LOCKED DECISION
-Q2 Email-confirmation policy            🔒 LOCKED DECISION
-Q3 Session lifecycle / refresh          🔒 LOCKED DECISION
-Q4 One-user/one-identity                🔒 LOCKED DECISION
-Q5 Authentication rate limiting         🔒 LOCKED DECISION
-Q6 RLS / service-role boundary          🔒 LOCKED DECISION
-```
-
-### Current Node 2 decisions still requiring resolution
-
-1. Final acceptance-test matrix
-
-### Q2 — Email-confirmation policy
-
-**STATUS → 🔒 DECIDED / LOCKED FOR NODE 2**
-
-Final policy:
+Key locked Node 2 invariants include:
 
 ```text
-Email confirmation is required before the normal authenticated
-user onboarding/evidence-submission flow and before Active/Usable access.
-```
+1 Auth User ↔ exactly 1 application identity
+1 Auth User ↔ exactly 1 application role
+Role = Company OR Driver
 
-The verification stages are explicitly separated:
-
-```text
-1. Evidence submission
-   → user action; requires confirmed authenticated session
-
-2. Verifier review
-   → authorized verifier action; does not require applicant session
-
-3. Trusted-role assignment
-   → server-controlled result of approved verification
-```
-
-Active/usable access requires all three:
-
-```text
+Active/usable access requires:
 email_confirmed = true
 AND verification_status = VERIFIED
 AND trusted_role IS NOT NULL
-```
 
-`UNCONFIRMED + VERIFIED + trusted_role` is an allowed defensive state after an email-change/reconfirmation event, but it is always inactive and cannot access protected business operations.
-
-The final decision report is:
-
-`03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Report_Email_Confirmation_Policy.md`
-
-Claude's independent review is:
-
-`03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Report_Claude_Review_Q2_Email_Confirmation_Policy.md`
-
-Q2 was approved after the Claude-identified precision corrections were incorporated.
-
-### Q3 — Session lifecycle / refresh
-
-**STATUS → 🔒 DECIDED / LOCKED FOR NODE 2**
-
-Final policy:
-
-```text
-Policy B — Middleware-centered session refresh
-+
-live Freight DB Active gate
-```
-
-The session/authentication boundary is explicitly separated from Freight authorization:
-
-```text
 Valid Session
-    = authenticated identity
+≠ Active Freight Account
+≠ Authorized for every operation
 
-Freight DB Active Gate
-    = current account / verification state
-
-Node 1 Authorization
-    = operation-level authorization
+RLS = normal database row-isolation boundary
+service_role = server-only privileged exception
 ```
 
-Five approved Q3 decisions:
+Q6 was independently approved by Grok. Claude's repeated review was inconclusive because it continued returning stale/mismatched review output; it is recorded as temporarily unavailable/inconclusive rather than as an approval.
 
-```text
-1. Active status
-   → live Freight DB state on every protected business request.
+Q6 lock record:
 
-2. JWT
-   → authentication/identity information only; never the sole Freight Active decision.
+`01_BRAIN_HANDOFFS/Grok/Chat12_Node2_Q6_RLS_Service_Role_Boundary_LOCK.md`
 
-3. CSRF
-   → SameSite cookie protection + Origin validation for cookie-authenticated state-changing requests.
+### Q7 — Final Acceptance-Test Matrix
 
-4. PENDING / REJECTED
-   → session may remain valid, but protected business access is immediately denied by the live DB Active gate.
+**Status → ✅ CLAUDE APPROVED / READY FOR LOCK**
 
-5. Middleware
-   → scoped to the authenticated/protected application surface; public/static routes bypass unnecessary auth processing.
-```
+Q7 converts the locked Q1–Q6 decisions into an implementation acceptance matrix covering:
 
-Q3 security invariant:
+- signup atomicity and one-to-one identity;
+- email confirmation + live Active gate;
+- session/refresh/logout/CSRF;
+- authentication rate limiting and 429 handling;
+- RLS and service-role boundary;
+- FORCE RLS/table-owner handling;
+- privileged audit logging;
+- SECURITY DEFINER verification;
+- service-role import allowlist/CI enforcement;
+- RLS vs Node 1 authorization separation;
+- wrong-role, stale-session, IDOR, and cross-user cases.
 
-```text
-Valid Session
-    ≠ Active Freight Account
-    ≠ Authorized for every operation
-```
+Claude's independent review record:
 
-Q3 also explicitly requires the live Freight Identity state to prevent stale JWT/session claims from preserving business access after verification or email-confirmation changes.
-
-The refined Q3 decision report is:
-
-`03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Report_Q3_Session_Lifecycle_Refresh.md`
-
-Claude's final independent approval is:
-
-`03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Report_Q3_Session_Lifecycle_Refresh_Claude_approved.md`
+`01_BRAIN_HANDOFFS/Claude/Chat12_Node2_Report_Q7_Final_Acceptance_Test_Matrix_claude_approved.md`
 
 Claude verdict:
 
@@ -231,106 +111,49 @@ Claude verdict:
 APPROVE
 ```
 
-Q3 is now locked at the architecture/policy level. Implementation remains paused.
+The Q7 report is ready for the final lock record. Q7 does not reopen Q1–Q6.
 
-### Q5 — Authentication rate limiting
+## Day 5 — Node 2 Decision Closure
 
-**STATUS → 🔒 DECIDED / LOCKED FOR NODE 2**
+Hackathon Day 5 is now **CLOSED**.
 
-Final MVP policy:
+Completed during Day 5:
 
-```text
-Supabase-native Auth rate limiting
-+
-no custom Redis/Upstash limiter initially
-+
-no hard account lockout
-+
-generic authentication/recovery responses
-+
-secure client-IP forwarding where required
-+
-correct 429 handling
-```
+1. Completed Q6 correction cycle and recorded Grok independent approval.
+2. Created the Q6 lock record under `01_BRAIN_HANDOFFS/Grok/`.
+3. Updated project-control status for the Q6 lock.
+4. Investigated Q7 as the final Node 2 acceptance-test question.
+5. Corrected Q7 acceptance tests so they match the locked Q2, Q5, and Q6 policies.
+6. Added explicit Q6 acceptance coverage for FORCE RLS, audit logging, SECURITY DEFINER, service-role allowlist/CI, and compromise response.
+7. Claude independently reviewed the corrected Q7 matrix and returned `APPROVE`.
+8. Node 2 decision/architecture work is now complete; authentication implementation is the next execution phase.
 
-Supabase's Auth controls remain the primary authentication abuse-control mechanism for the MVP. Exact platform defaults are configuration details and must be re-verified at implementation time; they are not hard-coded Freight architecture constants.
+## Authentication / Verification Implementation Boundary
 
-The locked Q5 record is:
+Authentication implementation is **not yet complete**.
 
-`03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Report_Q5_Authentication_Rate_Limiting.md`
-
-Claude independently reviewed Q5 and approved the underlying policy after two factual corrections were incorporated:
+The implementation phase must include the minimum verification capability required by the locked identity model. Document verification cannot operate without an authorized verifier/admin mechanism. The MVP should provide a minimum verifier interface/workflow for:
 
 ```text
-1. Correct the inaccurate sign-in/sign-up rate-limit number.
-2. Explicitly acknowledge separate MFA challenge/verify rate limits; MFA remains outside the current MVP scope.
+Authorized verifier
+      ↓
+Pending verification submissions
+      ↓
+Review submitted documents
+      ↓
+Approve / Reject + reason
+      ↓
+Server-controlled verification_status / trusted_role update
 ```
 
-Q5 does not replace Q2 Active enforcement, Q3 session lifecycle, or Node 1 authorization.
-
-### Q6 — RLS / service-role boundary
-
-**STATUS → 🔒 LOCKED FOR NODE 2**
-
-Final policy:
-
-```text
-Strict RLS + Privileged Server Boundary Pattern
-```
-
-Normal user operations use an authenticated user-scoped client and RLS. Privileged operations that genuinely require RLS bypass use a trusted server-only path with explicit authentication/authorization and narrowly scoped `service_role` access.
-
-The locked Q6 record is:
-
-`03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Report_Q6_RLS_Service_Role_Boundary.md`
-
-The dedicated lock record is:
-
-`01_BRAIN_HANDOFFS/Grok/Chat12_Node2_Q6_RLS_Service_Role_Boundary_LOCK.md`
-
-Grok independently reviewed Q6 and returned:
-
-```text
-APPROVE
-Remaining corrections: None
-```
-
-Claude's repeated review output was inconclusive because it continued reporting an older/stale version that did not match the corrected repository record. Claude is recorded as temporarily unavailable/inconclusive, not as an approval.
-
-Q6 remains an architecture/policy lock only. Implementation-time verification still includes table-by-table RLS audit, FORCE RLS/table-owner verification, service-role usage audit, SECURITY DEFINER trigger/function audit, approved import allowlist enforcement, and acceptance testing.
-
-## Signup / onboarding evidence
-
-The targeted investigation established that the current signup flow performs Auth User creation and application identity creation as separate operations rather than one database transaction.
-
-A verified current failure state is:
-
-```text
-Auth User EXISTS
-Application identity MISSING
-```
-
-The investigation also identified the reverse orphan risk associated with the current `ON DELETE SET NULL` relationship.
-
-No implementation fix has been authorized from this evidence.
-
-## Security / Authentication State
-
-```text
-Q5 authentication rate limiting       → 🔒 LOCKED
-Q6 RLS / service-role boundary        → 🔒 LOCKED
-IDOR / API authorization              → 🔒 LOCKED AS NODE 1 CONTRACT
-authentication implementation          → PAUSED
-```
+This is a minimum verification capability, not permission to expand into a full unrelated admin dashboard.
 
 ## Active Roadmap Position
-
-The active execution roadmap remains the existing 7-Node roadmap in `ROADMAP.md`.
 
 ```text
 Historical Core MVP                  → IMPLEMENTED / VERIFIED
 Node 1 Product + Authorization       → 🔒 COMPLETE / LOCKED
-Node 2 Authentication + Identity    → 🔵 ACTIVE DESIGN / NOT LOCKED
+Node 2 Authentication + Identity    → 🟡 DECISIONS COMPLETE / IMPLEMENTATION NEXT
 Node 3 Company Trip Creation         → FUTURE
 Node 4 Driver Marketplace            → FUTURE
 Node 5 Whole Delivery Tracking       → FUTURE
@@ -338,79 +161,68 @@ Node 6 Security + Evidence           → FUTURE
 Node 7 AI + Final Integration + Demo → FUTURE
 ```
 
-**No roadmap rewrite is made by this update.**
-
-## Checkpoint
-
-Chat12 Day 5 checkpoint remains the historical continuation record:
-
-`00_PROJECT_CONTROL/CHECKPOINTS/Chat12_Day5_Node2_Checkpoint.md`
-
-The Q2 lock and transition to Q3 are recorded in:
-
-`00_PROJECT_CONTROL/CHECKPOINTS/Chat12_Day5_Node2_Q2_Lock_Checkpoint.md`
-
-Q3, Q5, and Q6 locks are recorded by their finalized decision reports and independent review/lock records.
-
-## Subnode Rule
-
-A Subnode is used only for significant unexpected work inside a Node.
+Roadmap baseline:
 
 ```text
-Small bug
-→ fix inside current Node
-
-Significant unexpected issue
-→ create Subnode
-
-Major blocker / architecture change
-→ stop and reassess roadmap
+Node 1 → 2 days
+Node 2 → 3 days
+Node 3 → 3 days
+Node 4 → 3 days
+Node 5 → 5 days
+Node 6 → 3 days
+Node 7 → 3 days
 ```
 
-If one Node accumulates 3 or more Subnodes, perform an explicit roadmap reassessment.
-
-## Record Routing
-
-ChatGPT ↔ Antigravity bridge:
+## Hackathon Day Position
 
 ```text
-GitHub Records repository
+Day 1 → Core MVP foundation / implementation       ✅
+Day 2 → Core MVP completion                        ✅
+Day 3 → Security/product rework checkpoint         ✅
+Day 4 → Node 2 investigation/contract work         ✅
+Day 5 → Node 2 Q1–Q7 decision closure              ✅
+Day 6 → Node 2 authentication implementation       NEXT
 ```
 
-Implementation handoffs:
+Node 2 implementation is expected to remain within its roadmap allocation, with implementation + acceptance targeted for the remaining Node 2 window.
 
-```text
-03_IMPLEMENTATION/prompts/
-```
+## Execution Bridge
 
-Antigravity implementation reports:
+ChatGPT = architecture/reasoning/investigation brain  
+Antigravity = implementation/execution agent  
+GitHub Records = source-of-truth bridge
 
-```text
-03_IMPLEMENTATION/implementation_reports/
-```
+Implementation prompts:
 
-Investigations:
+`03_IMPLEMENTATION/prompts/`
 
-```text
-05_DEBUGGING/investigations/
-```
+Implementation reports:
 
-Architecture records:
-
-```text
-02_ARCHITECTURE/
-```
+`03_IMPLEMENTATION/implementation_reports/`
 
 Project-control records:
 
+`00_PROJECT_CONTROL/`
+
+## Current Status Summary
+
 ```text
-00_PROJECT_CONTROL/
+Q1 🔒
+Q2 🔒
+Q3 🔒
+Q4 🔒
+Q5 🔒
+Q6 🔒
+Q7 ✅ CLAUDE APPROVED / READY FOR LOCK
+
+Node 2 decision stage → ✅ COMPLETE
+Node 2 implementation  → 🔨 NEXT
+
+Hackathon Day 5 → ✅ CLOSED
 ```
 
 ## Next Action
 
-**NEXT: Final Node 2 acceptance-test matrix / remaining Node 2 decision work.**
+**Start Node 2 Authentication + Identity implementation on Hackathon Day 6.**
 
-Do not resume authentication implementation yet.
-
-Q1, Q2, Q3, Q4, Q5, and Q6 are locked decisions and must not be reopened unless new evidence creates a genuine conflict.
+Do not reopen Q1–Q7 unless new evidence creates a genuine conflict. Do not move to Node 3 until Node 2 implementation and acceptance are complete.
