@@ -1,12 +1,10 @@
-# Hackathon Day 1–Day 5 — Work Progress Report
+# Hackathon Day 1–Day 6 — Work Progress Report
 
 **Project:** Freight — AI Builders Hackathon  
 **Owner:** Ayush  
-**Report purpose:** Maintain the consolidated project-progress record across Hackathon Work Day 1 through Day 5, including implementation progress, investigations, architecture decisions, and the current execution plan.
+**Report purpose:** Maintain the consolidated project-progress record across Hackathon Work Day 1 through Day 6, including implementation progress, investigations, architecture decisions, and the current execution plan.
 
-> **Current status:** Hackathon Work Day 5 is now **CLOSED**. Day 5 completed the remaining Node 2 decision/acceptance work. Node 2 authentication implementation has **not** yet started and is the next execution phase.
-
----
+> **Current status:** Hackathon Work Day 6 is now **CLOSED**. Day 6 completed the current-codebase reconciliation and baseline decision needed before Node 2 implementation. Node 2 authentication implementation is the next execution phase.
 
 # Hackathon Work Day 1 — COMPLETE
 
@@ -473,399 +471,255 @@ Tasks:
 - lock driver eligibility
 - lock acceptance/claim rule
 - lock authorization matrix
-- define IDOR protection
-
-### Node 2 — Authentication + Identity
-**Baseline:** 3 days  
-**Status:** ⏸ BLOCKED BY NODE 1
-
-Tasks:
-- company authentication
-- driver authentication
-- role identification
-- identity mapping
-- protected routes
-- session handling
-- auth tests
-
-### Node 3 — Company Trip Creation + Publishing
-**Baseline:** 3 days
-
-Tasks:
-- create trip
-- receiver company
-- pickup/destination
-- distance/duration
-- payment/offer
-- shipment details
-- publish trip
-
-### Node 4 — Driver Marketplace + Atomic Claim
-**Baseline:** 3 days
-
-Tasks:
-- available trips
-- trip details
-- payment/offer
-- driver acceptance
-- atomic first-winner claim
-- assignment lock
-- race-condition testing
-
-### Node 5 — Whole Delivery Tracking
-**Baseline:** 5 days
-
-Tasks:
-- pickup
-- arrival
-- check-in
-- load
-- depart
-- in transit
-- destination
-- receiver-side actions
-- delivery confirmation
-- completion
-
-### Node 6 — Security + Evidence
-**Baseline:** 3 days
-
-Tasks:
-- IDOR/API authorization
-- role/relationship authorization
-- trip assignment checks
-- evidence integrity
-- rate-limit implementation/verification
-- security testing
-
-### Node 7 — AI + Final Integration + Demo
-**Baseline:** 3 days
-
-Tasks:
-- AI evidence summary
-- timeline
-- end-to-end integration
-- demo scenario
-- bug fixing
-- final testing
-
-### Baseline allocation
-
-```text
-Node 1 → 2 days
-Node 2 → 3 days
-Node 3 → 3 days
-Node 4 → 3 days
-Node 5 → 5 days
-Node 6 → 3 days
-Node 7 → 3 days
-----------------
-Total → 22 days
-```
-
-The baseline is intentionally adjustable.
-
-## 21. New Progress-Tracking Method
-
-Every Node will track both estimated and actual effort.
-
-Example:
-
-```text
-Node 2
-Estimated → 3 days
-Actual → 7 hours
-Status → COMPLETE
-```
-
-After each Node, record:
-
-- completed
-- remaining
-- bugs discovered
-- bugs resolved
-- bugs deferred
-- security findings
-- acceptance criteria
-- implementation report path
-- next Node
-- roadmap changes required
-
-The roadmap can be changed later when project reality requires it. Changes should be recorded explicitly rather than silently deviating from the plan.
-
-## 22. Working Method Going Forward
-
-For every new checkpoint/topic:
-
-```text
-1. Investigate actual repository/code/database state
-2. Identify current architecture
-3. Identify gaps/bugs
-4. Produce investigation report
-5. Produce implementation plan/prompt
-6. Review/approve plan
-7. Antigravity executes through the GitHub bridge
-8. Test
-9. Create implementation report
-10. Update roadmap
-11. Move to next Node
-```
-
-Implementation prompts belong in:
-
-```text
-03_IMPLEMENTATION/prompts/
-```
-
-Implementation reports belong in:
-
-```text
-03_IMPLEMENTATION/implementation_reports/
-```
-
-ChatGPT architecture/product handoffs belong in:
-
-```text
-01_BRAIN_HANDOFFS/ChatGPT/
-```
 
 ---
 
-# Hackathon Work Day 4 — COMPLETE / CHECKPOINT
+# Hackathon Work Day 4 — NODE 2 AUTHENTICATION / IDENTITY CONTRACT WORK
 
-**Status: ✅ CLOSED — Day 4 checkpoint recorded**
+**Status: ✅ CLOSED**
 
-Day 4 focused on transitioning from the locked Node 1 product/authorization model into the Node 2 Authentication + Identity design and investigation phase.
+Day 4 focused on Node 2 discovery, gap analysis, identity-model selection, and the first authentication/identity contract work. Implementation remained paused until the Node 2 decision gate was completed.
 
-## 23. Node 1 Final Lock Confirmation
+Key outcomes:
 
-**Status: 🔒 COMPLETE / LOCKED**
+- Existing Supabase Auth foundation and `drivers.auth_id` mapping were documented.
+- The legacy assumption that every Auth User is simply a Driver was identified as insufficient for the broader Company/Driver product model.
+- The generic Freight Identity approach was selected as the strongest identity anchor for the MVP.
+- Signup consistency and one-user/one-identity requirements were investigated.
+- Pending identity vs verified/trusted identity was separated conceptually.
+- Node 2 open questions were organized into Q1–Q7 decision work.
 
-- Node 1 final lock was confirmed through `01_BRAIN_HANDOFFS/ChatGPT/Chat10_Node1_FINAL_LOCK.md`.
-- Node 1 product, identity, role, authorization, IDOR, concurrency, lifecycle, and authentication requirements are governed by that final lock.
-- Claude independent final review was recorded as `APPROVE — NO BLOCKING FINDINGS`.
+---
 
-## 24. Node 2 — Authentication + Identity Investigation
+# Hackathon Work Day 5 — NODE 2 Q1–Q7 DECISION CLOSURE
 
-**Status: ✅ INVESTIGATION COMPLETE**
+**Status: ✅ CLOSED**
 
-Completed during Day 4:
+Day 5 completed the remaining Node 2 decision/acceptance work.
 
-- Node 2 Round 1 authentication/identity investigation.
-- Node 2 Round 2 missing-auth-evidence investigation.
-- Node 2 Round 3 remaining authentication-evidence investigation.
-- Targeted signup/onboarding consistency investigation.
-
-Evidence areas covered:
-
-- Supabase Auth flow.
-- Driver identity mapping.
-- Protected UI/API authentication checks.
-- Authenticated request context.
-- Session/cookie behavior.
-- Driver Code mechanism.
-- Authentication rate-limiting state.
-- RLS/service-role boundary.
-- Role enforcement state.
-- Existing authentication/identity testing evidence.
-- Local vs committed/pushed source state.
-- Signup/onboarding transaction boundaries and failure states.
-
-## 25. Node 2 Authentication + Identity Contract Draft
-
-**Status: 🔵 DRAFT / NOT LOCKED**
-
-Created:
-
-`02_ARCHITECTURE/Chat11_Node2_Authentication_Identity_Contract_DRAFT.md`
-
-The draft defines the proposed authentication/application-identity contract required to satisfy the locked Node 1 model.
-
-## 26. Claude Independent Contract Review
-
-**Status: ✅ COMPLETE**
-
-Claude independently reviewed the Node 2 contract draft.
-
-Review result:
+## 21. Node 2 Q1–Q7 decision status
 
 ```text
-NOT READY FOR LOCK
+Q1 Signup consistency             🔒 LOCKED
+Q2 Email-confirmation policy      🔒 LOCKED
+Q3 Session lifecycle / refresh    🔒 LOCKED
+Q4 One-user / one-identity        🔒 LOCKED
+Q5 Authentication rate limiting   🔒 LOCKED
+Q6 RLS / service-role boundary    🔒 LOCKED
+Q7 Final acceptance-test matrix   🔒 APPROVED
 ```
 
-Remaining load-bearing decisions included:
-
-- signup/onboarding consistency;
-- email-confirmation policy;
-- session lifecycle/refresh;
-- one-user → one-identity enforcement;
-- authentication rate limiting;
-- RLS/service-role boundary;
-- final acceptance-test matrix.
-
-## 27. Signup / Onboarding Consistency Investigation
-
-**Status: ✅ INVESTIGATION COMPLETE**
-
-The targeted investigation verified that the current signup flow creates:
+## 22. Key locked Node 2 invariants
 
 ```text
-Supabase Auth User
+1 Auth User ↔ exactly 1 application identity
+1 Auth User ↔ exactly 1 application role
+Role = Company OR Driver
+
+ACTIVE
+= email_confirmed
+AND verification_status = VERIFIED
+AND trusted_role IS NOT NULL
+
+Valid Session
+≠ Active Freight Account
+≠ Authorized for every operation
+
+RLS = normal database row-isolation boundary
+service_role = server-only privileged exception
+```
+
+## 23. Q3 — Session lifecycle lock
+
+Q3 was independently reviewed by Claude and approved after the six identified concerns were addressed.
+
+Locked direction:
+
+```text
+Supabase Session
+      ↓
+Scoped Next.js Middleware
+      ↓
+getUser() / supported session refresh
+      ↓
+Protected request
+      ↓
+Live Freight Identity DB lookup
+      ↓
+Q2 Active Gate
+      ↓
+Node 1 Authorization
+```
+
+The approved Q3 report is:
+
+`03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Report_Q3_Session_Lifecycle_Refresh_Claude_approved.md`
+
+## 24. Q5 — Authentication rate limiting lock
+
+Q5 is locked to Supabase-native Auth rate limiting for the MVP.
+
+```text
+No custom Redis/Upstash limiter initially
+No hard account lockout
+Generic auth/recovery responses
+Correct 429 handling
+Secure client-IP forwarding where required
+```
+
+## 25. Q6 — RLS / service-role boundary lock
+
+Q6 is locked to the Strict RLS + Privileged Server Boundary Pattern.
+
+Normal user operations should use RLS/user-scoped access. `service_role` is restricted to narrowly defined trusted server-side privileged operations with explicit authorization and audit requirements.
+
+## 26. Q7 — Final acceptance matrix
+
+Claude independently approved the corrected Q7 acceptance matrix. It covers enforcement for Q1–Q6, including:
+
+- stale JWT/session behavior;
+- current Active state;
+- rate limits and trusted client-IP handling;
+- RLS / FORCE RLS;
+- audit logging;
+- SECURITY DEFINER review;
+- service-role import allowlist;
+- RLS vs Node 1 authorization separation.
+
+Day 5 therefore closed the Node 2 decision stage.
+
+---
+
+# Hackathon Work Day 6 — NODE 2 CURRENT-CODEBASE RECONCILIATION / IMPLEMENTATION PREPARATION
+
+**Status: ✅ CLOSED**
+
+Day 6 was used to reconcile the actual application source state before implementation so that the locked Node 2 design would be applied to the correct baseline.
+
+## 27. Source repositories / environments reconciled
+
+Application source repository:
+
+`ayush22cp008/freight_hackathon`
+
+Records repository:
+
+`ayush22cp008/Freight_Records`
+
+Production deployment URL:
+
+`https://freighthackathon.vercel.app`
+
+The investigation compared:
+
+```text
+GitHub source
+      ↕
+Vercel / production
+      ↕
+Localhost working tree
+```
+
+## 28. Vercel / GitHub / localhost authentication difference
+
+The reconciliation established the meaningful UI/flow difference:
+
+```text
+GitHub / Vercel baseline
+→ Email + Password login
+→ manual Driver Code entry in the older signup flow
+
+Local experimental state
+→ auto-generated Driver Code
+→ Driver ID / Driver Code login
+→ Driver ID → email lookup → Supabase authentication proxy
+```
+
+The local Driver-ID authentication experiment was not selected as the Node 2 target because it adds unnecessary authentication indirection and creates avoidable identity/enumeration risk.
+
+## 29. Node 2 gap findings from reconciliation
+
+The current GitHub baseline still requires implementation work for the locked architecture:
+
+```text
+Q1 Auth User → Freight Identity atomic creation → MISSING
+Q2 live Active Gate → MISSING
+Q4 generic Freight Identity anchor → MISSING
+Q6 current service-role signup boundary → REQUIRES REWORK
+```
+
+The existing Supabase SSR/Middleware foundation remains useful for Q3 implementation, and Supabase-native Auth rate limiting remains the Q5 MVP direction.
+
+## 30. Local-change safety decision
+
+The experimental local Driver-ID login changes are **not the Node 2 implementation target** and must not be pushed into the application source repository.
+
+The clean GitHub/Vercel source state is preserved as the starting baseline for the proper Node 2 implementation.
+
+Do not blindly run destructive Git reset/delete operations until the actual local working-tree state is confirmed.
+
+Do not apply the experimental Driver-Code migration as part of the baseline.
+
+## 31. Day 6 investigation record
+
+The detailed reconciliation investigation is recorded at:
+
+`05_DEBUGGING/investigations/Chat13_Node2_Report_Vercel_GitHub_Localhost_vs_Locked_Design.md`
+
+The investigation follows the project workflow and distinguishes verified findings from inference/unknown deployment metadata.
+
+The Vercel deployment commit could not be directly verified during the investigation and therefore remains `UNKNOWN` unless later confirmed from deployment metadata.
+
+## 32. Implementation readiness after Day 6
+
+The current baseline decision is:
+
+```text
+Preserve GitHub/Vercel baseline
         ↓
-separate application identity insert
+Do not push experimental Driver-ID login
+        ↓
+Confirm local working-tree state
+        ↓
+Synchronize local source with GitHub main
+        ↓
+Verify Local = GitHub
+        ↓
+Begin Node 2 implementation
 ```
 
-These operations are not one database transaction.
-
-A verified failure state is:
-
-```text
-Auth User EXISTS
-Application identity MISSING
-```
-
-The investigation also identified the reverse orphan risk associated with the current `ON DELETE SET NULL` relationship.
-
-No implementation fix was authorized from this evidence.
-
-## 28. Day 4 Project Checkpoint
-
-Checkpoint created:
-
-`00_PROJECT_CONTROL/CHECKPOINTS/Chat11_Day4_Node2_Checkpoint.md`
-
-Project-control records were reconciled to reflect:
-
-```text
-Node 1 → COMPLETE / LOCKED
-Node 2 → ACTIVE DESIGN / NOT LOCKED
-Authentication implementation → PAUSED
-```
-
-### Day 4 Final Status
-
-**✅ COMPLETE — checkpoint recorded**
+Node 2 implementation is therefore the next execution phase.
 
 ---
 
-# Hackathon Work Day 5 — COMPLETE / NODE 2 DECISION CLOSURE
-
-**Status: ✅ CLOSED — Day 5 completed the Node 2 decision/acceptance stage.**
-
-Day 5 focused on completing the remaining Node 2 questions, locking the architecture/policy decisions, and converting those decisions into a final acceptance-test matrix. No authentication implementation was started on Day 5.
-
-## 29. Q6 — RLS / Service-Role Boundary Correction + Lock
-
-**Status: 🔒 LOCKED**
-
-Completed:
-
-- Corrected the Q6 investigation report to make all required controls explicit.
-- Required `FORCE ROW LEVEL SECURITY` / table-owner bypass handling.
-- Required service-role compromise rotation/restriction procedure.
-- Required audit logging for security-sensitive privileged mutations.
-- Required separate RLS-only and Node 1 authorization test boundaries.
-- Required `SECURITY DEFINER` trigger/function security verification.
-- Required service-role import allowlist enforced by lint/CI.
-- Grok independently reviewed the corrected Q6 policy and returned `APPROVE` with no remaining corrections.
-- Created the dedicated lock record:
-
-`01_BRAIN_HANDOFFS/Grok/Chat12_Node2_Q6_RLS_Service_Role_Boundary_LOCK.md`
-
-Q6 remains an architecture/policy lock. Implementation-time verification is still required later.
-
-## 30. Q7 — Final Acceptance-Test Matrix
-
-**Status: ✅ CLAUDE APPROVED / READY FOR LOCK**
-
-Created and corrected:
-
-`03_IMPLEMENTATION/implementation_reports/Chat12_Node2_Report_Q7_Final_Acceptance_Test_Matrix.md`
-
-The matrix covers:
-
-- Q1 signup atomicity and one-to-one identity;
-- Q2 email confirmation and the live DB Active gate;
-- Q3 session lifecycle, refresh, logout, CSRF, and middleware scope;
-- Q5 Supabase Auth native rate limiting, 429 handling, and trusted client-IP forwarding;
-- Q6 RLS/service-role boundary, FORCE RLS/table-owner handling, privileged audit logging, SECURITY DEFINER review, service-role allowlist/CI, and compromise response;
-- RLS vs Node 1 authorization separation;
-- wrong-role, stale-session, IDOR, and cross-user cases;
-- Node 2 minimum completion gate and evidence requirements.
-
-Claude independently reviewed the corrected Q7 matrix and returned:
+# Consolidated Project Position After Day 6
 
 ```text
-APPROVE
+Historical Core MVP                  → ✅ IMPLEMENTED / VERIFIED
+Node 1 Product + Authorization       → 🔒 COMPLETE / LOCKED
+Node 2 Decision / Architecture       → 🔒 COMPLETE
+Node 2 Codebase Reconciliation       → ✅ COMPLETE FOR BASELINE DECISION
+Node 2 Authentication + Identity     → 🔨 NEXT
+Node 3 Company Trip Creation         → FUTURE
+Node 4 Driver Marketplace            → FUTURE
+Node 5 Whole Delivery Tracking       → FUTURE
+Node 6 Security + Evidence           → FUTURE
+Node 7 AI + Final Integration + Demo → FUTURE
 ```
 
-Claude's review record:
-
-`01_BRAIN_HANDOFFS/Claude/Chat12_Node2_Report_Q7_Final_Acceptance_Test_Matrix_claude_approved.md`
-
-Q7 is therefore **ready for the final lock record** and does not reopen Q1–Q6.
-
-## 31. Node 2 Decision Stage — CLOSED
-
-At the end of Hackathon Day 5:
+## Current Next Action
 
 ```text
-Q1 🔒
-Q2 🔒
-Q3 🔒
-Q4 🔒
-Q5 🔒
-Q6 🔒
-Q7 ✅ APPROVED
-
-Node 2 decision/architecture stage → ✅ COMPLETE
-Authentication implementation     → 🔨 NEXT
+Next session:
+1. Confirm local working-tree state.
+2. Remove/reject only the experimental Driver-ID changes if still present.
+3. Synchronize local source with GitHub main.
+4. Verify Local = GitHub.
+5. Create the Chat13 Node 2 implementation bridge prompt.
+6. Antigravity implements.
+7. Record implementation evidence.
+8. Build/test.
+9. Ayush performs manual verification.
 ```
 
-The locked Node 2 policy includes the minimum verifier/admin capability needed for document verification:
-
-```text
-Authorized verifier
-      ↓
-Pending verification submissions
-      ↓
-Review submitted documents
-      ↓
-Approve / Reject + reason
-      ↓
-Server-controlled verification_status / trusted_role update
-```
-
-This is a minimum verification workflow, not a commitment to build a large unrelated admin dashboard inside Node 2.
-
-## 32. Day 5 Final Status
-
-```text
-Hackathon Day 5              → ✅ CLOSED
-Node 1                       → 🔒 COMPLETE
-Node 2 decisions             → ✅ COMPLETE
-Q1–Q6                        → 🔒 LOCKED
-Q7                           → ✅ CLAUDE APPROVED / READY FOR LOCK
-Authentication implementation → ⏸ NOT STARTED
-
-NEXT → Hackathon Day 6:
-       Node 2 Authentication + Identity implementation
-```
-
----
-
-## Consolidated Hackathon Status
-
-```text
-Day 1 → COMPLETE
-Day 2 → COMPLETE
-Day 3 → COMPLETE
-Day 4 → COMPLETE
-Day 5 → COMPLETE
-
-Core MVP → ✅ COMPLETE / VERIFIED
-Node 1   → 🔒 COMPLETE / LOCKED
-Node 2   → 🟡 DECISION STAGE COMPLETE / IMPLEMENTATION NEXT
-```
-
-**Next execution phase:** Node 2 Authentication + Identity implementation on Hackathon Day 6.
+No Node 3 work should begin until Node 2 implementation and acceptance are complete.
