@@ -1,6 +1,6 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Aug 27, 2026 — Chat13 / Day 6 CLOSED
+**Last updated:** Aug 28, 2026 — Chat14 / Day 7 CLOSED
 
 ## Current Project Position
 
@@ -38,8 +38,9 @@ The lock covers the identity model, Company/Driver roles, contextual trip relati
 
 ```text
 Decision / architecture stage → 🔒 COMPLETE
-Implementation stage         → ⏸️ NOT STARTED / NEXT
-Current reconciliation       → ✅ SUBSTANTIALLY COMPLETE / BASELINE DECIDED
+Implementation stage         → ⏳ NOT STARTED / NEXT
+Current reconciliation       → ✅ COMPLETE / BASELINE DECIDED
+Day 7 preparation            → ✅ CLOSED
 ```
 
 The Node 2 decision sequence is complete:
@@ -166,6 +167,119 @@ Do not apply the experimental Driver-Code migration as part of the current Node 
 
 The Vercel deployment commit could not be directly verified from the available environment during reconciliation and therefore remains `UNKNOWN` unless later confirmed from deployment metadata.
 
+## Chat14 — Day 7 Controlled Cleanup + Node 2 Implementation Preparation
+
+**Status: ✅ CLOSED — Day 7 preparation completed; Node 2 implementation remains next.**
+
+Day 7 completed the controlled baseline cleanup, current-source investigation, Node 2 implementation planning, and architecture clarification required before execution.
+
+### 1. Controlled local authentication experiment cleanup
+
+The local source tree was inspected before modification and contained exactly the five previously identified experimental Driver-ID changes:
+
+```text
+- src/db/migrations/004_auto_generate_driver_code.sql
+- src/app/api/auth/signup/route.ts
+- src/app/api/auth/login/route.ts
+- src/app/signup/page.tsx
+- src/app/login/page.tsx
+```
+
+Only those five changes were removed/reverted.
+
+Verification after cleanup established:
+
+```text
+Local working tree = origin/main
+No unrelated local work modified
+No cleanup commit created
+No cleanup push performed
+```
+
+Implementation report:
+
+`03_IMPLEMENTATION/implementation_reports/Chat14_Day7_Report_Controlled_Local_Auth_Experiment_Cleanup.md`
+
+### 2. Current source investigation
+
+The current `freight_hackathon` GitHub `main` baseline was investigated for Node 2 implementation readiness.
+
+Confirmed baseline gaps:
+
+```text
+freight_identities → MISSING
+Auth-trigger identity creation → MISSING
+Reusable Freight Identity resolver → MISSING
+Complete verification/Active Gate → MISSING
+Minimum verifier workflow → MISSING
+```
+
+The existing email/password Supabase Auth foundation remains the baseline.
+
+### 3. Node 2 implementation plan
+
+The Node 2 implementation plan was reviewed and updated to include the approved minimum verifier workflow:
+
+```text
+Email + Password signup
+        ↓
+Supabase Auth
+        ↓
+Freight Identity
+        ↓
+PENDING
+        ↓
+Authorized Verifier/Admin
+        ↓
+Review submitted documents
+        ↓
+Approve / Reject + reason
+        ↓
+Server-controlled verification_status / trusted_role
+        ↓
+Verified user passes Active Gate
+```
+
+Full Admin Dashboard functionality is deferred; Node 2 only includes the minimum verification interface required by the locked project model.
+
+Plan:
+
+`03_IMPLEMENTATION/plans/Chat14_Day7_Node2_Authentication_Identity_Implementation_Plan.md`
+
+### 4. Driver ID / Driver Code architecture clarification
+
+The earlier Driver-ID-as-login design was explicitly superseded for the current Node 2 architecture.
+
+Historical decision remains preserved, but the active Node 2 architecture is:
+
+```text
+Email + Password
+        ↓
+Supabase Auth User
+        ↓
+Exactly 1 Freight Identity
+        ↓
+Company OR Driver
+        ↓
+verification_status
+        ↓
+trusted_role
+```
+
+Driver Code / Driver ID is not an authentication credential and is not used to determine Company vs Driver in the current Node 2 architecture.
+
+Superseding architecture record:
+
+`02_ARCHITECTURE/Chat14_Day7_DriverID_Login_Decision_Superseded.md`
+
+### 5. Node 2 implementation bridge
+
+The implementation instruction for Antigravity is prepared in the GitHub Records bridge:
+
+`03_IMPLEMENTATION/prompts/Chat14_Day7_Node2_Authentication_Identity_Implementation.md`
+
+Implementation has **not** yet started.
+
 ## Node 2 Implementation Boundary
 
 Authentication implementation must preserve the locked Node 2 decisions and include the minimum verification capability required for document verification.
@@ -191,7 +305,7 @@ This is a minimum verifier interface/workflow, not permission to create an unrel
 ```text
 Historical Core MVP                  → IMPLEMENTED / VERIFIED
 Node 1 Product + Authorization       → 🔒 COMPLETE / LOCKED
-Node 2 Authentication + Identity    → 🟡 IMPLEMENTATION NEXT
+Node 2 Authentication + Identity     → 🟡 IMPLEMENTATION NEXT
 Node 3 Company Trip Creation         → FUTURE
 Node 4 Driver Marketplace            → FUTURE
 Node 5 Whole Delivery Tracking       → FUTURE
@@ -220,6 +334,7 @@ Day 3 → Security/product rework checkpoint         ✅
 Day 4 → Node 2 investigation/contract work         ✅
 Day 5 → Node 2 Q1–Q7 decision closure              ✅
 Day 6 → Node 2 codebase reconciliation / implementation preparation  ✅
+Day 7 → Controlled cleanup + Node 2 implementation preparation      ✅ CLOSED
 ```
 
 ## Execution Bridge
@@ -260,15 +375,16 @@ Q6 🔒
 Q7 ✅ APPROVED
 
 Node 2 decision stage → ✅ COMPLETE
-Node 2 codebase reconciliation → ✅ COMPLETE FOR BASELINE DECISION
+Node 2 codebase reconciliation → ✅ COMPLETE
+Node 2 implementation plan → ✅ APPROVED
 Node 2 implementation → 🔨 NEXT
 
-Day 6 → ✅ CLOSED
-Next session → Clean/sync baseline, then Node 2 implementation
+Day 7 → ✅ CLOSED
+Next session → Execute Node 2 Authentication + Identity implementation bridge
 ```
 
 ## Next Action
 
-**Next session: confirm the local working-tree state, remove/reject only the experimental Driver-ID changes if they are still present, synchronize local source with the GitHub `main` baseline, verify Local = GitHub, and then begin Node 2 Authentication + Identity implementation.**
+**Next session: give Antigravity the Node 2 implementation prompt through the GitHub Records bridge, let it execute the implementation, review the implementation report/evidence, run the required build/test checks, and then perform Ayush manual verification.**
 
 Do not reopen Q1–Q7 unless new evidence creates a genuine conflict. Do not move to Node 3 until Node 2 implementation and acceptance are complete.
