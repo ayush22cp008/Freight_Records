@@ -1,6 +1,6 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Aug 28, 2026 — Chat14 / Day 7 CLOSED
+**Last updated:** Aug 29, 2026 — Chat15 / Day 8 CLOSED
 
 ## Current Project Position
 
@@ -38,9 +38,10 @@ The lock covers the identity model, Company/Driver roles, contextual trip relati
 
 ```text
 Decision / architecture stage → 🔒 COMPLETE
-Implementation stage         → ⏳ NOT STARTED / NEXT
+Implementation stage         → 🔒 COMPLETE / ACCEPTED
 Current reconciliation       → ✅ COMPLETE / BASELINE DECIDED
 Day 7 preparation            → ✅ CLOSED
+Day 8 implementation        → ✅ CLOSED
 ```
 
 The Node 2 decision sequence is complete:
@@ -146,167 +147,93 @@ Experimental localhost Driver-ID login
 → do not push as Node 2 implementation
 ```
 
-The investigation found the following Node 2 gaps in the current baseline:
-
-```text
-Q1 atomic Auth User → Freight Identity creation → MISSING
-Q2 live Active Gate → MISSING
-Q4 generic Freight Identity anchor → MISSING
-Q6 current service-role signup boundary → REQUIRES REWORK
-```
-
-The existing Supabase SSR/Middleware foundation and native Supabase Auth rate limiting are retained as the starting points for Q3/Q5 implementation, subject to the locked acceptance criteria.
-
-### Reconciliation safety rule
-
-Do not blindly reset/delete local work until the actual local working-tree state is confirmed.
-
-Do not push the experimental Driver-ID login changes.
-
-Do not apply the experimental Driver-Code migration as part of the current Node 2 baseline.
-
-The Vercel deployment commit could not be directly verified from the available environment during reconciliation and therefore remains `UNKNOWN` unless later confirmed from deployment metadata.
-
 ## Chat14 — Day 7 Controlled Cleanup + Node 2 Implementation Preparation
 
-**Status: ✅ CLOSED — Day 7 preparation completed; Node 2 implementation remains next.**
+**Status: ✅ CLOSED**
 
-Day 7 completed the controlled baseline cleanup, current-source investigation, Node 2 implementation planning, and architecture clarification required before execution.
+Day 7 completed controlled baseline cleanup, current-source investigation, Node 2 implementation planning, and architecture clarification required before execution.
 
-### 1. Controlled local authentication experiment cleanup
+The earlier Driver-ID-as-login experiment was explicitly superseded. Driver Code / Driver ID is not an authentication credential in the active architecture.
 
-The local source tree was inspected before modification and contained exactly the five previously identified experimental Driver-ID changes:
+## Chat15 — Day 8 Node 2 Implementation + Acceptance
 
-```text
-- src/db/migrations/004_auto_generate_driver_code.sql
-- src/app/api/auth/signup/route.ts
-- src/app/api/auth/login/route.ts
-- src/app/signup/page.tsx
-- src/app/login/page.tsx
-```
+**Status: ✅ CLOSED — Node 2 Authentication + Identity implementation accepted.**
 
-Only those five changes were removed/reverted.
+Day 8 completed the implementation and Ayush manual acceptance of the Company/Driver authentication, onboarding, verification, reviewer, and role-aware access flow.
 
-Verification after cleanup established:
+### Driver path — VERIFIED
 
 ```text
-Local working tree = origin/main
-No unrelated local work modified
-No cleanup commit created
-No cleanup push performed
+Driver signup
+→ Email + Password
+→ DRIVER selected
+→ Driving Licence upload
+→ PENDING verification
+→ Reviewer Queue
+→ Review evidence
+→ APPROVE / REJECT
+→ Verified Driver
+→ Driver Dashboard
 ```
 
-Implementation report:
-
-`03_IMPLEMENTATION/implementation_reports/Chat14_Day7_Report_Controlled_Local_Auth_Experiment_Cleanup.md`
-
-### 2. Current source investigation
-
-The current `freight_hackathon` GitHub `main` baseline was investigated for Node 2 implementation readiness.
-
-Confirmed baseline gaps:
+### Company path — VERIFIED
 
 ```text
-freight_identities → MISSING
-Auth-trigger identity creation → MISSING
-Reusable Freight Identity resolver → MISSING
-Complete verification/Active Gate → MISSING
-Minimum verifier workflow → MISSING
+Company signup
+→ Email + Password
+→ COMPANY selected
+→ GST upload
+→ PENDING verification
+→ Reviewer Queue
+→ Review evidence
+→ APPROVE / REJECT
+→ Verified Company
+→ Company Dashboard
 ```
 
-The existing email/password Supabase Auth foundation remains the baseline.
+### Reviewer workflow — VERIFIED
 
-### 3. Node 2 implementation plan
-
-The Node 2 implementation plan was reviewed and updated to include the approved minimum verifier workflow:
+The minimum reviewer workflow is operational:
 
 ```text
-Email + Password signup
-        ↓
-Supabase Auth
-        ↓
-Freight Identity
-        ↓
-PENDING
-        ↓
-Authorized Verifier/Admin
-        ↓
-Review submitted documents
-        ↓
-Approve / Reject + reason
-        ↓
-Server-controlled verification_status / trusted_role
-        ↓
-Verified user passes Active Gate
+Authorized reviewer
+→ Reviewer Queue
+→ Open/View evidence
+→ Approve OR Reject + reason
+→ Verification state changes
+→ Role-aware access outcome
 ```
 
-Full Admin Dashboard functionality is deferred; Node 2 only includes the minimum verification interface required by the locked project model.
+Ayush manually rejected a Driver verification request with a rejection reason and verified the user reached the **Application Rejected** state.
 
-Plan:
+### Evidence upload — VERIFIED
 
-`03_IMPLEMENTATION/plans/Chat14_Day7_Node2_Authentication_Identity_Implementation_Plan.md`
+The manual test confirmed onboarding evidence is uploaded as an actual file and is stored in the Supabase onboarding evidence Storage bucket. Reviewer access is provided through the application review flow rather than exposing the stored object publicly.
 
-### 4. Driver ID / Driver Code architecture clarification
-
-The earlier Driver-ID-as-login design was explicitly superseded for the current Node 2 architecture.
-
-Historical decision remains preserved, but the active Node 2 architecture is:
+### Role-aware routing — VERIFIED
 
 ```text
-Email + Password
-        ↓
-Supabase Auth User
-        ↓
-Exactly 1 Freight Identity
-        ↓
-Company OR Driver
-        ↓
-verification_status
-        ↓
-trusted_role
+Verified Driver → Driver Dashboard
+Verified Company → Company Dashboard
 ```
 
-Driver Code / Driver ID is not an authentication credential and is not used to determine Company vs Driver in the current Node 2 architecture.
+### Login UI — FIXED / VERIFIED
 
-Superseding architecture record:
+The misleading hardcoded **Driver Login** heading was replaced with **Freight Login**, so the common authentication entry point is correct for both Driver and Company accounts.
 
-`02_ARCHITECTURE/Chat14_Day7_DriverID_Login_Decision_Superseded.md`
+### Node 2 completion checkpoint
 
-### 5. Node 2 implementation bridge
+`00_PROJECT_CONTROL/CHECKPOINTS/Chat15_Day8_Node2_Completion_Checkpoint.md`
 
-The implementation instruction for Antigravity is prepared in the GitHub Records bridge:
-
-`03_IMPLEMENTATION/prompts/Chat14_Day7_Node2_Authentication_Identity_Implementation.md`
-
-Implementation has **not** yet started.
-
-## Node 2 Implementation Boundary
-
-Authentication implementation must preserve the locked Node 2 decisions and include the minimum verification capability required for document verification.
-
-Minimum verifier workflow:
-
-```text
-Authorized verifier
-      ↓
-Pending verification submissions
-      ↓
-Review submitted documents
-      ↓
-Approve / Reject + reason
-      ↓
-Server-controlled verification_status / trusted_role update
-```
-
-This is a minimum verifier interface/workflow, not permission to create an unrelated full admin dashboard.
+The earlier Chat15 investigation recorded an intermediate implementation state. That investigation is historical and is superseded by the later implementation changes and Day 8 manual acceptance evidence recorded in the completion checkpoint.
 
 ## Active Roadmap Position
 
 ```text
 Historical Core MVP                  → IMPLEMENTED / VERIFIED
 Node 1 Product + Authorization       → 🔒 COMPLETE / LOCKED
-Node 2 Authentication + Identity     → 🟡 IMPLEMENTATION NEXT
-Node 3 Company Trip Creation         → FUTURE
+Node 2 Authentication + Identity     → 🔒 COMPLETE / ACCEPTED
+Node 3 Company Trip Creation         → NEXT
 Node 4 Driver Marketplace            → FUTURE
 Node 5 Whole Delivery Tracking       → FUTURE
 Node 6 Security + Evidence           → FUTURE
@@ -328,13 +255,14 @@ Node 7 → 3 days
 ## Hackathon Day Position
 
 ```text
-Day 1 → Core MVP foundation / implementation       ✅
-Day 2 → Core MVP completion                        ✅
-Day 3 → Security/product rework checkpoint         ✅
-Day 4 → Node 2 investigation/contract work         ✅
-Day 5 → Node 2 Q1–Q7 decision closure              ✅
-Day 6 → Node 2 codebase reconciliation / implementation preparation  ✅
-Day 7 → Controlled cleanup + Node 2 implementation preparation      ✅ CLOSED
+Day 1 → Core MVP foundation / implementation                       ✅
+Day 2 → Core MVP completion                                          ✅
+Day 3 → Security/product rework checkpoint                           ✅
+Day 4 → Node 2 investigation/contract work                           ✅
+Day 5 → Node 2 Q1–Q7 decision closure                                 ✅
+Day 6 → Node 2 codebase reconciliation / implementation preparation   ✅
+Day 7 → Controlled cleanup + Node 2 implementation preparation       ✅ CLOSED
+Day 8 → Node 2 implementation + manual acceptance                    ✅ CLOSED
 ```
 
 ## Execution Bridge
@@ -374,17 +302,17 @@ Q5 🔒
 Q6 🔒
 Q7 ✅ APPROVED
 
-Node 2 decision stage → ✅ COMPLETE
-Node 2 codebase reconciliation → ✅ COMPLETE
-Node 2 implementation plan → ✅ APPROVED
-Node 2 implementation → 🔨 NEXT
+Node 1 → 🔒 COMPLETE / LOCKED
+Node 2 decision stage       → ✅ COMPLETE
+Node 2 implementation       → ✅ COMPLETE / ACCEPTED
+Node 2 manual verification  → ✅ COMPLETE
 
 Day 7 → ✅ CLOSED
-Next session → Execute Node 2 Authentication + Identity implementation bridge
+Day 8 → ✅ CLOSED
+
+Next → Node 3 Company Trip Creation
 ```
 
 ## Next Action
 
-**Next session: give Antigravity the Node 2 implementation prompt through the GitHub Records bridge, let it execute the implementation, review the implementation report/evidence, run the required build/test checks, and then perform Ayush manual verification.**
-
-Do not reopen Q1–Q7 unless new evidence creates a genuine conflict. Do not move to Node 3 until Node 2 implementation and acceptance are complete.
+**Begin Node 3 — Company Trip Creation only after preserving the Node 2 completion checkpoint and implementation evidence. Do not reopen Node 2 unless new evidence creates a genuine conflict.**
