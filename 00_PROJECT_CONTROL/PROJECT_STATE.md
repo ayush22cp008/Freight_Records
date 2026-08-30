@@ -26,8 +26,8 @@ The historical Node map above is preserved. The active remaining hackathon execu
 | Active Node | Objective | Baseline | Status |
 |---|---|---:|---|
 | **Node 1** | Product + Authorization Rework | 2 days | 🔒 **COMPLETE / LOCKED** |
-| **Node 2** | Authentication + Identity | 3 days | 🔵 **ACTIVE DESIGN / NOT LOCKED** |
-| **Node 3** | Company Trip Creation + Publishing | 3 days | 🔵 FUTURE |
+| **Node 2** | Authentication + Identity | 3 days | 🔒 **COMPLETE / ACCEPTED** |
+| **Node 3** | Company Trip Creation + Publishing | 3 days | 🟡 **IMPLEMENTATION COMPLETE / ACCEPTANCE PENDING** |
 | **Node 4** | Driver Marketplace + Atomic Claim | 3 days | 🔵 FUTURE |
 | **Node 5** | Whole Delivery Tracking | 5 days | 🔵 FUTURE |
 | **Node 6** | Security + Evidence | 3 days | 🔵 FUTURE |
@@ -64,51 +64,18 @@ The locked identity invariant is:
 Role = Company OR Driver
 ```
 
-The final lock also states that authentication implementation remains paused until the Node 2 authentication contract is designed and independently reviewed.
-
 ## Node 2 — Authentication + Identity
 
 **Current state:**
 
 ```text
-Node 2 broad investigation          → COMPLETE
-Remaining auth evidence             → COMPLETE
-Signup/onboarding investigation     → COMPLETE
-Claude contract review              → COMPLETE
-Node 2 contract                     → DRAFT / NOT LOCKED
-Authentication implementation      → PAUSED
+Decision / architecture stage → COMPLETE
+Implementation stage          → COMPLETE / ACCEPTED
+Day 7 preparation             → CLOSED
+Day 8 implementation           → CLOSED
 ```
 
-Current contract draft:
-
-`02_ARCHITECTURE/Chat11_Node2_Authentication_Identity_Contract_DRAFT.md`
-
-Claude's independent review concluded that the contract was **NOT READY FOR LOCK** because several load-bearing decisions remain unresolved.
-
-### Remaining Node 2 decisions
-
-1. Signup / onboarding consistency
-2. Email-confirmation policy
-3. Session lifecycle / refresh
-4. One-user → one-identity enforcement mechanism
-5. Authentication rate-limiting policy
-6. RLS / service-role boundary for Node 2
-7. Final acceptance-test matrix
-
-### Signup / onboarding evidence checkpoint
-
-The targeted investigation established that current signup creates the Supabase Auth User and application identity through separate operations rather than one database transaction.
-
-A verified failure state is:
-
-```text
-Auth User EXISTS
-Application identity MISSING
-```
-
-The investigation also identifies a reverse orphan risk through the current `ON DELETE SET NULL` relationship.
-
-This is evidence for a design decision; it is not an implementation authorization.
+Node 2 was manually accepted and closed in the Chat15 Day 8 completion checkpoint.
 
 ## Security State
 
@@ -116,10 +83,59 @@ This is evidence for a design decision; it is not an implementation authorizatio
 RLS investigation                    → CLOSED / VERIFIED
 Rate-limiting architecture            → DECIDED
 IDOR / API authorization              → LOCKED BY NODE 1
-Authentication implementation          → PAUSED
+Authentication implementation          → COMPLETE / ACCEPTED
 ```
 
 Do not reopen RLS without new contradictory evidence.
+
+## Node 3 — Company Trip Creation + Publishing
+
+### Day 9 state
+
+```text
+Day 9 implementation phase → ✅ CLOSED
+Node 3 implementation       → ✅ COMPLETE / PUSHED
+Node 3 acceptance           → ⏳ PENDING
+```
+
+Day 9 work report:
+
+`00_PROJECT_CONTROL/Hackathon_Day_9_Work_Progress_Report.md`
+
+Investigation report:
+
+`03_IMPLEMENTATION/implementation_reports/Chat16_Day9_Node3_Current_Source_Investigation_Report.md`
+
+Authoritative implementation plan:
+
+`03_IMPLEMENTATION/plans/Chat16_Day9_Node3_Company_Trip_Creation_Publishing_Implementation_Plan.md`
+
+Implementation instruction:
+
+`03_IMPLEMENTATION/prompts/Chat16_Day9_Node3_Company_Trip_Creation_Publishing_Implementation.md`
+
+Implementation report:
+
+`03_IMPLEMENTATION/implementation_reports/Chat16_Day9_Node3_Company_Trip_Creation_Publishing_Implementation_Report.md`
+
+Source repository:
+
+`ayush22cp008/freight_hackathon`
+
+Implementation commit:
+
+`286a6c82f69a5c685b83a05cfc00c5c16b7d1dcb`
+
+### Remaining Node 3 acceptance gates
+
+```text
+Targeted security/behavior tests       → OPEN
+Full build/lint/test evidence          → OPEN
+Ayush manual verification               → OPEN
+Node 3 completion checkpoint            → OPEN
+```
+
+Node 3 must not be marked `COMPLETE` until the project completion rule is satisfied.
 
 ## Active State Transition
 
@@ -132,13 +148,11 @@ Chat8 product + security rework
         ↓
 ACTIVE 7-NODE ROADMAP
         ↓
-NODE 1 — Product + Authorization Rework
-        ↓
 NODE 1 FINAL LOCK
         ↓
-NODE 2 — Authentication + Identity
+NODE 2 COMPLETE / ACCEPTED
         ↓
-Contract design / investigation / decision
+NODE 3 IMPLEMENTATION COMPLETE / ACCEPTANCE PENDING
 ```
 
 ## Current Project State
@@ -147,8 +161,9 @@ Contract design / investigation / decision
 Historical Core MVP       → COMPLETE / VERIFIED
 Active roadmap             → 7 Nodes
 Node 1                     → COMPLETE / LOCKED
-Node 2                     → ACTIVE DESIGN / NOT LOCKED
-Authentication             → PAUSED
+Node 2                     → COMPLETE / ACCEPTED
+Node 3                     → IMPLEMENTATION COMPLETE / ACCEPTANCE PENDING
+Authentication             → COMPLETE / ACCEPTED
 RLS                        → CLOSED / VERIFIED
 Rate limiting architecture → DECIDED
 IDOR/API authorization     → LOCKED BY NODE 1
@@ -167,12 +182,6 @@ An active Node is `COMPLETE` only after:
 - Implementation report is recorded.
 
 Time passing alone does not complete a Node.
-
-## Checkpoint
-
-Chat11 checkpoint:
-
-`00_PROJECT_CONTROL/CHECKPOINTS/Chat11_Day4_Node2_Checkpoint.md`
 
 ## Record Routing
 
