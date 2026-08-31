@@ -27,55 +27,56 @@ The historical Node map above is preserved. The active remaining hackathon execu
 |---|---|---:|---|
 | **Node 1** | Product + Authorization Rework | 2 days | 🔒 **COMPLETE / LOCKED** |
 | **Node 2** | Authentication + Identity | 3 days | 🔒 **COMPLETE / ACCEPTED** |
-| **Node 3** | Company Trip Creation + Publishing | 3 days | 🟡 **IMPLEMENTATION COMPLETE / ACCEPTANCE PENDING** |
-| **Node 4** | Driver Marketplace + Atomic Claim | 3 days | 🔵 FUTURE |
-| **Node 5** | Whole Delivery Tracking | 5 days | 🔵 FUTURE |
-| **Node 6** | Security + Evidence | 3 days | 🔵 FUTURE |
-| **Node 7** | AI + Final Integration + Demo | 3 days | 🔵 FUTURE |
+| **Node 3** | Company Trip Creation + Publishing | 3 days | 🔒 **COMPLETE / ACCEPTED** |
+| **Node 4** | Driver Marketplace + Atomic Claim | 3 days | 🔒 **COMPLETE / ACCEPTED** |
+| **Node 5** | Whole Delivery Tracking | 5 days | 🔵 **FUTURE / NEXT** |
+| **Node 6** | Security + Evidence | 3 days | 🔵 **FUTURE** |
+| **Node 7** | AI + Final Integration + Demo | 3 days | 🔵 **FUTURE** |
 
 **Baseline:** 22 planned days. Durations are estimates; actual duration must be recorded after each Node.
 
-## Node 1 — Product + Authorization Rework
+## Node 4 — Driver Marketplace + Atomic Claim
 
-Node 1 is formally locked by:
-
-`01_BRAIN_HANDOFFS/ChatGPT/Chat10_Node1_FINAL_LOCK.md`
-
-That record states:
+### Final state
 
 ```text
-Node 1 Product Model                 → LOCKED
-Trip Lifecycle                       → LOCKED
-Delivery State Machine               → LOCKED
-Issues / Emergency Model             → LOCKED
-Evidence Model                       → LOCKED
-Authorization Matrix                 → LOCKED
-IDOR / API Authorization             → LOCKED
-Concurrency Rules                    → LOCKED
-Claude Independent Review            → APPROVED
-NODE 1                               → COMPLETE
+Node 4 → 🔒 COMPLETE / ACCEPTED
 ```
 
-The locked identity invariant is:
+Completion checkpoint:
+
+`00_PROJECT_CONTROL/CHECKPOINTS/Chat24_Node4_Completion_Checkpoint.md`
+
+### Verified scope
 
 ```text
-1 Auth User ↔ exactly 1 application identity
-1 Auth User ↔ exactly 1 application role
-Role = Company OR Driver
+Available published-trip discovery       → COMPLETE
+Trip evaluation/details                  → COMPLETE
+Driver acceptance                        → COMPLETE
+Atomic first-winner claim                → COMPLETE
+Assigned-driver persistence              → COMPLETE
+Losing-driver response                   → COMPLETE
+Server-side driver identity              → VERIFIED
+Client driver-ID manipulation prevention → VERIFIED
+Ayush concurrent manual verification     → COMPLETE
 ```
 
-## Node 2 — Authentication + Identity
+### Concurrency evidence
 
-**Current state:**
+Two authenticated driver sessions were used against the same published trip. Both attempted to claim the trip at approximately the same time. Exactly one driver succeeded; the other received the unavailable/already-claimed response. The winning driver received the claimed trip.
+
+The source investigation confirmed that the claim is enforced by a database conditional update requiring the trip to remain `published` and `driver_id IS NULL`, with the authenticated driver assigned server-side.
+
+### Automated test infrastructure
+
+The optional isolated local Supabase/Vitest automated concurrency infrastructure was investigated but not completed because it required additional local infrastructure/setup. No destructive concurrent test was performed against the production/shared database.
 
 ```text
-Decision / architecture stage → COMPLETE
-Implementation stage          → COMPLETE / ACCEPTED
-Day 7 preparation             → CLOSED
-Day 8 implementation           → CLOSED
+Automated race-test infrastructure → ⏸️ DEFERRED
+Manual concurrency verification    → ✅ ACCEPTED FOR NODE 4
 ```
 
-Node 2 was manually accepted and closed in the Chat15 Day 8 completion checkpoint.
+The automated test was not represented as passed. It may be added later as regression infrastructure if needed.
 
 ## Security State
 
@@ -84,75 +85,7 @@ RLS investigation                    → CLOSED / VERIFIED
 Rate-limiting architecture            → DECIDED
 IDOR / API authorization              → LOCKED BY NODE 1
 Authentication implementation          → COMPLETE / ACCEPTED
-```
-
-Do not reopen RLS without new contradictory evidence.
-
-## Node 3 — Company Trip Creation + Publishing
-
-### Day 9 state
-
-```text
-Day 9 implementation phase → ✅ CLOSED
-Node 3 implementation       → ✅ COMPLETE / PUSHED
-Node 3 acceptance           → ⏳ PENDING
-```
-
-Day 9 work report:
-
-`00_PROJECT_CONTROL/Hackathon_Day_9_Work_Progress_Report.md`
-
-Investigation report:
-
-`03_IMPLEMENTATION/implementation_reports/Chat16_Day9_Node3_Current_Source_Investigation_Report.md`
-
-Authoritative implementation plan:
-
-`03_IMPLEMENTATION/plans/Chat16_Day9_Node3_Company_Trip_Creation_Publishing_Implementation_Plan.md`
-
-Implementation instruction:
-
-`03_IMPLEMENTATION/prompts/Chat16_Day9_Node3_Company_Trip_Creation_Publishing_Implementation.md`
-
-Implementation report:
-
-`03_IMPLEMENTATION/implementation_reports/Chat16_Day9_Node3_Company_Trip_Creation_Publishing_Implementation_Report.md`
-
-Source repository:
-
-`ayush22cp008/freight_hackathon`
-
-Implementation commit:
-
-`286a6c82f69a5c685b83a05cfc00c5c16b7d1dcb`
-
-### Remaining Node 3 acceptance gates
-
-```text
-Targeted security/behavior tests       → OPEN
-Full build/lint/test evidence          → OPEN
-Ayush manual verification               → OPEN
-Node 3 completion checkpoint            → OPEN
-```
-
-Node 3 must not be marked `COMPLETE` until the project completion rule is satisfied.
-
-## Active State Transition
-
-```text
-Historical Core MVP
-        ↓
-IMPLEMENTED / VERIFIED
-        ↓
-Chat8 product + security rework
-        ↓
-ACTIVE 7-NODE ROADMAP
-        ↓
-NODE 1 FINAL LOCK
-        ↓
-NODE 2 COMPLETE / ACCEPTED
-        ↓
-NODE 3 IMPLEMENTATION COMPLETE / ACCEPTANCE PENDING
+Node 4 server-side claim identity      → VERIFIED
 ```
 
 ## Current Project State
@@ -162,7 +95,9 @@ Historical Core MVP       → COMPLETE / VERIFIED
 Active roadmap             → 7 Nodes
 Node 1                     → COMPLETE / LOCKED
 Node 2                     → COMPLETE / ACCEPTED
-Node 3                     → IMPLEMENTATION COMPLETE / ACCEPTANCE PENDING
+Node 3                     → COMPLETE / ACCEPTED
+Node 4                     → COMPLETE / ACCEPTED
+Node 5                     → FUTURE / NEXT
 Authentication             → COMPLETE / ACCEPTED
 RLS                        → CLOSED / VERIFIED
 Rate limiting architecture → DECIDED
@@ -181,7 +116,7 @@ An active Node is `COMPLETE` only after:
 - Ayush manual verification is complete.
 - Implementation report is recorded.
 
-Time passing alone does not complete a Node.
+For Node 4, the formal automated concurrency infrastructure was explicitly deferred and the real concurrent acceptance behavior was manually verified and recorded in the completion checkpoint.
 
 ## Record Routing
 
@@ -220,3 +155,7 @@ Project-control records:
 ```text
 00_PROJECT_CONTROL/
 ```
+
+## Next Action
+
+**Node 4 is closed. Proceed to Node 5 — Whole Delivery Tracking. Do not reopen Node 4 unless new evidence identifies a regression or a specific reviewer requirement requires formal automated concurrency regression tests.**
