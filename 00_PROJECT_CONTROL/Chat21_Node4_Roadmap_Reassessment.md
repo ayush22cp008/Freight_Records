@@ -1,7 +1,7 @@
 # Chat21 — Node 4 Roadmap Reassessment
 
 ## Status
-**REASSESSMENT REQUIRED — Node 4 remains OPEN**
+**DECISION LOCKED — OPTION A APPROVED — NODE 4 REMAINS OPEN**
 
 ## Trigger
 The active Node 4 roadmap explicitly includes concurrency/race-condition tests as a core task and its acceptance criteria require:
@@ -42,68 +42,77 @@ This is a scope/infrastructure conflict that cannot be silently waived.
 - Safe isolated Supabase integration-test environment: NOT configured.
 
 ## Conflict / decision point
-The previously recorded B+ decision to proceed without automated concurrency testing cannot override the authoritative Node 4 acceptance criteria. It is therefore **SUPERSEDED for purposes of Node 4 closure**.
+The earlier B+ decision to proceed without automated concurrency testing cannot override the authoritative Node 4 acceptance criteria. It is therefore **SUPERSEDED for purposes of Node 4 closure**.
 
-The roadmap must now explicitly choose between:
+## Decision
+**Option A — Build the minimal safe automated test infrastructure — is APPROVED.**
 
-### Option A — Build minimal safe automated test infrastructure
-Scope:
-1. Select the smallest suitable test runner for the existing Next.js/Supabase project.
-2. Establish a safe isolated test database/environment.
+This decision preserves the existing Node 4 acceptance criterion instead of weakening it.
+
+## Approved Subnode
+**Node 4 Subnode — Safe Automated Concurrency Test Infrastructure**
+
+Approved purpose:
+1. Select/configure the smallest suitable test runner.
+2. Establish a safe isolated Supabase test environment.
 3. Create controlled test identities/data.
 4. Implement one focused integration concurrency test against the real claim behavior.
 5. Add safe cleanup/teardown.
 6. Run the concurrency test plus applicable project checks.
 7. Record reproducible evidence.
 
-**Benefit:** Satisfies the existing Node 4 acceptance criterion without weakening it.
+## Constraints
+- Do not modify the production claim algorithm merely to make it testable.
+- Do not point destructive tests at the production database.
+- Do not expose or commit secrets.
+- Do not introduce multiple overlapping test frameworks.
+- Do not redesign marketplace, authentication, identity, or authorization architecture.
+- If major external infrastructure is unexpectedly required beyond this Subnode, stop and trigger explicit reassessment rather than silently expanding scope.
 
-**Cost/risk:** Adds testing infrastructure that was not present in the current project and may require additional setup/configuration work.
+## Expected time/scope
+This is an estimate only. Antigravity must establish the actual effort from the repository state before implementation.
 
-### Option B — Formally change the Node 4 acceptance criterion
-This would require an explicit roadmap/product decision to replace or defer the automated concurrency-test requirement and document the resulting evidence standard.
+Target:
+- **Minimal setup and focused test:** preferably within approximately 0.5–1 day of project work if a local/isolation path is practical.
+- If safe isolation requires materially more than this or introduces major infrastructure, report the variance before expanding scope.
 
-**Benefit:** Avoids infrastructure work.
+The estimate is intentionally bounded because the project should not turn Node 4 into a general testing-infrastructure project.
 
-**Cost/risk:** Weakens/changes an already locked core acceptance criterion and would need explicit justification. It must not be treated as an implementation shortcut.
+## Required Subnode completion evidence
+```text
+[ ] Safe isolated test environment established
+[ ] Test runner configured/minimally reused
+[ ] Two distinct valid driver identities available
+[ ] Same-trip claims execute concurrently
+[ ] Exactly 1 claim succeeds
+[ ] Exactly 1 claim fails
+[ ] Final trip status = claimed
+[ ] Final assignment = exactly 1 driver
+[ ] Test passes reproducibly
+[ ] Build/type/lint/test evidence recorded
+[ ] No production data was destructively tested
+[ ] Implementation report recorded
+```
 
-## Recommended direction
-**Recommend Option A.**
+## Node 4 remains open after Subnode completion
+The Subnode is an evidence-enablement milestone. It does not by itself close Node 4.
 
-The atomic first-valid acceptance requirement is a core Node 4 invariant, and automated concurrency evidence is explicitly required by the active roadmap. The smallest safe automated test infrastructure is therefore the technically correct route if the hackathon project can absorb the additional setup.
-
-However, implementation must remain controlled:
+After successful Subnode completion:
 
 ```text
-Reassessment → explicit approval/lock
-       ↓
-Minimal infrastructure design
-       ↓
-Implementation prompt through Records bridge
-       ↓
-Antigravity implementation
-       ↓
 Automated concurrency evidence
-       ↓
-Build/type/lint/test evidence
-       ↓
-Ayush manual verification
-       ↓
+        ↓
+Remaining Node 4 acceptance verification
+        ↓
+Ayush final verification
+        ↓
 Node 4 closure
 ```
 
-Do not modify production claim logic merely to make testing easier.
-Do not point destructive tests at the production database.
-Do not call the existing manual race test an automated test.
+## Subnode count / roadmap escalation
+This is the first formal Subnode under Node 4.
 
-## Subnode assessment
-A testing-infrastructure Subnode is justified **only if Option A is explicitly approved**, because establishing a safe automated integration-testing environment is significant unexpected work inside Node 4.
-
-Suggested name if approved:
-
-`Node 4 Subnode — Safe Automated Concurrency Test Infrastructure`
-
-This Subnode would not change the Node 4 atomic-claim requirement; it would provide the evidence mechanism required to satisfy it.
+If Node 4 reaches 3 or more Subnodes, trigger an explicit roadmap reassessment as required by the project rules.
 
 ## Current closure status
 
@@ -112,10 +121,10 @@ Node 4 implementation             → IMPLEMENTED / VERIFIED
 Atomic claim mechanism             → VERIFIED
 Manual race evidence               → VERIFIED
 Automated concurrency evidence     → MISSING
-Node 4 acceptance                  → OPEN
+Node 4 Subnode                     → APPROVED / ACTIVE
 Ayush final Node 4 verification    → OPEN
-Node 4 closure                     → BLOCKED pending decision/evidence
+Node 4 closure                     → OPEN
 ```
 
-## Important historical-record rule
-Do not rewrite or delete the earlier Chat20 decision. This reassessment supersedes its conclusion because the authoritative roadmap acceptance criterion was re-checked and found to require concurrency-test evidence.
+## Historical-record rule
+Do not delete or rewrite the earlier Chat20 decision. This reassessment supersedes its conclusion for Node 4 closure because the authoritative roadmap acceptance criterion requires concurrency-test evidence.
