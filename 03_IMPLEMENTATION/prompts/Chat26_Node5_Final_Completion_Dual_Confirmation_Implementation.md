@@ -37,10 +37,10 @@ The existing Node 5 schema migration already provides nullable trip-level timest
 
 ```text
 trips.driver_completion_confirmed_at
-tips.receiver_delivery_confirmed_at
+trips.receiver_delivery_confirmed_at
 ```
 
-Use the exact existing column name `receiver_delivery_confirmed_at` (correcting the typo above only if necessary in this prompt's reference; do not create a differently named field). The migration added both fields as `timestamptz`. Do not add another duplicate confirmation field.
+Use these exact existing column names. Do not create differently named or duplicate confirmation fields. The migration added both fields as `timestamptz`.
 
 ## Authoritative Records
 
@@ -170,13 +170,7 @@ Use the existing fields:
 
 ```text
 trips.driver_completion_confirmed_at
-tips.receiver_delivery_confirmed_at
-```
-
-Again, the correct second field is:
-
-```text
-receiver_delivery_confirmed_at
+trips.receiver_delivery_confirmed_at
 ```
 
 Both are nullable `timestamptz` fields already provided by the Node 5 schema migration.
