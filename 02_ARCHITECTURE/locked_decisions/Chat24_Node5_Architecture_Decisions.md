@@ -1,7 +1,7 @@
 # Chat24 — Node 5 Architecture Decisions
 
 ## Status
-Agreed conceptually by Ayush; pending final source/Records consistency review before implementation authorization.
+Q1–Q4 have been reviewed with Ayush. Q3 and Q4 were explicitly resolved in Chat25. Implementation remains unauthorized pending completion of the remaining 5.S1 design/evidence work and final source/Records consistency review.
 
 ## Decision 1 — Trip Status vs Detailed Events
 `trips.status` represents the trip's overall/major lifecycle state. The immutable `events` table represents detailed physical delivery milestones and evidence.
@@ -39,18 +39,23 @@ departure
 
 They are legacy historical records and must not be rewritten merely to support Node 5.
 
-New Node 5 lifecycle records use explicit canonical names:
+### Chat25 Resolution — Option A Approved
+
+Ayush explicitly selected **Option A** after review of the Claude consistency finding. The exact persisted event vocabulary for new Node 5 lifecycle records must follow the authoritative Node 1 FINAL LOCK literal names:
 
 ```text
-pickup_arrival
-pickup_checkin
-goods_loaded
-pickup_departure
-delivery_arrival
-receiver_checkin
-goods_unloaded
-delivery_departure
+ARRIVED_AT_PICKUP
+PICKUP_CHECKED_IN
+GOODS_LOADED
+PICKUP_DEPARTED
+IN_TRANSIT
+ARRIVED_AT_DELIVERY
+RECEIVER_CHECKED_IN
+GOODS_UNLOADED
+DELIVERY_DEPARTED
 ```
+
+The earlier Chat24 lowercase proposal (`pickup_arrival`, `pickup_checkin`, `goods_loaded`, etc.) is superseded for new Node 5 persisted lifecycle records and must not be implemented.
 
 The product should expose ONE unified detailed delivery UI/timeline. It should not show the old three-step UI and new detailed workflow as two simultaneous workflows.
 
@@ -59,15 +64,36 @@ The UI may map legacy records to the same user-facing labels used by the canonic
 New Node 5 writes must not create new ambiguous `arrival`, `checkin`, or `departure` records.
 
 ## Decision 4 — Uniqueness / Duplicate Protection
-Retain duplicate protection at the database level. The preferred strategy is to retain the equivalent of:
+
+### Chat25 Resolution — Option 1 Approved
+
+Ayush explicitly approved **Option 1: retain canonical lifecycle uniqueness and use a separate mechanism for repeatable evidence**.
+
+The canonical Node 5 lifecycle events are single-occurrence milestones within the single-delivery scope. Therefore retain database-level duplicate protection equivalent to:
 
 ```text
 UNIQUE (trip_id, event_type)
 ```
 
-provided final source/schema review confirms every canonical Node 5 event is legitimately single-occurrence within the single-delivery scope.
+for the canonical lifecycle event records.
 
-Canonical event names distinguish pickup and delivery milestones, allowing both `pickup_arrival` and `delivery_arrival` for one trip while preventing duplicate submissions of the same milestone.
+Canonical lifecycle examples include:
+
+```text
+ARRIVED_AT_PICKUP
+PICKUP_CHECKED_IN
+GOODS_LOADED
+PICKUP_DEPARTED
+IN_TRANSIT
+ARRIVED_AT_DELIVERY
+RECEIVER_CHECKED_IN
+GOODS_UNLOADED
+DELIVERY_DEPARTED
+```
+
+If the deferred/stretch **Repeatable Add Evidence** capability is implemented later, it must use a separate repeatable evidence mechanism rather than weakening or duplicating the canonical lifecycle event types.
+
+This preserves database-level protection against duplicate lifecycle milestones while allowing future repeatable evidence without abusing canonical event types.
 
 Database uniqueness is not authorization. State-transition and actor/relationship authorization must also be enforced server-side.
 
@@ -84,16 +110,28 @@ events
 → detailed physical delivery evidence
 ```
 
+## Q3 / Q4 Resolution State — Chat25
+
+```text
+Q3 event vocabulary → RESOLVED / OPTION A APPROVED
+Q4 uniqueness model → RESOLVED / OPTION 1 APPROVED
+```
+
+The decisions above are conceptually resolved by Ayush. Formal implementation readiness still requires the outstanding 5.S1 schema/design evidence and final source/Records consistency validation.
+
 ## Scope Boundary
 These decisions do not authorize implementation by themselves. Before implementation, ChatGPT must review the current source/schema evidence and resolve any conflict with existing locked records. Migration SQL, exact column names, exact API contracts, and implementation sequencing remain to be designed/authorized separately.
 
 ## Evidence
 - `00_PROJECT_CONTROL/ROADMAP.md`
 - `01_BRAIN_HANDOFFS/ChatGPT/Chat10_Node1_FINAL_LOCK.md`
+- `01_BRAIN_HANDOFFS/Claude/Node 5 Architecture Consistency Review — Chat24_Node5_Architecture_Decisions.md`
 - `03_IMPLEMENTATION/implementation_reports/Chat24_Node5_Current_Source_Investigation_Report.md`
-- `05_DEBUGGING/investigations/Chat24_Node5_S1_Delivery_Evidence_Schema_Migration_Design_Report.md`
+- `05_DEBUGGING/investigations/Chat24_Node5_S1_Delivery_Evidence_Schema_Migration_Design_Report.md` — currently missing; remains an evidence/path issue to resolve before implementation.
 
 ## Verification State
-- VERIFIED: Current schema limitations are evidenced by Chat24 investigation/design reports.
-- AGREED: Four conceptual directions were agreed with Ayush in Chat24.
-- PENDING: Final consistency review against authoritative source/Records before implementation authorization.
+- VERIFIED: Q3 Option A was explicitly selected by Ayush in Chat25.
+- VERIFIED: Q4 Option 1 was explicitly approved by Ayush in Chat25.
+- VERIFIED: The existing source/schema investigation identified the current `(trip_id, event_type)` uniqueness constraint.
+- AGREED: Canonical lifecycle milestones remain single-occurrence within the single-delivery scope; repeatable evidence is a separate deferred capability.
+- PENDING: Formal 5.S1 schema/design evidence and final source/Records consistency review before implementation authorization.
