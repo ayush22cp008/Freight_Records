@@ -21,16 +21,14 @@
 
 ## Active Execution Roadmap — 7 Nodes
 
-The historical Node map above is preserved. The active remaining hackathon execution follows the 7-Node roadmap established by the Chat8 product/security rework and finalized by the later roadmap review.
-
 | Active Node | Objective | Baseline | Status |
 |---|---|---:|---|
 | **Node 1** | Product + Authorization Rework | 2 days | 🔒 **COMPLETE / LOCKED** |
 | **Node 2** | Authentication + Identity | 3 days | 🔒 **COMPLETE / ACCEPTED** |
 | **Node 3** | Company Trip Creation + Publishing | 3 days | 🔒 **COMPLETE / ACCEPTED** |
 | **Node 4** | Driver Marketplace + Atomic Claim | 3 days | 🔒 **COMPLETE / ACCEPTED** |
-| **Node 5** | Whole Delivery Tracking | 5 days | 🔵 **FUTURE / NEXT** |
-| **Node 6** | Security + Evidence | 3 days | 🔵 **FUTURE** |
+| **Node 5** | Whole Delivery Tracking | 5 days | 🔒 **COMPLETE / ACCEPTED** |
+| **Node 6** | Security + Evidence | 3 days | 🔵 **FUTURE / NEXT** |
 | **Node 7** | AI + Final Integration + Demo | 3 days | 🔵 **FUTURE** |
 
 **Baseline:** 22 planned days. Durations are estimates; actual duration must be recorded after each Node.
@@ -47,36 +45,70 @@ Completion checkpoint:
 
 `00_PROJECT_CONTROL/CHECKPOINTS/Chat24_Node4_Completion_Checkpoint.md`
 
-### Verified scope
+The completed Node 4 scope and manual concurrency evidence remain preserved in the historical record.
+
+## Node 5 — Whole Delivery Tracking
+
+### Final state
 
 ```text
-Available published-trip discovery       → COMPLETE
-Trip evaluation/details                  → COMPLETE
-Driver acceptance                        → COMPLETE
-Atomic first-winner claim                → COMPLETE
-Assigned-driver persistence              → COMPLETE
-Losing-driver response                   → COMPLETE
-Server-side driver identity              → VERIFIED
-Client driver-ID manipulation prevention → VERIFIED
-Ayush concurrent manual verification     → COMPLETE
+Node 5 → 🔒 COMPLETE / ACCEPTED
 ```
 
-### Concurrency evidence
+Completion checkpoint:
 
-Two authenticated driver sessions were used against the same published trip. Both attempted to claim the trip at approximately the same time. Exactly one driver succeeded; the other received the unavailable/already-claimed response. The winning driver received the claimed trip.
+`00_PROJECT_CONTROL/CHECKPOINTS/Chat26_Node5_Completion_Checkpoint.md`
 
-The source investigation confirmed that the claim is enforced by a database conditional update requiring the trip to remain `published` and `driver_id IS NULL`, with the authenticated driver assigned server-side.
-
-### Automated test infrastructure
-
-The optional isolated local Supabase/Vitest automated concurrency infrastructure was investigated but not completed because it required additional local infrastructure/setup. No destructive concurrent test was performed against the production/shared database.
+### Core lifecycle verified
 
 ```text
-Automated race-test infrastructure → ⏸️ DEFERRED
-Manual concurrency verification    → ✅ ACCEPTED FOR NODE 4
+Pickup
+→ Arrival
+→ Check-in
+→ Load
+→ Depart
+→ In transit
+→ Destination
+→ Receiver Arrival
+→ Receiver Check-in
+→ Unload / Delivery
+→ Receiver confirmation
+→ Completed
 ```
 
-The automated test was not represented as passed. It may be added later as regression infrastructure if needed.
+### Acceptance evidence
+
+```text
+Canonical event schema/migration       → VERIFIED
+GOODS_LOADED                            → VERIFIED
+PICKUP_DEPARTED                         → VERIFIED
+IN_TRANSIT                              → VERIFIED
+ARRIVED_AT_DELIVERY                     → VERIFIED
+RECEIVER_CHECKED_IN                     → VERIFIED
+GOODS_UNLOADED                          → VERIFIED
+Final dual confirmation                 → VERIFIED
+Database completed status/timestamps    → VERIFIED
+Source synchronization                  → VERIFIED
+TypeScript check                        → PASSED (0 errors)
+Ayush manual verification               → COMPLETE
+Implementation report                   → RECORDED
+```
+
+Final completion was manually verified with receiving-company confirmation first and driver confirmation second. The trip reached `trips.status = completed`, with both completion confirmation timestamps recorded in the database.
+
+The final source synchronization reconciled the tested REST/PostgREST completion implementation with `freight_hackathon/main`. The completion routes no longer use the old RPC path, `009_node5_completion_rpc.sql` was deleted, and the synchronized source was committed/pushed at `f10df2b`.
+
+### Node 5 scope decision
+
+Node 5 is closed on the required single-delivery lifecycle. Optional stretch work was not required for closure:
+
+- Derived dwell-time display
+- Mandatory Check-in photo enhancement
+- Repeatable Add Evidence mid-trip event
+- Geofence proximity badge
+- Multiple-stop support
+
+These remain deferred rather than being represented as failed Node 5 requirements.
 
 ## Security State
 
@@ -86,6 +118,7 @@ Rate-limiting architecture            → DECIDED
 IDOR / API authorization              → LOCKED BY NODE 1
 Authentication implementation          → COMPLETE / ACCEPTED
 Node 4 server-side claim identity      → VERIFIED
+Node 5 completion actor authorization  → VERIFIED
 ```
 
 ## Current Project State
@@ -97,7 +130,9 @@ Node 1                     → COMPLETE / LOCKED
 Node 2                     → COMPLETE / ACCEPTED
 Node 3                     → COMPLETE / ACCEPTED
 Node 4                     → COMPLETE / ACCEPTED
-Node 5                     → FUTURE / NEXT
+Node 5                     → COMPLETE / ACCEPTED
+Node 6                     → FUTURE / NEXT
+Node 7                     → FUTURE
 Authentication             → COMPLETE / ACCEPTED
 RLS                        → CLOSED / VERIFIED
 Rate limiting architecture → DECIDED
@@ -116,7 +151,7 @@ An active Node is `COMPLETE` only after:
 - Ayush manual verification is complete.
 - Implementation report is recorded.
 
-For Node 4, the formal automated concurrency infrastructure was explicitly deferred and the real concurrent acceptance behavior was manually verified and recorded in the completion checkpoint.
+Node 5 satisfies the closure rule for its required single-delivery lifecycle. Optional stretch features are explicitly deferred.
 
 ## Record Routing
 
@@ -158,4 +193,4 @@ Project-control records:
 
 ## Next Action
 
-**Node 4 is closed. Proceed to Node 5 — Whole Delivery Tracking. Do not reopen Node 4 unless new evidence identifies a regression or a specific reviewer requirement requires formal automated concurrency regression tests.**
+**Node 5 is closed. Do not reopen Nodes 1–5 unless new evidence identifies a regression or a specific reviewer requirement. Proceed to Node 6 — Security + Evidence.**
