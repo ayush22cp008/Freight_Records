@@ -1,6 +1,6 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Aug 31, 2026 — Node 4 CLOSED / ACCEPTED
+**Last updated:** Sep 2, 2026 — Node 5 CLOSED / ACCEPTED
 
 ## Current Project Position
 
@@ -14,7 +14,7 @@ The original Core MVP remains preserved and verified:
 - AI evidence-grounded summary.
 - Production deployment and build verification were completed earlier.
 
-The active roadmap now extends that foundation into the broader Company → Driver → Receiver delivery product.
+The active roadmap extended that foundation into the broader Company → Driver → Receiver delivery product.
 
 ## Node 1 — Product + Authorization Rework
 
@@ -57,47 +57,68 @@ The completed Node 4 scope includes:
 - Server-side authenticated driver identity resolution.
 - Protection against client-supplied driver-ID manipulation.
 
-### Atomic claim verification
+## Node 5 — Whole Delivery Tracking
 
-The source investigation established the conditional database update:
+**Status: 🔒 COMPLETE / ACCEPTED**
 
-```text
-trip id = requested trip
-AND status = published
-AND driver_id IS NULL
-        ↓
-status = claimed
-        ↓
-driver_id = authenticated driver
-```
+Node 5 completion checkpoint:
 
-Ayush manually verified the real concurrent scenario using two driver sessions:
+`00_PROJECT_CONTROL/CHECKPOINTS/Chat26_Node5_Completion_Checkpoint.md`
+
+### Verified core lifecycle
 
 ```text
-Driver A sees Trip X
-Driver B sees Trip X
-        ↓
-Both attempt Claim Trip at approximately the same time
-        ↓
-Exactly ONE wins
-        ↓
-Winning driver gets the claimed trip
-Losing driver receives the unavailable/already-claimed response
+Pickup
+→ Arrival
+→ Check-in
+→ Load
+→ Depart
+→ In transit
+→ Destination
+→ Receiver Arrival
+→ Receiver Check-in
+→ Unload / Delivery
+→ Receiver confirmation
+→ Completed
 ```
 
-This satisfies the required first-valid acceptance behavior.
+### Node 5 acceptance evidence
 
-### Automated concurrency infrastructure decision
+- Canonical delivery-event schema/migration implemented and verified.
+- `GOODS_LOADED` manually verified.
+- `PICKUP_DEPARTED` manually verified.
+- `IN_TRANSIT` manually verified.
+- `ARRIVED_AT_DELIVERY` manually verified.
+- `RECEIVER_CHECKED_IN` manually verified.
+- `GOODS_UNLOADED` manually verified.
+- Final dual confirmation manually verified: receiving company confirmed first, driver confirmed second, and the trip reached `completed`.
+- Database verification recorded both completion confirmation timestamps and `trips.status = completed`.
+- Final completion source synchronization completed after the deployed/tested implementation was reconciled with `freight_hackathon/main`.
+- `npx tsc --noEmit` passed with 0 errors during the final source synchronization.
+- GitHub `freight_hackathon/main` was manually committed and pushed at commit `f10df2b`.
 
-A separate attempt to establish isolated local Supabase/Vitest automated race-test infrastructure was reviewed and stopped because it required additional infrastructure/setup.
+### Final completion source state
 
 ```text
-Formal automated concurrency test → ⏸️ DEFERRED
-Production destructive race test   → ❌ NOT PERFORMED
-Manual concurrent verification     → ✅ ACCEPTED FOR NODE 4
+Completion routes → REST/PostgREST confirmation logic
+RPC completion references → NONE
+009_node5_completion_rpc.sql → DELETED
+Local source ↔ GitHub main → SYNCHRONIZED
 ```
 
-The automated infrastructure is not represented as passed. It remains optional future regression infrastructure unless a reviewer specifically requires it.
+The final completion implementation retains server-side authorization and the `DELIVERY_DEPARTED` prerequisite check.
+
+### Node 5 stretch scope
+
+The following optional stretch items were not required for Node 5 closure:
+
+- Derived dwell-time display
+- Mandatory Check-in photo enhancement
+- Repeatable Add Evidence mid-trip event
+- Geofence proximity badge
+- Multiple-stop support
+
+Node 5 was closed on the reliable single-delivery lifecycle and its required acceptance criteria, not on optional stretch work.
 
 ## Active Roadmap Position
 
@@ -107,8 +128,8 @@ Node 1 Product + Authorization       → 🔒 COMPLETE / LOCKED
 Node 2 Authentication + Identity     → 🔒 COMPLETE / ACCEPTED
 Node 3 Company Trip Creation         → 🔒 COMPLETE / ACCEPTED
 Node 4 Driver Marketplace            → 🔒 COMPLETE / ACCEPTED
-Node 5 Whole Delivery Tracking       → FUTURE
-Node 6 Security + Evidence           → FUTURE
+Node 5 Whole Delivery Tracking       → 🔒 COMPLETE / ACCEPTED
+Node 6 Security + Evidence           → FUTURE / NEXT
 Node 7 AI + Final Integration + Demo → FUTURE
 ```
 
@@ -125,7 +146,9 @@ Day 7 → Controlled cleanup + Node 2 implementation preparation       ✅ CLOSE
 Day 8 → Node 2 implementation + manual acceptance                    ✅ CLOSED
 Day 9 → Node 3 implementation + source push                           ✅ CLOSED
 Day 10 → Reviewer + Password Recovery + Node 3 acceptance/closure     🔒 CLOSED
-Current → Node 4 completion / acceptance                               🔒 CLOSED
+Day 11 → Node 4 completion / acceptance                               🔒 CLOSED
+Day 12 → Node 5 completion / acceptance                               🔒 CLOSED
+Current → Node 6 Security + Evidence                                  🔵 NEXT
 ```
 
 ## Execution Bridge
@@ -161,15 +184,18 @@ Node 1 → 🔒 COMPLETE / LOCKED
 Node 2 → 🔒 COMPLETE / ACCEPTED
 Node 3 → 🔒 COMPLETE / ACCEPTED
 Node 4 → 🔒 COMPLETE / ACCEPTED
+Node 5 → 🔒 COMPLETE / ACCEPTED
 
 Day 7  → ✅ CLOSED
 Day 8  → ✅ CLOSED
 Day 9  → ✅ CLOSED
 Day 10 → 🔒 CLOSED
+Day 11 → 🔒 CLOSED
+Day 12 → 🔒 CLOSED
 
-Next → Node 5 Whole Delivery Tracking
+Next → Node 6 Security + Evidence
 ```
 
 ## Next Action
 
-**Node 4 is closed. Do not reopen Nodes 1–4 unless new evidence identifies a regression or a specific reviewer requirement. Proceed to Node 5 planning/investigation.**
+**Node 5 is closed. Do not reopen Nodes 1–5 unless new evidence identifies a regression or a specific reviewer requirement. Proceed to Node 6 — Security + Evidence.**
