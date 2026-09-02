@@ -1,6 +1,6 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Sep 2, 2026 — Node 5 CLOSED / ACCEPTED
+**Last updated:** Sep 2, 2026 — Node 5 CLOSED / ACCEPTED; post-Node-5 dashboard and historical AI-summary follow-ups verified
 
 ## Current Project Position
 
@@ -120,6 +120,53 @@ The following optional stretch items were not required for Node 5 closure:
 
 Node 5 was closed on the reliable single-delivery lifecycle and its required acceptance criteria, not on optional stretch work.
 
+## Post-Node-5 Follow-up Work — CLOSED / VERIFIED
+
+The dashboard and historical AI-summary issues identified during post-Node-5 testing have now been resolved without reopening Nodes 1–5.
+
+### Driver Dashboard / Trip History
+
+```text
+Available Trips              → VERIFIED
+My / Active Trip             → VERIFIED
+Past / Completed Trips       → IMPLEMENTED / MANUALLY VERIFIED
+Historical View Timeline     → IMPLEMENTED / MANUALLY VERIFIED
+```
+
+The completed-trip history is limited to the authenticated driver's own completed trips and provides a read-only `View Timeline` path using the exact historical trip ID.
+
+Dashboard implementation source commit:
+`662cc592d183b0bb9b85d2523245e84d71371860`
+
+### Historical AI Evidence Summary
+
+```text
+Exact historical trip selection       → VERIFIED
+Mixed legacy/canonical event support  → VERIFIED
+Canonical Arrival writer              → VERIFIED IN SOURCE
+Canonical Check-in writer             → VERIFIED IN SOURCE
+Historical AI Summary generation      → MANUALLY VERIFIED
+TypeScript check                      → PASSED (0 errors)
+```
+
+The historical mixed-event issue was caused by legacy `arrival`/`checkin` events combined with canonical Node 5 events. The final implementation accepts legacy or canonical Arrival/Check-in/Departure vocabulary independently while preserving authenticated-driver ownership. Future Arrival and Check-in writers now use `ARRIVED_AT_PICKUP` and `PICKUP_CHECKED_IN`.
+
+Historical AI-summary source commit:
+`1be527e381f8685094197c0946b7603012a8f58a`
+
+The manually verified historical flow is:
+
+```text
+Past / Completed Trips
+→ View Timeline
+→ Exact historical trip
+→ Complete 9-event lifecycle
+→ AI Evidence Summary
+→ SUCCESS
+```
+
+No AI prompt/model redesign, Node 4 claim-flow change, ownership redesign, or further dashboard redesign is required for these follow-ups.
+
 ## Active Roadmap Position
 
 ```text
@@ -129,6 +176,7 @@ Node 2 Authentication + Identity     → 🔒 COMPLETE / ACCEPTED
 Node 3 Company Trip Creation         → 🔒 COMPLETE / ACCEPTED
 Node 4 Driver Marketplace            → 🔒 COMPLETE / ACCEPTED
 Node 5 Whole Delivery Tracking       → 🔒 COMPLETE / ACCEPTED
+Post-Node-5 Dashboard/AI follow-ups  → ✅ CLOSED / VERIFIED
 Node 6 Security + Evidence           → FUTURE / NEXT
 Node 7 AI + Final Integration + Demo → FUTURE
 ```
@@ -148,6 +196,7 @@ Day 9 → Node 3 implementation + source push                           ✅ CLOS
 Day 10 → Reviewer + Password Recovery + Node 3 acceptance/closure     🔒 CLOSED
 Day 11 → Node 4 completion / acceptance                               🔒 CLOSED
 Day 12 → Node 5 completion / acceptance                               🔒 CLOSED
+Post-Node-5 → Dashboard + historical AI-summary follow-ups            ✅ CLOSED
 Current → Node 6 Security + Evidence                                  🔵 NEXT
 ```
 
@@ -185,6 +234,8 @@ Node 2 → 🔒 COMPLETE / ACCEPTED
 Node 3 → 🔒 COMPLETE / ACCEPTED
 Node 4 → 🔒 COMPLETE / ACCEPTED
 Node 5 → 🔒 COMPLETE / ACCEPTED
+Dashboard follow-up → ✅ CLOSED / VERIFIED
+Historical AI-summary follow-up → ✅ CLOSED / VERIFIED
 
 Day 7  → ✅ CLOSED
 Day 8  → ✅ CLOSED
@@ -198,4 +249,4 @@ Next → Node 6 Security + Evidence
 
 ## Next Action
 
-**Node 5 is closed. Do not reopen Nodes 1–5 unless new evidence identifies a regression or a specific reviewer requirement. Proceed to Node 6 — Security + Evidence.**
+**Post-Node-5 dashboard and historical AI-summary follow-ups are closed. Do not reopen Nodes 1–5 unless new evidence identifies a regression or a specific reviewer requirement. Proceed to Node 6 — Security + Evidence.**
