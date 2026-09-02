@@ -1,6 +1,6 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Sep 2, 2026 — Node 5 CLOSED / ACCEPTED; post-Node-5 dashboard and historical AI-summary follow-ups verified
+**Last updated:** Sep 2, 2026 — Node 6 CLOSED / ACCEPTED; security + evidence technical verification passed and Ayush approved closure
 
 ## Current Project Position
 
@@ -167,6 +167,37 @@ Past / Completed Trips
 
 No AI prompt/model redesign, Node 4 claim-flow change, ownership redesign, or further dashboard redesign is required for these follow-ups.
 
+## Node 6 — Security + Evidence
+
+**Status: 🔒 COMPLETE / ACCEPTED**
+
+Node 6 completion checkpoint:
+
+`00_PROJECT_CONTROL/CHECKPOINTS/Chat28_Node6_Completion_Checkpoint.md`
+
+### Technical verification
+
+Formal Chat28 verification was completed against the current implementation. The verification report records:
+
+- IDOR attack paths → VERIFIED
+- Every privileged API route explicitly authorized → VERIFIED
+- Driver assignment boundary → VERIFIED
+- Company relationship boundary → VERIFIED
+- Atomic claim security → VERIFIED
+- Evidence immutability → VERIFIED
+- Rate limiting → VERIFIED
+- Security test results → VERIFIED
+- Failed security gaps → NONE
+- `npx tsc --noEmit` → PASSED, Exit Code 0
+
+The verified privileged API inventory includes event routes, driver/receiver completion routes, trip claim/publish routes, and `/api/summary`.
+
+### Manual acceptance
+
+Ayush explicitly approved Node 6 completion after review of the Chat28 verification result.
+
+Therefore the Node 6 completion gate is satisfied.
+
 ## Active Roadmap Position
 
 ```text
@@ -177,8 +208,8 @@ Node 3 Company Trip Creation         → 🔒 COMPLETE / ACCEPTED
 Node 4 Driver Marketplace            → 🔒 COMPLETE / ACCEPTED
 Node 5 Whole Delivery Tracking       → 🔒 COMPLETE / ACCEPTED
 Post-Node-5 Dashboard/AI follow-ups  → ✅ CLOSED / VERIFIED
-Node 6 Security + Evidence           → FUTURE / NEXT
-Node 7 AI + Final Integration + Demo → FUTURE
+Node 6 Security + Evidence           → 🔒 COMPLETE / ACCEPTED
+Node 7 AI + Final Integration + Demo → 🔵 NEXT
 ```
 
 ## Hackathon Day Position
@@ -197,7 +228,8 @@ Day 10 → Reviewer + Password Recovery + Node 3 acceptance/closure     🔒 CLO
 Day 11 → Node 4 completion / acceptance                               🔒 CLOSED
 Day 12 → Node 5 completion / acceptance                               🔒 CLOSED
 Post-Node-5 → Dashboard + historical AI-summary follow-ups            ✅ CLOSED
-Current → Node 6 Security + Evidence                                  🔵 NEXT
+Current → Node 6 Security + Evidence                                  🔒 CLOSED
+Next → Node 7 AI + Final Integration + Demo                            🔵 NEXT
 ```
 
 ## Execution Bridge
@@ -236,6 +268,7 @@ Node 4 → 🔒 COMPLETE / ACCEPTED
 Node 5 → 🔒 COMPLETE / ACCEPTED
 Dashboard follow-up → ✅ CLOSED / VERIFIED
 Historical AI-summary follow-up → ✅ CLOSED / VERIFIED
+Node 6 → 🔒 COMPLETE / ACCEPTED
 
 Day 7  → ✅ CLOSED
 Day 8  → ✅ CLOSED
@@ -244,9 +277,9 @@ Day 10 → 🔒 CLOSED
 Day 11 → 🔒 CLOSED
 Day 12 → 🔒 CLOSED
 
-Next → Node 6 Security + Evidence
+Next → Node 7 AI + Final Integration + Demo
 ```
 
 ## Next Action
 
-**Post-Node-5 dashboard and historical AI-summary follow-ups are closed. Do not reopen Nodes 1–5 unless new evidence identifies a regression or a specific reviewer requirement. Proceed to Node 6 — Security + Evidence.**
+**Node 6 Security + Evidence is closed after technical verification and Ayush approval. Do not reopen Nodes 1–6 unless new evidence identifies a regression or a specific reviewer requirement. Proceed to Node 7 — AI + Final Integration + Demo.**
