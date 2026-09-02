@@ -3,7 +3,7 @@
 **Project:** Freight — AI Builders Hackathon  
 **Investigation:** Driver Dashboard enhancement after Node 5 closure  
 **Date:** September 2, 2026  
-**Status:** INVESTIGATION COMPLETE — implementation not authorized by this file alone  
+**Status:** CLOSED — implementation and manual verification complete  
 **Scope:** Driver Dashboard / trip-history UX only
 
 ## 1. Purpose
@@ -14,7 +14,7 @@ This investigation must not reopen Node 4 atomic claiming or change the locked t
 
 ## 2. Records Basis
 
-The authoritative Node 5 execution checkpoint records the future dashboard requirement as:
+The authoritative Node 5 execution checkpoint recorded the future dashboard structure as:
 
 ```text
 Driver Dashboard
@@ -23,109 +23,18 @@ Driver Dashboard
 └── Past / Completed Trips
 ```
 
-The same checkpoint explicitly defers this work until Node 5 is formally completed and accepted so it does not mix with or reopen the already-closed Node 4 scope.
+The same checkpoint explicitly deferred this work until Node 5 was formally completed and accepted so it did not mix with or reopen the already-closed Node 4 scope.
 
 Reference record:
 `00_PROJECT_CONTROL/CHECKPOINTS/Chat25_Node5_Execution_Checkpoint.md`
 
-## 3. Current Source Observation
+## 3. Initial Source Observation
 
-Current source inspected:
-`src/app/(authenticated)/page.tsx`
+The initial investigation found that Available Trips and My / Active Trip already existed, while a dedicated Past / Completed Trips section was missing. The gap was classified as a dashboard UX/history feature gap rather than a Node 4 claiming defect.
 
-Source revision inspected:
-`f10df2b8aab1df681e368074c50f76e251c354b4`
+## 4. Implemented Result
 
-### 3.1 Authentication / role routing
-
-The authenticated root route currently:
-
-- redirects unauthenticated users to `/login`;
-- gives reviewer authorization priority and redirects reviewers to `/reviewer/queue`;
-- resolves the Freight identity and verification state;
-- renders a company dashboard for verified company identities;
-- otherwise renders the driver dashboard.
-
-### 3.2 Available Trips
-
-When the driver has no active trip, the dashboard queries published trips where `driver_id` is null and renders an **Available Trips** list.
-
-The current cards expose:
-
-- pickup/facility name;
-- destination name;
-- distance;
-- duration;
-- payout;
-- the existing `ClaimTripButton`.
-
-This confirms that available-trip discovery and the existing claim entry point already exist in the current dashboard.
-
-### 3.3 My / Active Trip
-
-When the authenticated driver has an active/claimed/in-progress trip, the dashboard queries the driver's trip and derives the next workflow action from stored event evidence.
-
-The current state machine covers the expanded Node 5 lifecycle, including:
-
-```text
-Arrival
-→ Check-in
-→ Goods Loaded
-→ Pickup Departure
-→ In Transit
-→ Arrival at Delivery
-→ Receiver Check-in
-→ Goods Unloaded
-→ Delivery Departed
-→ Driver / Receiver completion
-```
-
-The dashboard therefore already functions as the driver's workflow controller for the current trip.
-
-### 3.4 Past / Completed Trips
-
-The current driver-dashboard implementation does **not** provide a dedicated past/completed-trip section.
-
-The active-trip lookup intentionally filters to:
-
-```text
-active
-claimed
-in_progress
-```
-
-When no such trip exists, the current branch switches to Available Trips. There is no corresponding completed-trip query or historical-trip section in the inspected dashboard source.
-
-## 4. Evidence
-
-### Evidence A — Records requirement
-
-`Chat25_Node5_Execution_Checkpoint.md` explicitly records the future dashboard structure as Available Trips, My / Active Trip, and Past / Completed Trips, and states that dashboard work is deferred until after Node 5 acceptance.
-
-### Evidence B — Current source
-
-`src/app/(authenticated)/page.tsx` contains:
-
-- a published-trip query for the no-active-trip branch;
-- an active/claimed/in-progress trip query for the active workflow branch;
-- event-derived next-action logic for the active trip;
-- no dedicated query/render path for completed historical trips.
-
-### Evidence C — Node boundary
-
-Node 4 remains closed. The dashboard enhancement is therefore a UX/history presentation change and must preserve the existing server-side atomic claim behavior and authenticated driver identity boundaries.
-
-## 5. Root Cause / Gap
-
-**Root cause:** The current dashboard was designed primarily as a workflow controller and marketplace entry point. It does not yet expose a historical view for trips that have left the active lifecycle.
-
-This is a **feature/UX gap**, not evidence of a Node 4 claiming defect.
-
-## 6. Decision
-
-Proceed with a separate Driver Dashboard / trip-history UX implementation after the Node 5 closure already recorded in the current project state.
-
-The minimum target structure is:
+The Driver Dashboard was updated in `src/app/(authenticated)/page.tsx` to provide the intended unified structure:
 
 ```text
 Driver Dashboard
@@ -136,81 +45,98 @@ Driver Dashboard
 │   └── Current claimed/in-progress trip + next required action
 │
 └── Past / Completed Trips
-    └── Trips historically assigned to this authenticated driver
+    └── Completed trips historically assigned to this authenticated driver
 ```
 
-The implementation should reuse existing authorization and identity rules rather than introducing a second ownership mechanism.
-
-## 7. Non-Goals / Locked Boundaries
-
-Do **not**:
-
-- reopen or redesign Node 4 atomic claiming;
-- change who is eligible to claim a trip;
-- trust a client-supplied driver ID for historical-trip access;
-- introduce a second source of truth for trip ownership;
-- alter the canonical Node 5 event lifecycle;
-- add unrelated dashboard features without a separate investigation;
-- bypass the Dashboard's role/state architecture;
-- make the dashboard responsible for changing trip state directly.
-
-## 8. Implementation Questions for the Next Plan
-
-Before implementation, the implementation plan should resolve:
-
-1. Which completed/historical trip fields should be displayed in the compact history card.
-2. Whether completed trips should link to the existing Timeline and/or another read-only trip detail view.
-3. How many historical trips should be loaded initially and whether ordering should be newest-first.
-4. Whether non-completed historical states need a separate section or remain covered by My / Active Trip.
-5. How the query preserves authenticated-driver ownership without accepting a client-selected driver identity.
-6. Whether the current root route should remain one server component or be split into dashboard subcomponents for maintainability.
-7. Whether company/reviewer dashboard behavior in the same root route should remain unchanged.
-
-## 9. Required Verification After Implementation
-
-The implementation must be manually verified by Ayush with evidence for at least:
+The completed-history query is server-side and constrained by the authenticated driver's server-resolved `driverId`:
 
 ```text
-1. Driver with published trips and no active trip
-   → Available Trips shown
-
-2. Driver with an active/claimed/in-progress trip
-   → My / Active Trip shown
-   → existing next-event workflow remains correct
-
-3. Driver with completed historical trip(s)
-   → Past / Completed Trips shown
-   → only that authenticated driver's history is exposed
-
-4. Driver with no completed history
-   → empty-state shown cleanly
-
-5. Existing Node 5 active workflow
-   → unchanged
-
-6. Existing claim flow
-   → unchanged
+.eq('driver_id', driverId)
+.eq('status', 'completed')
+.order('created_at', { ascending: false })
+.limit(10)
 ```
 
-Build/type-check evidence must also be recorded after implementation.
+Each historical card exposes pickup, dropoff, distance, duration, payout, and a `View Timeline` action using the exact completed-trip `tripId`.
 
-## 10. Current Investigation Status
+Source commit for the dashboard history implementation:
+`662cc592d183b0bb9b85d2523245e84d71371860`
+
+## 5. Historical Timeline Selection
+
+The historical `View Timeline` action was initially found to fail because the Timeline did not preserve the selected `tripId`. That issue was separately investigated and fixed.
+
+The Timeline now accepts the URL `tripId`, selects that exact trip while retaining the authenticated driver's ownership constraint, and falls back to the driver's active trip when no `tripId` is supplied.
+
+Implementation report:
+`03_IMPLEMENTATION/implementation_reports/Driver_Dashboard_Trip_History_Timeline_Selection_Implementation_Report.md`
+
+## 6. Historical AI Evidence Summary
+
+The historical Timeline → AI Evidence Summary flow was subsequently investigated because an existing completed trip contained mixed legacy/canonical event vocabulary.
+
+The fix:
+
+- preserves exact historical `tripId` selection;
+- preserves server-resolved authenticated-driver ownership;
+- accepts legacy or canonical Arrival/Check-in/Departure vocabulary independently;
+- canonicalizes future Arrival and Check-in event writers to `ARRIVED_AT_PICKUP` and `PICKUP_CHECKED_IN`.
+
+Implementation report:
+`03_IMPLEMENTATION/implementation_reports/Driver_Dashboard_Historical_Trip_AI_Summary_Mixed_Event_Vocabulary_Implementation_Report.md`
+
+Source commit:
+`1be527e381f8685094197c0946b7603012a8f58a`
+
+## 7. Manual Verification Result
+
+Ayush manually verified the affected historical completed trip through the deployed application:
 
 ```text
-Records requirement identified       → VERIFIED
-Current dashboard source inspected   → VERIFIED
-Available Trips capability            → VERIFIED / EXISTS
-My / Active Trip capability           → VERIFIED / EXISTS
-Past / Completed Trips                → VERIFIED / MISSING
-Root cause                            → VERIFIED AS UX/FEATURE GAP
-Node 4 regression                     → NOT INDICATED
-Implementation plan                   → REMAINING
-Implementation instruction             → REMAINING
-Implementation                        → NOT STARTED
-Build/test                            → REMAINING
-Ayush manual verification             → REMAINING
+Past / Completed Trips
+        ↓
+View Timeline
+        ↓
+Exact historical trip selected by tripId
+        ↓
+Complete 9-event Node 5 timeline visible
+        ↓
+AI Evidence Summary generated successfully
 ```
 
-## 11. Recommended Next Step
+The previously observed error:
 
-Create a small implementation plan from this investigation, limited to the Driver Dashboard sections and trip-history presentation. After plan review and Ayush approval, create the Antigravity implementation instruction under `03_IMPLEMENTATION/prompts/`.
+```text
+Evidence summary requires the completed event sequence (Arrival, Check-in, Departure).
+```
+
+was no longer shown. The generated summary successfully described the recorded nine-event lifecycle.
+
+## 8. Verification Status
+
+```text
+Available Trips                    → VERIFIED / EXISTS
+My / Active Trip                   → VERIFIED / EXISTS
+Past / Completed Trips              → IMPLEMENTED / VERIFIED
+Historical View Timeline            → IMPLEMENTED / VERIFIED
+Exact tripId selection              → IMPLEMENTED / VERIFIED
+Historical AI Evidence Summary      → IMPLEMENTED / MANUALLY VERIFIED
+Authenticated driver ownership      → PRESERVED / VERIFIED IN SOURCE
+TypeScript check                    → PASSED (0 errors)
+Dashboard redesign required        → NO
+Node 4 reopening required           → NO
+```
+
+## 9. Scope Closure
+
+The Driver Dashboard / trip-history UX requirement identified after Node 5 is now functionally complete for its approved scope. No additional dashboard redesign is required before proceeding to Node 6.
+
+This work does not reopen Node 4 and does not alter the Node 5 lifecycle architecture.
+
+## 10. Next Action
+
+Close this dashboard investigation and proceed with the authoritative roadmap next step:
+
+```text
+Node 6 — Security + Evidence
+```
