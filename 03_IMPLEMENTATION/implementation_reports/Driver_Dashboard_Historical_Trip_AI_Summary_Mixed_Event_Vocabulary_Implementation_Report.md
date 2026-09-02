@@ -15,9 +15,16 @@ We successfully implemented the combined normalization and canonicalization stra
 - The AI prompt and its reliance on deterministic, verified timeline evidence remains structurally intact. The AI accurately summarizes trips based purely on the `event_type` strings it receives.
 
 ## 4. Verification
-- **Command:** `npx tsc --noEmit`
-- **Result:** PASS (Exit code 0, no type errors).
+- **TypeScript:** `npx tsc --noEmit` → PASS (Exit code 0, no type errors).
+- **Source verification:** The implementation is present on `freight_hackathon/main` in commit `1be527e381f8685094197c0946b7603012a8f58a` (`fix(summary): normalize legacy and canonical events for AI summary`).
+- **Historical mixed-event manual verification:** PASS. The previously failing historical completed trip was opened through its exact `tripId`; the Timeline displayed the complete nine-event lifecycle and the AI Evidence Summary generated successfully.
+- **AI Summary result:** The summary successfully described Arrival, Check-in, Goods Loaded, Pickup Departed, In Transit, Arrived at Delivery, Receiver Checked In, Goods Unloaded, and Delivery Departed without the previous incomplete-sequence error.
+- **Historical Timeline selection:** PASS. The exact completed-trip Timeline flow remains functional and displays the selected historical trip.
+- **Security boundary:** The source continues to constrain summary trip lookup by the server-resolved authenticated driver's `driver_id`.
 
 ## 5. Status & Push
-- **Status:** IMPLEMENTED
-- **Push:** NO (Changes committed locally but not pushed to GitHub, pending Ayush's manual authorization per standard procedures).
+- **Status:** IMPLEMENTED / MANUALLY VERIFIED
+- **Push:** YES — source is present on `freight_hackathon/main` at commit `1be527e381f8685094197c0946b7603012a8f58a`.
+
+## 6. Scope Closure
+This mixed-event historical AI Summary issue is functionally resolved. No AI prompt/model redesign, ownership redesign, Node 4 claim-flow change, or dashboard redesign is required for this issue. The Driver Dashboard / historical-trip UX scope is separately complete, and the project can proceed to Node 6 Security + Evidence.
