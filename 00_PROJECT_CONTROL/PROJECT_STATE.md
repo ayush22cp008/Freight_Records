@@ -28,8 +28,8 @@
 | **Node 3** | Company Trip Creation + Publishing | 3 days | 🔒 **COMPLETE / ACCEPTED** |
 | **Node 4** | Driver Marketplace + Atomic Claim | 3 days | 🔒 **COMPLETE / ACCEPTED** |
 | **Node 5** | Whole Delivery Tracking | 5 days | 🔒 **COMPLETE / ACCEPTED** |
-| **Node 6** | Security + Evidence | 3 days | 🔵 **FUTURE / NEXT** |
-| **Node 7** | AI + Final Integration + Demo | 3 days | 🔵 **FUTURE** |
+| **Node 6** | Security + Evidence | 3 days | 🔒 **COMPLETE / ACCEPTED** |
+| **Node 7** | AI + Final Integration + Demo | 3 days | 🔵 **NEXT** |
 
 **Baseline:** 22 planned days. Durations are estimates; actual duration must be recorded after each Node.
 
@@ -157,15 +157,52 @@ Past / Completed Trips
 
 No AI prompt/model redesign, Node 4 claim-flow change, ownership redesign, or further dashboard redesign is required for these follow-ups.
 
+## Node 6 — Security + Evidence
+
+### Final state
+
+```text
+Node 6 → 🔒 COMPLETE / ACCEPTED
+```
+
+Completion checkpoint:
+
+`00_PROJECT_CONTROL/CHECKPOINTS/Chat28_Node6_Completion_Checkpoint.md`
+
+Verification report:
+
+`03_IMPLEMENTATION/implementation_reports/Chat28_Node6_Security_Evidence_Verification_Report.md`
+
+### Acceptance evidence
+
+```text
+IDOR attack paths blocked                    → VERIFIED
+Every privileged API route explicitly authorized → VERIFIED
+Driver assignment boundary enforced          → VERIFIED
+Company relationship boundary enforced       → VERIFIED
+Atomic claim remains secure                  → VERIFIED
+Evidence remains immutable                   → VERIFIED
+Rate limiting verified                       → VERIFIED
+Security test results recorded               → VERIFIED
+Ayush manual verification                    → APPROVED
+Security gaps found                          → NONE
+TypeScript check                             → PASSED (0 errors)
+```
+
+The formal verification confirmed server-side authenticated identity resolution, driver assignment enforcement, company relationship enforcement, wrong-role/unauthenticated rejection, state/actor prerequisites, duplicate/replay protection, atomic claim behavior, and append-only evidence behavior across the verified privileged API surface.
+
+Ayush explicitly approved completion after review of the Chat28 verification result. The Node 6 completion gate is therefore satisfied.
+
 ## Security State
 
 ```text
 RLS investigation                    → CLOSED / VERIFIED
 Rate-limiting architecture            → DECIDED
-IDOR / API authorization              → LOCKED BY NODE 1
+IDOR / API authorization              → VERIFIED IN NODE 6
 Authentication implementation          → COMPLETE / ACCEPTED
 Node 4 server-side claim identity      → VERIFIED
 Node 5 completion actor authorization  → VERIFIED
+Node 6 Security + Evidence             → COMPLETE / ACCEPTED
 ```
 
 ## Current Project State
@@ -180,12 +217,12 @@ Node 4                     → COMPLETE / ACCEPTED
 Node 5                     → COMPLETE / ACCEPTED
 Dashboard follow-up       → CLOSED / VERIFIED
 Historical AI follow-up   → CLOSED / VERIFIED
-Node 6                     → FUTURE / NEXT
-Node 7                     → FUTURE
+Node 6                     → COMPLETE / ACCEPTED
+Node 7                     → NEXT
 Authentication             → COMPLETE / ACCEPTED
 RLS                        → CLOSED / VERIFIED
 Rate limiting architecture → DECIDED
-IDOR/API authorization     → LOCKED BY NODE 1
+IDOR/API authorization     → VERIFIED IN NODE 6
 ```
 
 ## Completion Rule
@@ -200,7 +237,7 @@ An active Node is `COMPLETE` only after:
 - Ayush manual verification is complete.
 - Implementation report is recorded.
 
-Node 5 satisfies the closure rule for its required single-delivery lifecycle. Optional stretch features are explicitly deferred.
+Node 6 satisfies the closure rule based on the Chat28 verification report, the Chat28 completion checkpoint, and Ayush approval.
 
 ## Record Routing
 
@@ -242,4 +279,4 @@ Project-control records:
 
 ## Next Action
 
-**Post-Node-5 dashboard and historical AI-summary follow-ups are closed. Do not reopen Nodes 1–5 unless new evidence identifies a regression or a specific reviewer requirement. Proceed to Node 6 — Security + Evidence.**
+**Node 6 Security + Evidence is COMPLETE / ACCEPTED after technical verification and Ayush approval. Do not reopen Nodes 1–6 unless new evidence identifies a regression or a specific reviewer requirement. Proceed to Node 7 — AI + Final Integration + Demo.**
