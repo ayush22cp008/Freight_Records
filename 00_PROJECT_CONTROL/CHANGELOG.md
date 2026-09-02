@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## Sep 2, 2026 — Day 12 — Node 6 Security + Evidence Closure
+- Completed the Node 6 Security + Evidence investigation and formal verification cycle.
+- Chat27 investigation concluded: `NO SECURITY GAP FOUND`.
+- Chat28 formal verification confirmed IDOR protection, privileged-route authorization, driver assignment boundaries, company relationship boundaries, atomic claim security, evidence immutability, duplicate/replay protection, state/actor prerequisites, and the established rate-limiting architecture.
+- `npx tsc --noEmit` passed with Exit Code 0 during the verification.
+- No source-code changes were made during the formal verification task.
+- No security gaps were reported.
+- Ayush manually approved the Node 6 technical verification and closure.
+- Node 6 completion checkpoint recorded at `00_PROJECT_CONTROL/CHECKPOINTS/Chat28_Node6_Completion_Checkpoint.md`.
+- Day 12 is now closed.
+- Project advances to Node 7 — AI + Final Integration + Demo.
+
 ## Aug 22, 2026 — Core MVP Event Flow, Timeline & AI Evidence Summary
 - Completed the remaining Core MVP event flow: Check-in and Departure implemented and manually verified.
 - Completed Trip Timeline with chronological Arrival → Check-in → Departure display and evidence rendering.
@@ -34,7 +46,7 @@
 ## Aug 21, 2026 — Day 1 (Node 3 build execution)
 - Node 2 (build plan) revised: 4-day scope superseded by 25-day scope (see ROADMAP.md for full day-by-day schedule)
 - Day 1 implementation instruction issued: Next.js setup, Supabase client config, driver-only login, pre-seeded trip
-- Bug found + fixed: `drivers` and `trips` tables were never created in Supabase (`relation "drivers" does not exist`) — fixed via `src/db/migrations/001_create_core_tables.sql`.
+- Bug found + fixed: `drivers` and `trips` tables were never created in Supabase (`relation \"drivers\" does not exist`) — fixed via `src/db/migrations/001_create_core_tables.sql`.
 - Day 1 verified complete: driver login flow working end-to-end; seeded driver + trip confirmed in DB and browser manual test.
 - ✅ Day 1 / Core MVP Item #1 — LOCKED
 
