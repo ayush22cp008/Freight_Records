@@ -2,10 +2,11 @@
 
 **Project:** Freight — AI Builders Hackathon  
 **Hackathon window:** Aug 21 – Sep 15, 2026  
-**Roadmap status:** ACTIVE EXECUTION ROADMAP — Node/Subnode model approved after Chat9 review.  
-**Baseline planning horizon:** approximately 22 remaining hackathon days after the Chat8 product/security rework.
+**Roadmap status:** ACTIVE EXECUTION ROADMAP — Node/Subnode model approved after Chat9 review; Node 7 execution materially rephased and expanded by approved Chat29 reassessment.  
+**Current execution day:** Day 14  
+**Current chat:** Chat 30  
 
-> Historical day-by-day planning and the original Core MVP remain preserved as project history. The active remaining execution model is now organized into 7 Nodes with merged stretch work and a controlled Subnode mechanism.
+> Historical day-by-day planning and the original Core MVP remain preserved as project history. The active remaining execution model is organized in 7 Nodes with merged stretch work and a controlled Subnode mechanism. Chat29 is the approved execution clarification for Node 7.
 
 ---
 
@@ -59,13 +60,13 @@ Important product rules:
 ```text
 RLS investigation                    → CLOSED / VERIFIED
 Rate-limiting architecture            → DECIDED
-IDOR / API authorization              → OPEN
-Authentication implementation          → PAUSED
+IDOR / API authorization              → VERIFIED / CLOSED IN NODE 6
+Authentication implementation          → COMPLETE / ACCEPTED
 ```
 
 Do not reopen the RLS investigation unless new contradictory evidence appears.
 
-Authentication implementation remains blocked until the product/role/trip/authorization model in Node 1 is explicitly locked and verified.
+Do not reopen Nodes 1–6 unless new evidence identifies a regression or a specific reviewer requirement.
 
 ---
 
@@ -73,16 +74,16 @@ Authentication implementation remains blocked until the product/role/trip/author
 
 | Node | Work | Baseline Days | Priority | Dependency | Status |
 |---|---|---:|---|---|---|
-| **Node 1** | Product + Authorization Rework | 2 | 🔴 Critical | None | 🔵 NEXT |
-| **Node 2** | Authentication + Identity | 3 | 🔴 Critical | Node 1 | 🔵 BLOCKED |
-| **Node 3** | Company Trip Creation + Publishing | 3 | 🔴 Critical | Nodes 1–2 | 🔵 FUTURE |
-| **Node 4** | Driver Marketplace + Atomic Claim | 3 | 🔴 Critical | Node 3 | 🔵 FUTURE |
-| **Node 5** | Whole Delivery Tracking | 5 | 🔴 Critical | Node 4 | 🔵 FUTURE |
-| **Node 6** | Security + Evidence | 3 | 🔴 Critical | Nodes 2–5 | 🔵 FUTURE |
-| **Node 7** | AI + Final Integration + Demo | 3 | 🔴 Critical | Nodes 3–6 | 🔵 FUTURE |
-| **Total** | | **22** | | | |
+| **Node 1** | Product + Authorization Rework | 2 | Critical | None | 🔒 COMPLETE / LOCKED |
+| **Node 2** | Authentication + Identity | 3 | Critical | Node 1 | 🔒 COMPLETE / ACCEPTED |
+| **Node 3** | Company Trip Creation + Publishing | 3 | Critical | Nodes 1–2 | 🔒 COMPLETE / ACCEPTED |
+| **Node 4** | Driver Marketplace + Atomic Claim | 3 | Critical | Node 3 | 🔒 COMPLETE / ACCEPTED |
+| **Node 5** | Whole Delivery Tracking | 5 | Critical | Node 4 | 🔒 COMPLETE / ACCEPTED |
+| **Node 6** | Security + Evidence | 3 | Critical | Nodes 2–5 | 🔒 COMPLETE / ACCEPTED |
+| **Node 7** | AI + Final Integration + Demo | 3 baseline / rephased | Critical | Nodes 3–6 | 🔵 ACTIVE / NEXT EXECUTION |
+| **Total** | | **22 baseline days** | | | |
 
-These are planning estimates, not hard deadlines. Actual duration must be recorded after each Node.
+These baseline durations are planning estimates, not hard deadlines. Node 7 has been materially rephased by Chat29 because the final hackathon scope now includes a full three-portal UI/UX redesign and prioritized additional features. Actual duration must be recorded after Node 7 closure.
 
 ### Short-term goal rule
 
@@ -93,381 +94,193 @@ A Node is one short-term milestone. Prefer roughly 1–2 days for simple Nodes/t
 # 4. NODE 1 — Product + Authorization Rework
 
 **Baseline:** 2 days  
-**Status:** 🔵 NEXT  
-**Blocks:** Node 2 and all later authentication/authorization-sensitive work
+**Status:** 🔒 COMPLETE / LOCKED  
 
-## Objective
-
-Lock the product, role, identity, trip, lifecycle, eligibility, atomic-claim, authorization, and IDOR model before resuming authentication implementation.
-
-## Tasks
-
-1. Lock Company and Driver identities.
-2. Lock Auth user → Company/Driver identity mapping.
-3. Lock contextual creator/sending-company and receiving-company relationships.
-4. Lock minimum trip relationships and required commercial/trip data.
-5. Lock trip state machine and legal transitions.
-6. Lock driver eligibility rules.
-7. Lock atomic first-valid acceptance rule.
-8. Lock the full authorization matrix.
-9. Define server-side IDOR/API relationship checks.
-10. Derive final authentication requirements from the locked model.
-
-## Authorization / IDOR responsibility
-
-**Node 1 = design + lock.**  
-**Node 6 = implement + verify.**
-
-Node 1 must not leave unresolved `TBD` permissions in the authorization matrix.
-
-## Acceptance Criteria
-
-```text
-[ ] Roles locked
-[ ] Identity mapping locked
-[ ] Company/receiver relationship locked
-[ ] Trip relationships locked
-[ ] Trip state machine locked
-[ ] Driver eligibility locked
-[ ] Atomic acceptance rule locked
-[ ] Authorization matrix fully resolved
-[ ] IDOR protection rules defined
-[ ] Authentication requirements derived
-[ ] Ayush verification complete
-```
-
-**Gate:** Node 2 cannot begin until these criteria are explicitly verified.
+Node 1 locked the product, role, identity, trip, lifecycle, eligibility, atomic-claim, authorization, and IDOR model. Its design responsibility is complete. Node 6 implemented and verified the resulting security boundaries.
 
 ---
 
 # 5. NODE 2 — Authentication + Identity
 
 **Baseline:** 3 days  
-**Status:** 🔵 BLOCKED BY NODE 1  
-**Dependency:** Node 1
+**Status:** 🔒 COMPLETE / ACCEPTED  
 
-## Objective
-
-Implement authentication against the final Node 1 identity and authorization model.
-
-## Tasks
-
-- Company authentication
-- Driver authentication
-- Role identification
-- Auth user → Company/Driver mapping
-- Protected routes
-- Session handling
-- Authenticated request context
-- Wrong-role / unauthorized-access testing
-
-## Acceptance Criteria
-
-```text
-[ ] Company can authenticate
-[ ] Driver can authenticate
-[ ] Authenticated identity is reliable
-[ ] Application can determine Company vs Driver
-[ ] Identity maps correctly
-[ ] Protected routes reject unauthenticated users
-[ ] Wrong-role access is rejected
-[ ] Authentication tests pass
-[ ] Ayush verification complete
-```
+Authentication and identity implementation was completed and accepted against the locked product model.
 
 ---
 
 # 6. NODE 3 — Company Trip Creation + Publishing
 
 **Baseline:** 3 days  
-**Status:** 🔵 FUTURE  
-**Dependency:** Nodes 1–2
+**Status:** 🔒 COMPLETE / ACCEPTED  
 
-## Objective
-
-Allow a company to create and publish a complete trip opportunity for eligible drivers.
-
-## Tasks
-
-- Company trip creation UI/API
-- Pickup
-- Destination / receiving company
-- Distance
-- Expected duration
-- Payment / offer
-- Shipment details
-- Draft state if required
-- Publish action
-- Company relationship/authorization checks
-
-## Merged stretch / supporting feature
-
-- Company dashboard/role functionality needed for trip creation and publishing belongs here.
-- The exact required company capabilities are **locked in Node 1**, not deferred to Node 3.
-- Manual offer increases are allowed for the hackathon; automated pricing is deferred.
-
-## Acceptance Criteria
-
-```text
-[ ] Company can create valid trip
-[ ] Receiver relationship stored
-[ ] Trip details visible
-[ ] Initial offer stored
-[ ] Company can publish
-[ ] Published trip becomes available according to eligibility rules
-[ ] Unauthorized company/user actions are rejected
-[ ] Ayush verification complete
-```
+Company trip creation, publishing, receiver relationship, trip details, offer, and required authorization behavior were completed and accepted.
 
 ---
 
 # 7. NODE 4 — Driver Marketplace + Atomic Claim
 
 **Baseline:** 3 days  
-**Status:** 🔵 FUTURE  
-**Dependency:** Node 3
+**Status:** 🔒 COMPLETE / ACCEPTED  
 
-## Objective
+Node 4 completed the eligible-trip marketplace, trip evaluation, driver acceptance, atomic first-valid claim, assigned-driver persistence, losing-driver behavior, server-side identity resolution, and client-ID manipulation protection.
 
-Allow eligible drivers to discover, evaluate, and atomically claim one available trip.
-
-## Tasks
-
-- Available trip list
-- Trip detail view
-- Pickup/destination display
-- Distance display
-- Duration display
-- Payment/offer display
-- Driver acceptance
-- Atomic first-winner claim
-- Assigned-driver persistence
-- Losing-driver response
-- Concurrency/race-condition tests
-
-## Core requirement — not stretch
-
-Atomic first-valid acceptance is a **baseline Node 4 requirement**, not a hypothetical Subnode.
-
-The backend/database must guarantee:
-
-```text
-Trip AVAILABLE
-       ↓
-Driver A accepts
-Driver B accepts
-       ↓
-Exactly ONE wins
-       ↓
-Trip becomes CLAIMED
-       ↓
-assigned_driver_id = winner
-```
-
-Frontend controls must not be trusted for exclusivity.
-
-## Acceptance Criteria
-
-```text
-[ ] Eligible drivers can see available trips
-[ ] Driver can evaluate trip
-[ ] Driver can accept
-[ ] Exactly one simultaneous acceptance succeeds
-[ ] Winner becomes assigned driver
-[ ] Trip cannot be claimed again
-[ ] Losing driver receives clear response
-[ ] Assignment cannot be manipulated through client input
-[ ] Concurrency tests pass
-[ ] Ayush verification complete
-```
+Atomic first-valid acceptance was a baseline Node 4 requirement, not stretch work.
 
 ---
 
 # 8. NODE 5 — Whole Delivery Tracking
 
 **Baseline:** 5 days  
-**Status:** 🔵 FUTURE  
-**Dependency:** Node 4
+**Status:** 🔒 COMPLETE / ACCEPTED  
 
-## Objective
-
-Extend the existing three-event evidence workflow into a reliable single-delivery lifecycle.
-
-## Target flow
+## Verified lifecycle
 
 ```text
 Pickup
- ↓
-Arrival
- ↓
-Check-in
- ↓
-Load
- ↓
-Depart
- ↓
-In transit
- ↓
-Destination
- ↓
-Receiver Arrival
- ↓
-Receiver Check-in
- ↓
-Unload / Delivery
- ↓
-Receiver confirmation
- ↓
-Completed
+→ Arrival
+→ Check-in
+→ Load
+→ Depart
+→ In transit
+→ Destination
+→ Receiver Arrival
+→ Receiver Check-in
+→ Unload / Delivery
+→ Receiver confirmation
+→ Completed
 ```
 
-## Tasks
+The required single-delivery lifecycle, immutable evidence timeline, destination/receiver actions, final dual confirmation, database completion state, and source synchronization were completed and manually accepted.
 
-### Pickup side
+Optional Node 5 stretch work remains deferred and was not required for closure:
 
-- Arrival
-- GPS capture
-- Server timestamp
-- Photo/evidence as required
-- Check-in
-- Load
-- Depart
-
-### Transit
-
-- In-transit state
-- Trip status progression
-
-### Destination
-
-- Destination arrival
-- Receiving-company relationship
-- Receiver check-in
-- Unload/delivery event
-- Delivery confirmation
-- Completion state
-
-### Evidence
-
-Preserve immutable event history and the established server-side evidence architecture.
-
-## Merged stretch features — conditional
-
-These features are attached to Node 5 because they naturally extend the delivery/evidence lifecycle:
-
-1. **Derived dwell-time display** — low complexity, derived from deterministic timestamps.
-2. **Mandatory Check-in photo** — optional enhancement after core flow stability.
-3. **Repeatable “Add Evidence” mid-trip event** — higher-risk schema work; only if core single-delivery lifecycle is reliable.
-4. **Geofence proximity badge** — only if it can be added without compromising core delivery reliability.
-
-### Node 5 scope warning
-
-Node 5 is the tightest Node by scope-to-time ratio. The four stretch items above are not mandatory to declare Node 5 complete.
-
-If time becomes constrained, cut in this order first:
-
-1. Geofence badge
-2. Mandatory Check-in photo
-3. Repeatable Add Evidence
-
-The core delivery lifecycle always takes priority.
-
-## Acceptance Criteria
-
-```text
-[ ] Published trip can progress to claimed/in-progress/delivered/completed
-[ ] Pickup events work
-[ ] Transit state works
-[ ] Destination events work
-[ ] Receiving company performs permitted action
-[ ] Unauthorized actors are blocked
-[ ] Evidence timeline remains coherent
-[ ] End-to-end single-delivery scenario works
-[ ] Ayush verification complete
-```
-
-Multiple-stop support remains deferred unless the core single-delivery lifecycle is already reliable and explicit approval is given.
+- Derived dwell-time display
+- Mandatory Check-in photo enhancement
+- Repeatable Add Evidence mid-trip event
+- Geofence proximity badge
+- Multiple-stop support
 
 ---
 
 # 9. NODE 6 — Security + Evidence
 
 **Baseline:** 3 days  
-**Status:** 🔵 FUTURE  
-**Dependency:** Nodes 2–5
+**Status:** 🔒 COMPLETE / ACCEPTED  
 
-## Objective
+Node 6 formally verified:
 
-Implement and verify the authorization/security boundaries defined in Node 1 and protect the final evidence workflow.
+- IDOR attack paths blocked
+- Privileged API authorization
+- Driver assignment boundaries
+- Company relationship boundaries
+- Atomic claim security
+- Evidence immutability
+- Rate limiting
+- Security tests
+- TypeScript check with 0 errors
 
-## Tasks
+Ayush approved the Node 6 verification and closure.
 
-### Authorization / IDOR — implementation + verification
+Node 6 completion checkpoint:
 
-Node 1 designs/locks the matrix and relationship rules. Node 6 implements and verifies them across privileged APIs.
+`00_PROJECT_CONTROL/CHECKPOINTS/Chat28_Node6_Completion_Checkpoint.md`
 
-Test examples:
+Verification report:
 
-```text
-Driver A → Trip assigned to Driver B → DENY
-Driver B → Trip assigned to Driver B → ALLOW
-
-Unrelated company → another company's private trip → DENY
-Receiving company → permitted receiving action → ALLOW
-Creating company → permitted creator action → ALLOW
-```
-
-### Evidence integrity
-
-- Immutable event behavior
-- Server timestamps
-- GPS capture
-- Photo/evidence constraints
-- Event ordering/state rules
-
-### Rate limiting
-
-Implement/verify the already-decided rate-limiting architecture. Do not reopen the architecture question without new contradictory evidence.
-
-### Security testing
-
-- Direct API manipulation
-- Forged trip IDs
-- Forged driver IDs
-- Forged company IDs
-- Wrong-role requests
-- Unassigned-driver event submission
-- Receiver/creator boundary violations
-- Duplicate acceptance
-- Replay/duplicate event attempts as applicable
-
-## Acceptance Criteria
-
-```text
-[ ] IDOR attack paths blocked
-[ ] Every privileged API route has explicit authorization
-[ ] Driver assignment boundary enforced
-[ ] Company relationship boundary enforced
-[ ] Atomic claim remains secure
-[ ] Evidence remains immutable
-[ ] Rate limiting verified
-[ ] Security test results recorded
-[ ] Ayush verification complete
-```
+`03_IMPLEMENTATION/implementation_reports/Chat28_Node6_Security_Evidence_Verification_Report.md`
 
 ---
 
 # 10. NODE 7 — AI + Final Integration + Demo
 
 **Baseline:** 3 days  
-**Status:** 🔵 FUTURE  
-**Dependency:** Nodes 3–6
+**Status:** 🔵 ACTIVE / NEXT EXECUTION  
+**Dependency:** Nodes 3–6  
+**Execution plan:** Approved Chat29 reassessment  
+**Current position:** Day 14 / Chat30
 
 ## Objective
 
-Integrate the complete delivery scenario, evidence timeline, AI layer, selected high-value stretch features, final regression, and demo preparation.
+Complete the final hackathon-ready Freight experience by stabilizing the AI/evidence layer, adding the high-value public evidence-sharing capability, redesigning all three portals, then performing one final integrated verification/demo cycle.
 
-## Baseline tasks
+**Important:** The official Node 7 acceptance criteria remain unchanged. Chat29 changes the execution phasing, priorities, and scope protection; it does not create a new Node or weaken the Node 7 acceptance gate.
+
+## Phase 1a — Baseline AI + Shareable Evidence
+
+Build functionality first because Phase 1b redesign touches the same screens.
+
+### Required work
+
+1. AI evidence-grounded summary
+2. Timeline integration
+3. Public shareable read-only evidence link
+
+### Phase 1a priority
+
+The baseline AI/timeline behavior must be stable and evidence-grounded before moving into deeper AI features or UI redesign-dependent work.
+
+## Phase 1b — Full 3-Portal UI/UX Redesign
+
+Redesign the final user-facing experience across all three portals:
+
+1. Driver portal
+2. Company portal
+3. Reviewer portal
+
+Use a unified visual/design system and improve navigation clarity, information hierarchy, workflow discoverability, and demo presentation.
+
+Phase 1b absorbs the remaining Final API/UI integration and UX/demo polish work where those concerns are coupled to the redesigned screens.
+
+## Phase 3 — New Add-On Features (Conditional)
+
+Only begin after Phase 1a and Phase 1b are complete and stable.
+
+Potential add-ons, in priority order:
+
+- AI inconsistency detection — conditional; only after baseline AI/timeline stability.
+- Confidence/completeness scoring — optional/time permitting.
+- Multi-signal evidence cross-check — optional/time permitting.
+- Natural-language Q&A over deterministic evidence — optional/time permitting.
+
+If no meaningful time remains, skip Phase 3. Do not start speculative work.
+
+## Explicit scope cuts
+
+```text
+Video capture                         → CUT
+AI inconsistency detection            → CONDITIONAL
+Optional AI-depth enhancements        → CUT unless higher-priority work is complete early
+Public shareable read-only evidence   → KEPT / HIGH PRIORITY
+```
+
+## Final Step — Exactly Once
+
+The final step is separate from the feature phases and happens once at the end:
+
+1. Full E2E across Driver, Company, and Reviewer roles
+2. Critical bug-fixing buffer
+3. Realistic demo data/scenario
+4. Hackathon presentation/demo flow
+5. Final rehearsal
+
+Do not repeat the complete final E2E/demo cycle after every feature.
+
+## Explicit execution sequence
+
+```text
+Phase 1a
+   ↓
+Phase 1b
+   ↓
+Phase 3 (conditional)
+   ↓
+Final step — E2E + bugfix + demo + presentation
+```
+
+## Node 7 Baseline Tasks — Preserved
+
+The official baseline remains:
 
 - AI evidence-grounded summary
 - Timeline integration
@@ -479,35 +292,13 @@ Integrate the complete delivery scenario, evidence timeline, AI layer, selected 
 - UX/demo polish
 - Hackathon presentation/demo flow
 
-## Merged stretch features — priority based
+These are distributed across the approved phases rather than removed from the Node.
 
-### High priority
+## AI Boundary
 
-- **Public shareable read-only evidence link** — high demo value and relatively low complexity.
-- **AI inconsistency detection** — only after the baseline AI/timeline flow is stable.
+AI may summarize, organize, or cross-check deterministic evidence but must not invent GPS, timestamps, event types, or unsupported blame/causality.
 
-### Optional / time permitting
-
-- Additional AI-depth enhancements:
-  - confidence/completeness scoring;
-  - multi-signal evidence cross-checking;
-  - natural-language Q&A over deterministic evidence.
-
-- **Video capture** is the lowest-priority stretch item and should be attempted only if all higher-priority work is already complete and reliable.
-
-### Node 7 scope protection
-
-Node 7 is heavily loaded for its 3-day baseline. If time becomes constrained:
-
-1. Video capture is cut first.
-2. AI inconsistency detection is cut next.
-3. Lower-value polish/features are cut before core integration or final verification.
-
-## AI boundary
-
-AI may summarize/organize/cross-check deterministic evidence but must not invent GPS, timestamps, event types, or unsupported blame/causality.
-
-## Acceptance Criteria
+## Node 7 Acceptance Criteria — UNCHANGED
 
 ```text
 [ ] Complete delivery scenario works from company creation to completion
@@ -520,9 +311,31 @@ AI may summarize/organize/cross-check deterministic evidence but must not invent
 [ ] Ayush verification complete
 ```
 
+Node 7 is complete only when these acceptance criteria are satisfied and Ayush manually verifies the final result.
+
 ---
 
-# 11. Subnode System
+# 11. Node 7 Execution Governance — Chat29 Lock
+
+The detailed approved reassessment is recorded at:
+
+`00_PROJECT_CONTROL/Chat29_Node7_Roadmap_Reassessment_Phasing.md`
+
+This record is the authoritative execution clarification for Node 7 from Day 14 / Chat30 onward.
+
+### Governance rules
+
+- Do not reopen Nodes 1–6 unless regression or reviewer evidence requires it.
+- Do not bypass Phase 1a and begin speculative Phase 3 work.
+- Do not begin Phase 3 until Phase 1a and Phase 1b are stable.
+- Do not treat optional features as Node 7 acceptance requirements.
+- Do not let UI redesign invalidate the evidence/security architecture already accepted.
+- Preserve the AI evidence-grounding boundary.
+- Keep the final E2E/demo/presentation cycle as a single final step.
+
+---
+
+# 12. Subnode System
 
 A **Subnode** is a smaller tracked unit of significant unexpected work inside a parent Node.
 
@@ -539,30 +352,7 @@ Major blocker / architecture change
 → stop and reassess roadmap
 ```
 
-### Example
-
-```text
-Node 4 — Driver Marketplace + Atomic Claim
-
-4.1 Available trip list
-4.2 Trip details / offer
-4.3 Accept trip
-4.4 Atomic claim
-
-Unexpected significant issue
-        ↓
-4.S1 — Investigation
-4.S2 — Fix
-4.S3 — Verification
-        ↓
-Return to Node 4
-```
-
-Atomic acceptance itself is **not** a Subnode because it is already a known Core Node 4 requirement.
-
 ### Subnode escalation rule
-
-A soft escalation trigger applies:
 
 ```text
 3 or more Subnodes under one Node
@@ -574,7 +364,7 @@ This does not automatically create a new Node. It forces an explicit review of s
 
 ---
 
-# 12. Node Completion Rule
+# 13. Node Completion Rule
 
 A Node becomes `COMPLETE` only when:
 
@@ -599,7 +389,7 @@ Time passing does not make a Node complete.
 
 ---
 
-# 13. Roadmap Change Rule
+# 14. Roadmap Change Rule
 
 Explicitly revise this roadmap when:
 
@@ -613,9 +403,11 @@ Explicitly revise this roadmap when:
 
 Do not silently deviate from the active roadmap.
 
+Chat29 is itself the recorded roadmap reassessment that materially rephased Node 7 without changing its official acceptance criteria.
+
 ---
 
-# 14. Historical Core MVP — PRESERVED
+# 15. Historical Core MVP — PRESERVED
 
 The original Core MVP remains an important completed project milestone:
 
@@ -627,48 +419,51 @@ The original Core MVP remains an important completed project milestone:
 6. Chronological timeline
 7. AI evidence summary
 
-These capabilities were implemented and verified before the Chat8 product/security rework. They are not being discarded; they are being extended into the broader company → marketplace → delivery → evidence product story.
+These capabilities were implemented and verified before the Chat8 product/security rework. They are not discarded; they are extended into the broader company → marketplace → delivery → evidence product story.
 
 ---
 
-# 15. Historical Stretch Features — PRESERVED THROUGH MERGE
+# 16. Historical Stretch Features — PRESERVED THROUGH MERGE
 
-The original roadmap stretch concepts are retained through the active Node structure rather than as an independent day-by-day stretch track:
+The useful historical stretch concepts remain represented through the active Node structure:
 
-| Original stretch | Active Node placement | Priority |
+| Feature | Active placement | Current priority |
 |---|---|---|
-| Public shareable evidence link | Node 7 | High |
-| AI inconsistency detection | Node 7 | High / time permitting |
-| Derived dwell-time | Node 5 | Optional |
-| Mandatory Check-in photo | Node 5 | Optional |
-| Repeatable Add Evidence | Node 5 | Riskier / optional |
-| Geofence proximity badge | Node 5 | Low / cut early |
-| Company role/dashboard | Node 3 | Defined by Node 1, implemented as needed for trip creation/publishing |
-| Video capture | Node 7 | Lowest / cut first |
+| Public shareable evidence link | Node 7 Phase 1a | High / kept |
+| AI inconsistency detection | Node 7 Phase 3 | Conditional |
+| Derived dwell-time | Node 5 | Deferred / optional |
+| Mandatory Check-in photo | Node 5 | Deferred / optional |
+| Repeatable Add Evidence | Node 5 | Deferred / riskier |
+| Geofence proximity badge | Node 5 | Deferred / low |
+| Company role/dashboard | Node 3 | Completed as required |
+| Video capture | Node 7 | Cut |
 
-The old standalone stretch-day calendar is therefore superseded as the active execution mechanism, while its useful feature priorities are preserved.
+The old standalone stretch-day calendar is superseded by the approved phased execution model.
 
 ---
 
-# 16. Current Active Position
+# 17. Current Active Position
 
 ```text
 Historical Core MVP                → IMPLEMENTED / VERIFIED
-Chat8 product model                → CLARIFIED
-RLS                                 → CLOSED / VERIFIED
-Rate-limiting architecture         → DECIDED
-IDOR/API authorization              → OPEN
-Authentication implementation       → PAUSED
-Active roadmap                      → 7 Nodes
-Current Node                        → NODE 1
-Node 1 objective                   → Product + Authorization Rework
+Node 1                              → COMPLETE / LOCKED
+Node 2                              → COMPLETE / ACCEPTED
+Node 3                              → COMPLETE / ACCEPTED
+Node 4                              → COMPLETE / ACCEPTED
+Node 5                              → COMPLETE / ACCEPTED
+Dashboard follow-up                → CLOSED / VERIFIED
+Historical AI follow-up            → CLOSED / VERIFIED
+Node 6                              → COMPLETE / ACCEPTED
+Day 13                             → CLOSED / NO PROJECT WORK
+Day 14 / Chat30                    → ACTIVE
+Current Node                       → NODE 7
+Current phase                      → PHASE 1a
+Current focus                      → AI + Timeline + Public Shareable Evidence
 ```
-
-Do not resume authentication implementation until Node 1 acceptance criteria are explicitly verified.
 
 ---
 
-# 17. Working Method
+# 18. Working Method
 
 Every Node continues to use the investigation-first project workflow:
 
@@ -703,6 +498,12 @@ For investigations:
 
 ```text
 05_DEBUGGING/investigations/
+```
+
+For project-control records:
+
+```text
+00_PROJECT_CONTROL/
 ```
 
 The historical records and the active roadmap must remain auditable.
