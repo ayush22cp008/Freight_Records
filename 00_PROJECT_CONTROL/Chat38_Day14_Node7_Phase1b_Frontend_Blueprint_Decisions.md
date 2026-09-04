@@ -177,17 +177,176 @@ These references are a starting point, not a permanent visual lock. Future refin
 ## Important Existing-System Constraint
 The existing Records evidence supports the Driver model in which a Driver without an active trip can see available published trips, while a Driver with an active/claimed trip sees the active trip context; completed trips remain available as history. This blueprint preserves that existing behavior and makes the one-active-trip constraint explicit in the UX.
 
-## Current Status at End of Chat38 Discussion
-- Driver Portal UX blueprint: substantially defined and locked at the product-structure level.
-- Part 2 — Existing structure comparison: remaining.
-- Part 3 — Interaction mapping: remaining.
-- Part 4 — Final frontend blueprint: remaining.
-- Part 5 — Implementation investigation/prompt: remaining and blocked until design is fully settled.
-- Company Portal blueprint: remaining.
-- Reviewer Portal blueprint: remaining.
-- Consolidated cross-portal frontend blueprint: remaining.
-- Implementation: not started from this blueprint record.
+## Part 2 — Driver Existing Structure Comparison
+
+### Evidence Source
+The comparison below uses the Antigravity source-code investigation report:
+`05_DEBUGGING/investigations/Chat38_Day14_Driver_Portal_Existing_Structure_Investigation_Report.md`
+
+### 1. Dashboard — EXISTS BUT DIFFERS
+Current implementation:
+- Driver Dashboard is the authenticated root page.
+- No active trip: Available Trips followed by Past/Completed Trips.
+- Active trip: Active Trip followed by Past/Completed Trips.
+- Available Trips are hidden when an active trip exists.
+- Active Trip currently exposes status and one next-event CTA.
+
+Target blueprint:
+- Dashboard remains the Driver starting point.
+- Active Trip gets highest priority when present.
+- Available Trips remain visible even when active, but become view-only.
+- Completed/recent history follows.
+
+Conclusion: existing Dashboard functionality is retained, but information hierarchy and active-trip/available-trip presentation require redesign/rearrangement.
+
+### 2. Navigation — EXISTS BUT DIFFERS
+Current implementation:
+- Navbar contains Dashboard and Timeline.
+- Target Driver navigation requires Dashboard, Available Trips, My Active Trip, Completed Trips, Profile on desktop/laptop and Home, Trips, Active, History, Profile on mobile.
+
+Conclusion: existing navigation infrastructure can be retained/reworked, but the target navigation structure is not currently implemented.
+
+### 3. Available Trips — EXISTS BUT DIFFERS
+Current implementation:
+- Available trips are displayed as cards directly on the Dashboard.
+- Cards expose Pickup, Dropoff, Distance, Duration, Payout, and ClaimTripButton.
+- When a Driver has an active trip, Available Trips are hidden.
+
+Target blueprint:
+- Available Trips have a dedicated user-facing context.
+- They remain viewable when an active trip exists, but claiming another trip is unavailable.
+
+Conclusion: existing marketplace/trip data and claim capability are preserved, while placement and active-trip visibility behavior require redesign.
+
+### 4. Trip Detail — NOT CURRENTLY PRESENT AS A DEDICATED PAGE
+Current investigation could not confirm a dedicated Trip Detail route/page. Trip information is surfaced through Dashboard cards and timeline-related views.
+
+Target blueprint requires a clear Trip Detail / View Trip experience using existing trip information and eligibility for Accept Trip.
+
+Conclusion: the target experience requires restructuring existing trip information into a dedicated view/surface; this must preserve existing functionality rather than add a new product capability.
+
+### 5. Accept / Claim — MATCHES CORE FUNCTIONALITY
+Current implementation:
+- ClaimTripButton initiates the claim action.
+- It calls `/api/trips/claim`.
+- It refreshes the router after success.
+
+Target blueprint:
+Available Trip → Accept Trip → successful claim → My Active Trip.
+
+Conclusion: the core claim capability exists and should be preserved. The primary redesign need is where/how it is presented in the target UX.
+
+### 6. My Active Trip — EXISTS BUT DIFFERS
+Current implementation:
+- Active trip is displayed on the Dashboard.
+- Active states include `active`, `claimed`, and `in_progress`.
+- Current UI provides status and a single CTA to the next expected lifecycle event.
+
+Target blueprint:
+- Dedicated operational workspace.
+- Current status
+- Next required action
+- Completed/remaining stages
+- Evidence status
+- Existing timeline/events
+
+Conclusion: core active-trip functionality exists, but the target workspace requires a substantially richer information hierarchy using existing capabilities.
+
+### 7. Delivery Lifecycle — EXISTS BUT PRESENTATION DIFFERS
+Current implementation uses sequential conditional logic based on missing event types and presents one linear next step at a time.
+
+Target blueprint requires the existing lifecycle to be represented visually as completed/current/upcoming stages without adding stages.
+
+Conclusion: lifecycle logic exists and should be preserved; its frontend presentation requires redesign.
+
+### 8. Evidence — EXISTS IN SYSTEM, NOT SURFACED IN CURRENT DRIVER DASHBOARD
+The investigation report marks direct Driver Dashboard evidence presentation as UNKNOWN. The locked blueprint requires evidence progress/status in the active-trip workspace.
+
+Conclusion: current Driver Dashboard does not establish a visible evidence-status presentation. Do not invent missing frontend details; evidence integration/presentation must be resolved during later frontend design and, if needed, implementation-level investigation.
+
+### 9. Completed Trips / History — MATCHES CORE FUNCTIONALITY
+Current implementation:
+- Completed trips appear in a Dashboard section.
+- Up to 10 completed trips are shown.
+- View Timeline links to `/timeline?tripId=[id]`.
+
+Target blueprint:
+- Completed Trips / History is a dedicated navigation context.
+- Existing historical trip/timeline information remains accessible.
+
+Conclusion: core history functionality exists and can be retained while its navigation and presentation are reorganized.
+
+### 10. Profile — NOT CONFIRMED
+Current investigation reports no distinct Driver Profile page; Navbar displays the user's email and Dashboard reports an error if no driver profile is found.
+
+Target blueprint requires Profile as an existing-functionality navigation surface.
+
+Conclusion: Profile functionality/page is not established by the investigation and must remain UNKNOWN until source evidence confirms what existing profile functionality is available.
+
+### 11. Responsive Behavior — MATCHES BASE REQUIREMENT, NEEDS REDESIGN VALIDATION
+Current implementation uses Tailwind responsive utilities such as `flex-col sm:flex-row` and max-width utilities.
+
+Target blueprint requires adaptive phone, tablet/intermediate, and laptop/desktop layouts while preserving the same information/workflow/features.
+
+Conclusion: responsive implementation exists at a basic level, but the final responsive behavior must be defined later in the frontend blueprint.
+
+### 12. UI States — PARTIALLY CONFIRMED
+Confirmed by investigation:
+- No Driver error state
+- Empty Available Trips
+- Empty Completed Trips
+
+The report does not establish all target states in equal detail.
+
+Conclusion: existing states must be preserved and incorporated into the final blueprint; unknown states should not be invented.
+
+## Part 2 Summary
+
+### MATCHES
+- Core Driver Dashboard exists.
+- Available-trip discovery exists.
+- Core Accept/Claim functionality exists.
+- Active-trip handling exists.
+- Delivery lifecycle logic exists.
+- Completed-trip/history functionality exists.
+- Basic responsive behavior exists.
+
+### REDESIGN / REARRANGEMENT
+- Dashboard information hierarchy.
+- Navigation structure.
+- Available Trips placement and visibility while active.
+- Active Trip presentation/workspace.
+- Delivery lifecycle visual presentation.
+- Completed Trips navigation/presentation.
+- Responsive layout details.
+
+### EXISTS BUT DIFFERS
+- Active Driver currently loses visibility of Available Trips, while the locked blueprint requires view-only visibility.
+- Active Trip is currently embedded in Dashboard rather than a dedicated operational workspace.
+- Lifecycle is currently presented one next step at a time rather than as a completed/current/upcoming overview.
+- Claim action is currently embedded in Dashboard cards rather than the target Trip Detail flow.
+
+### NOT CONFIRMED / UNKNOWN
+- Dedicated Trip Detail page.
+- Dedicated Driver Profile page/functionality.
+- Direct Driver evidence-status presentation.
+- Complete implementation of every target UI state.
+
+### Part 2 Decision
+**DRIVER PART 2 — COMPLETE / LOCKED**
+
+The existing Driver frontend has been compared against the locked Driver UX/Product blueprint using the Antigravity source-code investigation evidence. The redesign scope is now understood at the structure level. Existing functionality is to be preserved while the frontend structure, information hierarchy, navigation, and presentation are redesigned according to the locked UX decisions.
+
+## Current Status
+- Driver Part 1 — UX/Product structure: ✅ LOCKED
+- Driver Part 2 — Existing structure comparison: ✅ LOCKED
+- Driver Part 3 — Interaction mapping: ⏳ NEXT
+- Driver Part 4 — Final frontend blueprint: ⏳
+- Driver Part 5 — Implementation investigation/prompt: ⏳
+- Company Portal blueprint: ⏳
+- Reviewer Portal blueprint: ⏳
+- Consolidated final frontend blueprint: ⏳
+- Implementation: not started
 
 ## Next Discussion
-Continue with the agreed one-by-one process for the Company Portal, beginning with:
-**Company Mental Model**.
+Proceed to **Driver Part 3 — Interaction Mapping**, using the existing source-code investigation evidence and the locked UX blueprint. Do not repeat the Part 2 source investigation unless a specific unknown blocks an interaction decision.
