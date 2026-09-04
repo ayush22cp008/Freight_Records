@@ -337,10 +337,29 @@ Conclusion: existing states must be preserved and incorporated into the final bl
 
 The existing Driver frontend has been compared against the locked Driver UX/Product blueprint using the Antigravity source-code investigation evidence. The redesign scope is now understood at the structure level. Existing functionality is to be preserved while the frontend structure, information hierarchy, navigation, and presentation are redesigned according to the locked UX decisions.
 
+## Part 3 — Driver Interaction Mapping
+
+### Interaction 1 — Available Trip Card → Trip Detail / View Trip — LOCKED
+When a Driver taps/clicks an Available Trip card:
+
+`Dashboard / Available Trips → Available Trip Card → Trip Detail / View Trip`
+
+The Trip Detail / View Trip surface presents the existing trip information needed for the Driver to understand the opportunity and its current availability.
+
+From Trip Detail:
+- Driver with **no active trip** sees the existing **Accept Trip** action.
+- Driver with an **active trip** can still view the trip, but the **Accept Trip** action is unavailable/disabled with clear communication that another trip cannot be claimed while an active trip exists.
+
+No new marketplace or claim capability is introduced. The existing claim behavior is only being moved into a clearer interaction flow.
+
+### Part 3 Current Status
+- Interaction 1 — Available Trip Card → Trip Detail: ✅ LOCKED
+- Remaining Driver interactions: ⏳
+
 ## Current Status
 - Driver Part 1 — UX/Product structure: ✅ LOCKED
 - Driver Part 2 — Existing structure comparison: ✅ LOCKED
-- Driver Part 3 — Interaction mapping: ⏳ NEXT
+- Driver Part 3 — Interaction mapping: 🟡 IN PROGRESS
 - Driver Part 4 — Final frontend blueprint: ⏳
 - Driver Part 5 — Implementation investigation/prompt: ⏳
 - Company Portal blueprint: ⏳
@@ -349,4 +368,4 @@ The existing Driver frontend has been compared against the locked Driver UX/Prod
 - Implementation: not started
 
 ## Next Discussion
-Proceed to **Driver Part 3 — Interaction Mapping**, using the existing source-code investigation evidence and the locked UX blueprint. Do not repeat the Part 2 source investigation unless a specific unknown blocks an interaction decision.
+Continue **Driver Part 3 — Interaction Mapping** with the next interaction: **Trip Detail → Accept Trip**.
