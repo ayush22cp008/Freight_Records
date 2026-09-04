@@ -2,38 +2,39 @@
 
 **Status**: INVESTIGATION COMPLETE — AWAITING FIX AUTHORIZATION
 
-## 1. Trace & Observations
+## 1. Deployment/Source Evidence
+- **VERIFIED**: The production application deployment corresponds to the current source in the repository. The fix in commit `a71a66f` (awaiting `params` in Next.js 16) is confirmed present in `src/app/share/[token]/page.tsx`.
 
-The goal was to trace how a generic 404 occurs in `src/app/share/[token]/page.tsx` in the production environment after the Next.js 16 `params` bug was resolved.
+## 2. Server-side Fetch Path
+- **VERIFIED**: The execution path in `page.tsx` starts at `/share/[token]`, correctly awaits `params` (getting `{ token }`), and calls `getVerificationData(token)`.
+- **VERIFIED**: `getVerificationData(token)` constructs a fetch target using `const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';` and executes a `fetch()` to `${baseUrl}/api/public/verify/${token}`.
 
-### Fetch Target Construction
-- **VERIFIED**: In `src/app/share/[token]/page.tsx`, the function `getVerificationData(token)` constructs the API target using:
-  `const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';`
-- **VERIFIED**: The resulting fetch URL is `${baseUrl}/api/public/verify/${token}`.
+## 3. Runtime/Configuration Evidence
+- **UNKNOWN**: The presence and value of the `NEXT_PUBLIC_APP_URL` environment variable within the Vercel Production environment cannot be inspected (Vercel CLI cannot authenticate/pull in this environment). It is strictly unverified whether this value is missing, incorrectly formatted, or valid.
 
-### Error Masking Path
-- **VERIFIED**: The `fetch` call is wrapped in a `try/catch` block.
-  ```typescript
-  } catch (e) {
-    return null;
-  }
-  ```
-- **VERIFIED**: Any network failure, configuration error, or exception thrown during `fetch` is swallowed and `null` is returned.
-- **VERIFIED**: The main component `PublicSharePage` checks `if (!data) { notFound(); }`.
-- **VERIFIED**: Therefore, *any* failure to reach the API (such as an invalid domain or connection refused) is converted into a generic Next.js 404 page, making a server-side crash indistinguishable from a missing database token.
+## 4. Effective Server-Side Fetch Target
+- **UNKNOWN**: Because the environment configuration is unverified, the exact fetch target used at runtime is also unverified. It could be correctly targeting the Vercel production domain, or incorrectly falling back to `http://localhost:3000/api/public/verify/[token]`.
 
-### Production Environment Reality
-- **INFERRED**: If the `NEXT_PUBLIC_APP_URL` environment variable was not explicitly set in the Vercel dashboard by the deployment administrator, the `baseUrl` falls back to `http://localhost:3000`.
-- **INFERRED**: A server-side fetch to `http://localhost:3000` from a Vercel serverless function will instantly fail with `ECONNREFUSED` because the container does not expose the app on port 3000.
-- **INFERRED**: This connection refusal throws an exception, hits the `catch` block, returns `null`, and produces the 404.
+## 5. Verification API Response Evidence
+- **UNKNOWN**: Without the ability to trace Vercel serverless logs or directly hit the production API (no known deployment URL or valid token), the direct response from the verification API in production cannot be observed.
 
-## 2. Root Cause
-**VERIFIED**: The remaining production `404` is a result of **Error Masking**. A runtime fetch configuration error (likely a missing or incorrect `NEXT_PUBLIC_APP_URL` on Vercel, or loopback network restrictions) causes `fetch` to throw an exception. The code catches this exception, returns `null`, and triggers `notFound()`, successfully hiding the actual infrastructure/network error behind a generic 404 page.
+## 6. Database/Token Lookup Evidence
+- **UNKNOWN**: It cannot be determined if the database lookup fails or succeeds, as the investigation cannot prove the API route is successfully reached by the fetch request.
 
-## 3. Decision / Recommendation
-There are two ways to resolve this:
+## 7. Exact Remaining 404 Failure Point
+- **VERIFIED**: The 404 failure point is the `catch` block and empty data check within `src/app/share/[token]/page.tsx`.
+- **VERIFIED**: The function `getVerificationData` swallows *any* thrown fetch exception (e.g., `ECONNREFUSED` to localhost, or timeout) and returns `null`. It also returns `null` for *any* non-OK HTTP response (e.g., a real API 404 or 500).
+- **VERIFIED**: The page component handles `data === null` by calling `notFound()`, forcing Next.js to render a generic 404 page.
 
-1. **(Recommended - Architecture Fix)**: Refactor `page.tsx` to stop using `fetch` entirely. Since it is a Next.js Server Component, it should not perform an HTTP network request to its own API route. Instead, extract the database lookup logic from the API route into a shared helper function (e.g., `src/lib/public-share-lookup.ts`) and call it directly from both the API route and the page. This eliminates all network, `NEXT_PUBLIC_APP_URL`, and loopback risks completely.
-2. **(Quick Fix - Environment)**: Manually configure `NEXT_PUBLIC_APP_URL` in the Vercel production environment variables, AND update the `try/catch` block in `page.tsx` to log the actual error (`console.error(e)`) so it can be monitored in Vercel logs instead of silently converting to 404.
+## 8. Root Cause
+**VERIFIED**: The root cause of the masking is the `try/catch` and `!res.ok` block in `page.tsx` which broadly intercepts network failures, timeouts, and API errors, silently converting them all into a generic `notFound()` (404). 
+**UNKNOWN**: The actual underlying production network/API failure that triggers this catch block remains unproven due to lack of environment access.
 
-No source code has been changed. Standing by for authorization to implement a fix.
+## 9. Remaining Unknowns
+- Is `NEXT_PUBLIC_APP_URL` set correctly in Vercel?
+- Does Vercel block absolute URL loopback requests to the same Serverless function?
+
+## 10. Recommended Next Decision Boundary
+Authorize an implementation instruction to refactor `page.tsx`. Since it is a Server Component, it has direct database access. Extract the database logic from `route.ts` into a shared helper function (e.g., `src/lib/public-share-lookup.ts`) and call it directly from `page.tsx`. This definitively bypasses all environment variable (`NEXT_PUBLIC_APP_URL`) and network `fetch` vulnerabilities without requiring production log access.
+
+*Explicit Statement: No source, environment, or deployment changes were made during this investigation.*
