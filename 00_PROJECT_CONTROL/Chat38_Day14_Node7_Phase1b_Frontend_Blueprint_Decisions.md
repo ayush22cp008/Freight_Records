@@ -162,6 +162,34 @@ Completed-trip state: after the final required existing action, show a clear Del
 
 The exact source/data mapping for evidence-status presentation remains an implementation-investigation item and must not be invented during implementation.
 
+### Part 4.6 — Completed Trips / History Final Layout — COMPLETE / LOCKED
+The Completed Trips / History page answers: “Which deliveries have I completed, and what happened during each one?”
+
+Final structure:
+1. Page heading/context.
+2. Responsive collection of completed trips using existing completed-trip information.
+3. Each completed-trip item presents existing trip summary information, the completed date where available, a clear Completed status, and a View Timeline action.
+4. Selecting a completed trip opens the existing Trip History / Timeline review surface.
+
+Intended flow:
+Completed Trips / History → Select Completed Trip → Trip History / Timeline → Review existing trip information, events, and evidence where available → Back to Completed Trips / History.
+
+Completed Trips / History is review-only. It does not expose Accept Trip, Continue Trip, delivery-stage actions, or event-recording operational CTAs.
+
+The existing chronological timeline remains the detailed review surface. Existing evidence is shown alongside completed delivery information only where the current system already exposes it; no evidence capability is invented as part of the redesign.
+
+Empty state: preserve the existing “No completed trips yet.” state.
+
+Responsive behavior:
+- Desktop/laptop: wider list or grid presentation where appropriate.
+- Tablet/intermediate: adaptive list/grid presentation.
+- Mobile: compact full-width completed-trip cards.
+- The same completed-trip history and review capability remains available at every viewport.
+
+The existing `/timeline?tripId=[id]` review path is preserved as the underlying review destination where applicable.
+
+Boundary: this is a presentation and navigation redesign of existing completed-trip history functionality. It introduces no new history capabilities, new evidence capabilities, or new operational workflow.
+
 ## Current Status
 - Driver Part 1 — UX/Product structure: LOCKED
 - Driver Part 2 — Existing structure comparison: LOCKED
@@ -171,7 +199,7 @@ The exact source/data mapping for evidence-status presentation remains an implem
 - Driver Part 4.3 — Available Trips final layout: COMPLETE / LOCKED
 - Driver Part 4.4 — Trip Detail final layout: COMPLETE / LOCKED
 - Driver Part 4.5 — My Active Trip final layout: COMPLETE / LOCKED
-- Driver Part 4.6 — Completed Trips / History final layout: NEXT
+- Driver Part 4.6 — Completed Trips / History final layout: COMPLETE / LOCKED
 - Driver Part 4 remaining: Profile, Navigation, Responsive behavior, Loading/empty/error states, final Driver blueprint review/lock
 - Driver Part 5 — Implementation investigation/prompt: pending
 - Company Portal blueprint: pending
@@ -180,4 +208,4 @@ The exact source/data mapping for evidence-status presentation remains an implem
 - Implementation: not started
 
 ## Next Discussion
-Move to Driver Part 4.6 — Completed Trips / History final layout.
+Move to Driver Part 4.7 — Profile final layout.
