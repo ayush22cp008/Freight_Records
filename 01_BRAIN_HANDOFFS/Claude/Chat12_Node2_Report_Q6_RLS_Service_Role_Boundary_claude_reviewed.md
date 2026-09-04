@@ -1,29 +1,42 @@
-Checked the six corrections against the current text:
+Independent review, Q6 only. No implementation done.
 
-**1. RLS default-deny behavior** — Present. §4 says "protected Freight business tables have RLS enabled unless a documented architecture exception," and §12 test 11 explicitly requires fail-closed behavior for missing/restrictive policies. Good.
+## Verdict: **CHANGES REQUIRED** (minor — content is close to solid, but has gaps that matter for an MVP with real user data)
 
-**2. FORCE ROW LEVEL SECURITY / table-owner bypass** — **Missing.** Nowhere in the doc does it mention `FORCE ROW LEVEL SECURITY`. This matters because Supabase/Postgres RLS policies do *not* apply to the table owner by default — only to non-owner roles — unless `FORCE ROW LEVEL SECURITY` is set. If any app-facing role ends up owning the table (or inherits owner privileges), RLS could be silently bypassed even with correct policies. §4 and §10 talk about "RLS enabled" but never address the owner-bypass nuance. This correction did not make it in.
+## Problems / Concerns
 
-**3. service_role compromise and rotation** — **Missing.** §3 (Threat Model) lists "leaked service-role credentials" as a threat but there's no corresponding mitigation anywhere — no mention of rotation procedure, blast-radius limiting, or response-if-compromised. The threat is named but never answered.
+**1. "Fail closed" claim isn't actually enforced anywhere concrete (§12, item 11)**
+Test #11 says a missing/restrictive RLS policy should "fail closed," but nothing in §4 or §10 states the operational rule that makes this true by construction: *RLS enabled with no policy = deny all by default* is Postgres/Supabase's actual behavior, but the report never states this explicitly as the reason it's safe. Without saying it, someone reading only this doc could assume "RLS enabled" alone is sufficient, without also confirming policies exist per operation — leading to a table that's RLS-enabled but has zero policies, silently blocking legitimate access (or, if RLS is force-enabled incorrectly, silently allowing service-role paths through unintended grants). Needs one explicit sentence.
 
-**4. Mandatory audit logging for security-sensitive privileged mutations** — **Weakened/not incorporated as "mandatory."** §10 point 7 says "Privileged operations *should be* identifiable in logs/audit records *where appropriate*" — this is hedged, optional language, not a mandatory requirement. If the correction was to make audit logging mandatory specifically for security-sensitive mutations (verification_status, trusted_role, admin approvals), that stronger requirement isn't reflected.
+**2. No mention of `FORCE ROW LEVEL SECURITY` for table owners**
+In Supabase/Postgres, RLS policies don't apply to the table owner role by default unless `FORCE ROW LEVEL SECURITY` is set. If any Freight tables are queried by a role that owns the table (common misconfig), RLS can be silently bypassed even without service_role. This is a real, common gotcha and the report is silent on it. Should be added to §4 or the acceptance tests.
 
-**5. Strict service_role exception wording** — Present and reasonably strict. §5, §10.3, §10.8 use "reserved for," "genuinely require," "not merely to avoid fixing an RLS policy." This one looks incorporated.
+**3. Service-role key rotation / compromise response is missing**
+§10 point 5 says the key must never be exposed — good — but there's no policy for what happens *if* it leaks (rotation procedure, blast radius). For a document meant to be the final word before Q6 LOCK, this is a reasonable gap to flag even if deferred, so it doesn't get silently forgotten.
 
-**6. Separate RLS vs Node 1 acceptance tests** — Partially present. §7 does separate the concepts narratively, and §12 test 10 says "RLS and Node 1 authorization both apply where required; passing one does not bypass the other" — but this is a single combined test, not separate RLS-specific and Node-1-specific acceptance tests. If the correction asked for two distinct test entries (one proving RLS enforcement independent of Node 1, one proving Node 1 enforcement independent of RLS), that split isn't done — it's still merged into one bullet.
+**4. "Auditability... where appropriate" (§10.7) is too soft**
+This is the one place the document hedges. Given that Q6's own threat model (§3) explicitly includes "users modifying verification/trusted-role state" and "service_role misuse," audit logging for privileged verification/admin mutations shouldn't be optional/"where appropriate" — it should be a hard requirement for any operation that touches `verification_status` / `trusted_role`, specifically. As written, an implementer could reasonably skip logging entirely and still claim compliance.
 
----
+**5. Access matrix (§6) "Not preferred" is ambiguous**
+For rows like "Read own permitted data → Privileged Server: Not preferred," it's unclear if this means "technically allowed but discouraged" or "forbidden except via approved exception." Given §10.8 ("no shortcut"), this should just say **DISALLOWED except via approved exception**, matching the rest of the document's stricter language. As-is it's the one soft spot an implementer could exploit to justify convenience use of service_role.
 
-**Verdict: CHANGES REQUIRED**
+**6. Node 1 interaction section is correct but has no failure-mode test**
+§7 correctly separates RLS (row access) from Node 1 (business authorization), and states passing one doesn't bypass the other. But §12 has no acceptance test that specifically verifies *Node 1 rejects an action RLS would have allowed* (e.g., Driver A reads their own row via RLS, but Node 1 correctly blocks the operation due to trip state). Test #10 gestures at this but is too generic to be checkable. Should be split into two concrete tests.
 
-**Remaining corrections needed:**
-1. Add explicit `FORCE ROW LEVEL SECURITY` requirement to §4/§10 — state that table ownership must not grant implicit RLS bypass, and that FORCE RLS (or equivalent non-owner app role) is mandatory for protected tables.
-2. Add a service_role compromise/rotation subsection (likely under §5 or a new §5.x) — minimum: key rotation procedure/cadence, and immediate-response steps if a leak is suspected. Currently only listed as a threat, never mitigated.
-3. Upgrade §10 point 7 from "should be identifiable... where appropriate" to a mandatory requirement specifically for security-sensitive mutations (verification_status, trusted_role, admin approval changes) — every such mutation must produce an audit record, not just "where appropriate."
-4. Split §12 test 10 into two separate acceptance tests: one proving RLS blocks cross-user access independent of Node 1 authorization state, and one proving Node 1 authorization blocks disallowed operations even when RLS would permit the row access.
+## Exact Corrections Needed
 
-**Other observations (not part of the 6, flagging since asked for remaining issues):**
-- §8 mentions "Auth-trigger-based identity creation may use database-level privileges" but doesn't specify whether that trigger runs as `SECURITY DEFINER` and if so, what constrains its scope — worth a verification item in §13 if not already implied.
-- §13 item 5 ("source locations where service_role is currently imported/used") is good but could explicitly ask whether `src/lib/supabase-server.ts` is imported anywhere outside verified privileged routes — ties directly to the IDOR risk in §9.
+1. **§4** — add: "RLS-enabled tables with no explicit policy default-deny all access for non-owner roles; this is the mechanism that satisfies 'fail closed' — not an assumption, an explicit deny-by-default guarantee to verify per table."
+2. **§4 or §13** — add unknown/verification item: "Confirm `FORCE ROW LEVEL SECURITY` status for each protected table, to rule out table-owner-role bypass."
+3. **§10** — add point 9: "If service_role key exposure is suspected, rotate immediately via Supabase dashboard and audit recent privileged-operation logs for the exposure window." (policy statement, not implementation)
+4. **§10.7** — reword to: "Privileged operations that mutate `verification_status`, `trusted_role`, or other administrative approval state MUST be logged with actor identity, target resource, and timestamp. Other privileged operations should be logged where appropriate."
+5. **§6** — replace "Not preferred" in both cells with "**DISALLOWED except via approved exception**" to match the strictness of §10.8.
+6. **§12** — split test #10 into:
+   - 10a. "A row that passes RLS (User A reading their own row) can still be correctly rejected by Node 1 authorization due to business-state constraints (e.g., trip state, role)."
+   - 10b. "A row blocked by RLS is never reachable even if Node 1 authorization would have allowed the business operation."
 
-**Final Q6 recommendation:** The core policy (Strict RLS + Privileged Server Boundary) is sound and should stand. Do not reopen the architecture decision — only the four gaps above need closing before this can move to independent review/lock. Once FORCE RLS, service_role rotation, mandatory audit logging, and split acceptance tests are added, this is lock-ready.
+## Final Q6 Recommendation
+
+The core architecture — **RLS as default row boundary, service_role as a narrow server-only exception requiring its own authorization check, and RLS/Node 1 treated as complementary, non-substitutable layers** — is correct and matches standard Supabase/Postgres security practice. This should stand as the locked decision.
+
+Before LOCK, fold in corrections #1, #4, #5 as mandatory (they're either safety-relevant defaults or ambiguity that undermines the document's own stated strictness). Corrections #2, #3, #6 can be folded in now or explicitly deferred to Q7/implementation-time as tracked verification items — but if deferred, they must be added to §13's unknowns list so they aren't lost, not simply dropped.
+
+Once #1, #4, and #5 are patched, Q6 is ready to LOCK.
