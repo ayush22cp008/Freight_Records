@@ -384,10 +384,63 @@ Locked behavior:
 - The delivery lifecycle remains unchanged; no new stages or event types are introduced.
 - The Driver should always be able to understand what has been completed and what they need to do next.
 
+### Interaction 4 — Delivery Lifecycle / Stage Progression — LOCKED
+The existing delivery lifecycle is presented as a visual progression of completed, current, and upcoming stages.
+
+Flow:
+
+`My Active Trip → Delivery Lifecycle → Current Stage → Existing Stage Action → Stage Completed → Lifecycle Updates`
+
+Locked behavior:
+- Use existing delivery stages/events only.
+- **Completed** stages are represented as `✓`.
+- The **Current** stage is represented as `●` and corresponds to the primary action available to the Driver.
+- **Upcoming** stages are represented as `○`.
+- After the current action succeeds, the current stage becomes completed, the next stage becomes current, and the primary CTA updates to that stage's existing action.
+- Previously completed stages remain visible so the Driver can understand the full delivery progression.
+- A completed trip shows all applicable stages as completed and has no next-action CTA.
+- No new delivery stages, events, or workflow capabilities are introduced.
+
+### Interaction 5 — Evidence Status / Evidence Progress — LOCKED
+The active-trip workspace presents existing evidence as a clear progress/status view.
+
+Flow:
+
+`My Active Trip → Evidence Status → Completed / Remaining Evidence → Evidence Status Updates with Existing Delivery Actions`
+
+Locked behavior:
+- Show evidence already completed and evidence still required using existing evidence/data.
+- Show overall evidence progress/status.
+- Evidence status updates when the corresponding existing delivery action/event is successfully completed.
+- The UI must reflect actual recorded evidence and must not imply evidence exists when it has not been recorded.
+- No new evidence types, upload mechanisms, or evidence capabilities are introduced.
+- Exact existing evidence/data mapping remains UNKNOWN until confirmed from source code during later implementation-level investigation.
+
+### Interaction 6 — Completed Trip → Trip History / Timeline — LOCKED
+Completed trips provide a review-only path into the existing historical trip/timeline experience.
+
+Flow:
+
+`Completed Trips / History → Select Completed Trip → Trip History / Timeline → Review Existing Trip Information / Events / Evidence`
+
+Locked behavior:
+- Driver opens **Completed Trips / History**.
+- Selecting a completed trip opens its existing **Trip History / Timeline**.
+- The timeline shows the existing recorded delivery events in chronological order.
+- The Driver can review the existing trip information associated with the completed delivery.
+- Existing evidence/status information is shown where already available.
+- There is no operational CTA for progressing the delivery because the trip is completed.
+- The Driver can navigate back to **Completed Trips / History**.
+- Existing historical-trip functionality is preserved; this is a restructuring/presentation change, not a new history feature.
+- Existing implementation evidence confirms completed trips link to `/timeline?tripId=[trip id]`; the redesign preserves that underlying historical/timeline capability while giving it a clearer Completed Trip → Timeline interaction.
+
 ### Part 3 Current Status
 - Interaction 1 — Available Trip Card → Trip Detail: ✅ LOCKED
 - Interaction 2 — Trip Detail → Accept Trip: ✅ LOCKED
 - Interaction 3 — My Active Trip → Next Required Action: ✅ LOCKED
+- Interaction 4 — Delivery Lifecycle / Stage Progression: ✅ LOCKED
+- Interaction 5 — Evidence Status / Evidence Progress: ✅ LOCKED
+- Interaction 6 — Completed Trip → Trip History / Timeline: ✅ LOCKED
 - Remaining Driver interactions: ⏳
 
 ## Current Status
@@ -402,4 +455,4 @@ Locked behavior:
 - Implementation: not started
 
 ## Next Discussion
-Continue **Driver Part 3 — Interaction Mapping** with the next remaining Driver interaction after the active-trip action flow.
+Continue **Driver Part 3 — Interaction Mapping** with the next remaining Driver interaction after the completed-trip timeline flow.
