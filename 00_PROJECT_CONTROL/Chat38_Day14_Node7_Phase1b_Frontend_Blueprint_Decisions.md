@@ -216,6 +216,31 @@ Responsive behavior:
 
 Boundary: this is a presentation/navigation redesign of the existing identity/account information. It does not create a new editable profile system.
 
+### Part 4.8 — Navigation Final Layout — COMPLETE / LOCKED
+Navigation uses the same five destination names across every supported device size to reduce user confusion and avoid requiring users to translate between different navigation terminology.
+
+Universal navigation labels:
+1. Dashboard
+2. Available Trips
+3. My Active Trip
+4. Completed Trips
+5. Profile
+
+These exact labels and destinations apply across laptop/desktop, tablet/intermediate, and mobile. Only the visual presentation of the navigation adapts to the viewport.
+
+Responsive presentation may use an appropriate desktop, tablet, or mobile navigation layout, but the destination names, destination meaning, workflow access, and underlying capabilities remain the same.
+
+My Active Trip remains visible in navigation even when the Driver has no active trip. Opening it in that state shows the existing No Active Trip state rather than removing or renaming the destination.
+
+The currently selected destination must have a clear active/selected visual state.
+
+Navigation provides clearer access to the already-defined Driver contexts; it introduces no new workflow, product capability, claim mechanism, marketplace functionality, or account-management functionality.
+
+Universal navigation relationship:
+Dashboard ↔ Available Trips / My Active Trip / Completed Trips / Profile
+
+The navigation labels are intentionally not changed to alternate mobile-only terms such as Home, Trips, Active, or History. One product vocabulary is used across all device sizes.
+
 ## Current Status
 - Driver Part 1 — UX/Product structure: LOCKED
 - Driver Part 2 — Existing structure comparison: LOCKED
@@ -227,7 +252,8 @@ Boundary: this is a presentation/navigation redesign of the existing identity/ac
 - Driver Part 4.5 — My Active Trip final layout: COMPLETE / LOCKED
 - Driver Part 4.6 — Completed Trips / History final layout: COMPLETE / LOCKED
 - Driver Part 4.7 — Profile final layout: COMPLETE / LOCKED
-- Driver Part 4 remaining: Navigation, Responsive behavior, Loading/empty/error states, final Driver blueprint review/lock
+- Driver Part 4.8 — Navigation final layout: COMPLETE / LOCKED
+- Driver Part 4 remaining: Responsive behavior, Loading/empty/error states, final Driver blueprint review/lock
 - Driver Part 5 — Implementation investigation/prompt: pending
 - Company Portal blueprint: pending
 - Reviewer Portal blueprint: pending
@@ -235,4 +261,4 @@ Boundary: this is a presentation/navigation redesign of the existing identity/ac
 - Implementation: not started
 
 ## Next Discussion
-Move to Driver Part 4.8 — Navigation final layout.
+Move to Driver Part 4.9 — Responsive behavior.
