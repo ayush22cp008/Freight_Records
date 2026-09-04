@@ -190,6 +190,32 @@ The existing `/timeline?tripId=[id]` review path is preserved as the underlying 
 
 Boundary: this is a presentation and navigation redesign of existing completed-trip history functionality. It introduces no new history capabilities, new evidence capabilities, or new operational workflow.
 
+### Part 4.7 — Profile Final Layout — COMPLETE / LOCKED
+The Profile page answers: “Who am I in the Freight system, and what account/driver information is associated with me?”
+
+Source-level investigation confirmed that there is no dedicated Driver Profile route. Existing Driver-facing identity information consists of the authenticated user's email and the Driver name from the `drivers` table. The only existing account action is Sign Out. No profile editing or settings functionality is implemented.
+
+Final structure:
+1. Profile heading/context.
+2. Driver identity information using the existing Driver name.
+3. Account information using the existing authenticated email.
+4. Existing account action: Sign Out.
+5. Any additional identity/account information may be shown only if already supported by the current system; do not invent new profile fields.
+
+Profile is a secondary destination and is not part of the delivery operational workflow.
+
+No new profile capabilities are introduced: no editing, settings, preferences, documents, password management, notification controls, or other account-management features unless independently confirmed as existing functionality.
+
+Existing missing-profile and identity/verification error behavior remains authoritative. The redesign must not replace or weaken those existing access/error states.
+
+Responsive behavior:
+- Desktop/laptop: clear account/profile presentation with comfortable information grouping.
+- Tablet/intermediate: adaptive grouping.
+- Mobile: compact full-width information sections.
+- The same existing identity information and Sign Out action remain available at every viewport.
+
+Boundary: this is a presentation/navigation redesign of the existing identity/account information. It does not create a new editable profile system.
+
 ## Current Status
 - Driver Part 1 — UX/Product structure: LOCKED
 - Driver Part 2 — Existing structure comparison: LOCKED
@@ -200,7 +226,8 @@ Boundary: this is a presentation and navigation redesign of existing completed-t
 - Driver Part 4.4 — Trip Detail final layout: COMPLETE / LOCKED
 - Driver Part 4.5 — My Active Trip final layout: COMPLETE / LOCKED
 - Driver Part 4.6 — Completed Trips / History final layout: COMPLETE / LOCKED
-- Driver Part 4 remaining: Profile, Navigation, Responsive behavior, Loading/empty/error states, final Driver blueprint review/lock
+- Driver Part 4.7 — Profile final layout: COMPLETE / LOCKED
+- Driver Part 4 remaining: Navigation, Responsive behavior, Loading/empty/error states, final Driver blueprint review/lock
 - Driver Part 5 — Implementation investigation/prompt: pending
 - Company Portal blueprint: pending
 - Reviewer Portal blueprint: pending
@@ -208,4 +235,4 @@ Boundary: this is a presentation and navigation redesign of existing completed-t
 - Implementation: not started
 
 ## Next Discussion
-Move to Driver Part 4.7 — Profile final layout.
+Move to Driver Part 4.8 — Navigation final layout.
