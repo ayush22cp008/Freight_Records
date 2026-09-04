@@ -123,6 +123,23 @@ Empty state: show the existing “No published trips available at this time.” 
 
 No new marketplace functionality is included: no search, filters, sorting, favorites, matching logic, or other new capabilities.
 
+### Part 4.4 — Trip Detail Final Layout — COMPLETE / LOCKED
+Trip Detail answers: “What exactly is this trip, and can I accept it?”
+
+Final hierarchy:
+1. Back to Available Trips navigation.
+2. Trip Details heading/context.
+3. Pickup/origin and Dropoff/destination presented as the primary route information.
+4. Existing trip information such as Distance, Duration, and Payout.
+5. Any additional existing trip information supported by the current system.
+6. Accept Trip action area.
+
+When the Driver has no active trip and is eligible, the existing Accept Trip action is available. The intended flow is Trip Detail → Accept Trip → My Active Trip.
+
+When the Driver already has an active trip, the same trip remains reviewable but Accept Trip is disabled/unavailable. The Driver cannot claim another trip.
+
+The page introduces no new trip data, matching logic, eligibility rules, marketplace functionality, or additional claim mechanism. It is a clearer frontend presentation of existing trip information and the existing claim capability.
+
 ## Current Status
 - Driver Part 1 — UX/Product structure: LOCKED
 - Driver Part 2 — Existing structure comparison: LOCKED
@@ -130,8 +147,9 @@ No new marketplace functionality is included: no search, filters, sorting, favor
 - Driver Part 4.1 — Overall page structure: COMPLETE / LOCKED
 - Driver Part 4.2 — Dashboard final layout: COMPLETE / LOCKED
 - Driver Part 4.3 — Available Trips final layout: COMPLETE / LOCKED
-- Driver Part 4.4 — Trip Detail final layout: NEXT
-- Driver Part 4 remaining: My Active Trip, Completed Trips/History, Profile, Navigation, Responsive behavior, Loading/empty/error states, final Driver blueprint review/lock
+- Driver Part 4.4 — Trip Detail final layout: COMPLETE / LOCKED
+- Driver Part 4.5 — My Active Trip final layout: NEXT
+- Driver Part 4 remaining: Completed Trips/History, Profile, Navigation, Responsive behavior, Loading/empty/error states, final Driver blueprint review/lock
 - Driver Part 5 — Implementation investigation/prompt: pending
 - Company Portal blueprint: pending
 - Reviewer Portal blueprint: pending
@@ -139,4 +157,4 @@ No new marketplace functionality is included: no search, filters, sorting, favor
 - Implementation: not started
 
 ## Next Discussion
-Move to Driver Part 4.4 — Trip Detail final layout.
+Move to Driver Part 4.5 — My Active Trip final layout.
