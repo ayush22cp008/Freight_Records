@@ -23,12 +23,12 @@ Record the frontend/UX blueprint decisions established in Chat38 for Node 7 Phas
 ### Part 1 — Portal UX/Product Blueprint
 Define and lock the target UX/product experience for each portal one decision at a time.
 
-### Part 2 — Existing Structure Comparison ⏳
+### Part 2 — Existing Structure Comparison ✅ DRIVER COMPLETE / LOCKED
 - Determine what pages, components, features, and existing frontend structures already exist.
 - Compare the locked portal blueprint against the real existing frontend rather than assuming implementation details.
 - Identify what should be redesigned/rearranged versus what already matches the blueprint.
 
-### Part 3 — Interaction Mapping ⏳
+### Part 3 — Interaction Mapping ✅ DRIVER COMPLETE / LOCKED
 - Define exactly what happens when each existing button/link/action is clicked.
 - Map the interaction flow: current location → action → destination/state → next available action.
 - Include navigation/back behavior and responsive behavior where relevant.
@@ -434,19 +434,94 @@ Locked behavior:
 - Existing historical-trip functionality is preserved; this is a restructuring/presentation change, not a new history feature.
 - Existing implementation evidence confirms completed trips link to `/timeline?tripId=[trip id]`; the redesign preserves that underlying historical/timeline capability while giving it a clearer Completed Trip → Timeline interaction.
 
-### Part 3 Current Status
+### Interaction 7 — Driver Navigation Between Portal Sections — LOCKED
+Navigation changes where the Driver goes, not what the Driver can do.
+
+Flow:
+
+`Dashboard ↔ Available Trips / My Active Trip / Completed Trips / Profile`
+
+Locked behavior:
+- Driver can directly navigate to Dashboard, Available Trips, My Active Trip, Completed Trips, and Profile.
+- The current navigation destination is clearly indicated.
+- Navigation does not change, duplicate, or expand the underlying delivery, claim, history, or profile workflows.
+- **My Active Trip** remains visible in navigation even when no active trip exists; the page should then show the appropriate existing no-active-trip state.
+- Moving between sections preserves the Driver's current workflow state rather than resetting or duplicating it.
+- From Trip Detail or Trip History/Timeline, Back returns the Driver to the appropriate originating context.
+- Mobile destinations adapt to **Home, Trips, Active, History, Profile** while preserving the same underlying destinations/functionality.
+- Desktop, tablet/intermediate, and mobile layouts may present navigation differently, but they preserve the same underlying destinations and behavior.
+- No new navigation capability is introduced.
+
+Principle:
+**Navigation changes where the Driver goes, not what the Driver can do.**
+
+### Interaction 8 — Driver Session / Page-State Continuity — LOCKED
+When the Driver moves between pages, the application keeps the Driver in the correct workflow state and context.
+
+Example flow:
+
+`My Active Trip → Available Trips → My Active Trip`
+
+Locked behavior:
+- Returning to My Active Trip shows the current delivery status, completed stages, next required action, and evidence status correctly.
+- Navigation between pages must not reset, duplicate, or incorrectly change the Driver's delivery state.
+- Existing backend/source-of-truth state remains authoritative.
+- Page transitions and refreshes should preserve the correct current workflow context based on existing application state.
+- No new workflow state or persistence feature is introduced; this interaction only defines correct continuity of the existing workflow.
+
+Principle:
+**Changing pages must not change the Driver's actual trip state.**
+
+### Interaction 9 — Driver Error, Loading & Empty-State Behavior — LOCKED
+The Driver should always understand what is happening when content is loading, empty, unavailable, or when an action fails.
+
+Locked behavior:
+- **Loading:** clearly indicate that a page or action is processing.
+- **No active trip:** clearly communicate that no active trip currently exists.
+- **No available trips:** clearly communicate that no trips are currently available.
+- **No completed trips:** clearly communicate that there is no completed-trip history yet.
+- **Error:** clearly explain the failure and provide the appropriate existing next step/retry where supported.
+- **Completed trip:** clearly communicate completion and remove operational next-action behavior.
+- Existing system states should be preserved; no new functionality is implied.
+
+Principle:
+**The Driver should always understand what is happening, even when there is nothing to show or something goes wrong.**
+
+### Interaction 10 — Driver Workflow Completion / Handoff — LOCKED
+When the Driver completes the delivery, the experience clearly transitions from operational work to historical review.
+
+Flow:
+
+`My Active Trip → Final Required Action → Delivery Completed → Completed Trip → Completed Trips / History`
+
+Locked behavior:
+- Final required existing delivery action completes the trip.
+- The Driver sees a clear **Completed** state.
+- No further operational action is presented for the completed trip.
+- The completed trip moves out of the active-trip context and becomes available under **Completed Trips / History** using existing historical-trip functionality.
+- The Driver can open the completed trip later to review the existing timeline/evidence/trip information.
+- No new delivery-completion feature or workflow is introduced.
+
+Principle:
+**When the delivery is finished, the Driver clearly knows it is finished and can easily find it in history.**
+
+## Part 3 Current Status
 - Interaction 1 — Available Trip Card → Trip Detail: ✅ LOCKED
 - Interaction 2 — Trip Detail → Accept Trip: ✅ LOCKED
 - Interaction 3 — My Active Trip → Next Required Action: ✅ LOCKED
 - Interaction 4 — Delivery Lifecycle / Stage Progression: ✅ LOCKED
 - Interaction 5 — Evidence Status / Evidence Progress: ✅ LOCKED
 - Interaction 6 — Completed Trip → Trip History / Timeline: ✅ LOCKED
-- Remaining Driver interactions: ⏳
+- Interaction 7 — Driver Navigation Between Portal Sections: ✅ LOCKED
+- Interaction 8 — Driver Session / Page-State Continuity: ✅ LOCKED
+- Interaction 9 — Driver Error, Loading & Empty-State Behavior: ✅ LOCKED
+- Interaction 10 — Driver Workflow Completion / Handoff: ✅ LOCKED
+- **Driver Part 3 interaction set currently defined in Chat38: ✅ COMPLETE / LOCKED**
 
 ## Current Status
 - Driver Part 1 — UX/Product structure: ✅ LOCKED
 - Driver Part 2 — Existing structure comparison: ✅ LOCKED
-- Driver Part 3 — Interaction mapping: 🟡 IN PROGRESS
+- Driver Part 3 — Interaction mapping: ✅ COMPLETE / LOCKED
 - Driver Part 4 — Final frontend blueprint: ⏳
 - Driver Part 5 — Implementation investigation/prompt: ⏳
 - Company Portal blueprint: ⏳
@@ -455,4 +530,4 @@ Locked behavior:
 - Implementation: not started
 
 ## Next Discussion
-Continue **Driver Part 3 — Interaction Mapping** with the next remaining Driver interaction after the completed-trip timeline flow.
+Move to **Driver Part 4 — Final Frontend Blueprint**, where the locked Driver UX structure and interactions are consolidated into the final page-by-page frontend design before implementation investigation begins.
