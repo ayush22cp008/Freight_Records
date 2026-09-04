@@ -18,6 +18,38 @@ Record the frontend/UX blueprint decisions established in Chat38 for Node 7 Phas
 5. Consolidate the final frontend blueprint
 6. Implement one portal at a time
 
+## Phase 1b Work Parts
+
+### Part 1 — Portal UX/Product Blueprint
+Define and lock the target UX/product experience for each portal one decision at a time.
+
+### Part 2 — Existing Structure Comparison ⏳
+- Determine what pages, components, features, and existing frontend structures already exist.
+- Compare the locked portal blueprint against the real existing frontend rather than assuming implementation details.
+- Identify what should be redesigned/rearranged versus what already matches the blueprint.
+
+### Part 3 — Interaction Mapping ⏳
+- Define exactly what happens when each existing button/link/action is clicked.
+- Map the interaction flow: current location → action → destination/state → next available action.
+- Include navigation/back behavior and responsive behavior where relevant.
+- Preserve existing functionality; do not introduce new features.
+
+### Part 4 — Final Frontend Blueprint ⏳
+Define the final page-by-page frontend blueprint, including:
+- Page-by-page layout
+- Navigation
+- Existing interactions
+- Button/link destinations and flows
+- Information hierarchy
+- Responsive behavior across phone, tablet/intermediate widths, and laptop/desktop
+- Existing loading, empty, and error states
+
+### Part 5 — Implementation Investigation / Prompt ⏳
+- Start only after the design is fully settled.
+- Use implementation investigation to inspect the actual source code and establish the implementation path.
+- Antigravity performs code-level investigation and reports evidence from the real code.
+- Implementation prompts are prepared only after the relevant design and investigation work is complete.
+
 ## Driver Portal — Locked UX Blueprint
 
 ### 1. Mental Model — LOCKED
@@ -147,7 +179,10 @@ The existing Records evidence supports the Driver model in which a Driver withou
 
 ## Current Status at End of Chat38 Discussion
 - Driver Portal UX blueprint: substantially defined and locked at the product-structure level.
-- Exact existing-code comparison and button-by-button interaction mapping: remaining.
+- Part 2 — Existing structure comparison: remaining.
+- Part 3 — Interaction mapping: remaining.
+- Part 4 — Final frontend blueprint: remaining.
+- Part 5 — Implementation investigation/prompt: remaining and blocked until design is fully settled.
 - Company Portal blueprint: remaining.
 - Reviewer Portal blueprint: remaining.
 - Consolidated cross-portal frontend blueprint: remaining.
