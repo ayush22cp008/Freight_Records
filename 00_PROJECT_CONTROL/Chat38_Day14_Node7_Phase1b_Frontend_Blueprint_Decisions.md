@@ -352,8 +352,42 @@ From Trip Detail:
 
 No new marketplace or claim capability is introduced. The existing claim behavior is only being moved into a clearer interaction flow.
 
+### Interaction 2 — Trip Detail → Accept Trip — LOCKED
+Flow:
+
+`Trip Detail → Accept Trip → Loading → Success/Failure`
+
+Locked behavior:
+- Accept Trip uses the existing claim functionality.
+- While the request is processing, the action shows loading/processing and prevents duplicate submission.
+- Success: the trip becomes the Driver’s active trip and the Driver moves to **My Active Trip**.
+- Failure: show the existing/appropriate error and keep the Driver on Trip Detail so the result is understandable and retry remains possible where appropriate.
+- If another Driver wins the atomic claim first, the current Driver must not be shown as having claimed the trip.
+- If the Driver already has an active trip, Accept Trip is unavailable.
+- No new claim mechanism is introduced.
+
+### Interaction 3 — My Active Trip → Next Required Action — LOCKED
+The active-trip workspace immediately communicates the current delivery stage and the single next required action.
+
+Flow:
+
+`My Active Trip → Current Delivery Status → Next Required Action → Action CTA → Existing Event Recording Flow → Action Completed → My Active Trip updated`
+
+Locked behavior:
+- My Active Trip is the Driver’s operational workspace.
+- Show the current delivery stage/status prominently.
+- Show one primary CTA for the next required existing lifecycle action.
+- The CTA leads to the existing event-recording flow for that stage.
+- While the action is being processed, the UI uses the appropriate existing loading/processing state and prevents duplicate submission where applicable.
+- After successful completion, return the Driver to My Active Trip.
+- The updated workspace shows the completed stage, the new current stage, the next required action, and updated evidence/status progression using existing functionality.
+- The delivery lifecycle remains unchanged; no new stages or event types are introduced.
+- The Driver should always be able to understand what has been completed and what they need to do next.
+
 ### Part 3 Current Status
 - Interaction 1 — Available Trip Card → Trip Detail: ✅ LOCKED
+- Interaction 2 — Trip Detail → Accept Trip: ✅ LOCKED
+- Interaction 3 — My Active Trip → Next Required Action: ✅ LOCKED
 - Remaining Driver interactions: ⏳
 
 ## Current Status
@@ -368,4 +402,4 @@ No new marketplace or claim capability is introduced. The existing claim behavio
 - Implementation: not started
 
 ## Next Discussion
-Continue **Driver Part 3 — Interaction Mapping** with the next interaction: **Trip Detail → Accept Trip**.
+Continue **Driver Part 3 — Interaction Mapping** with the next remaining Driver interaction after the active-trip action flow.
