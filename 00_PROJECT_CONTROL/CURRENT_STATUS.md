@@ -1,6 +1,6 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Sep 3, 2026 — Day 13 CLOSED with no project work; Node 6 remains CLOSED / ACCEPTED and Node 7 remains NEXT
+**Last updated:** Sep 4, 2026 — Day 13 CLOSED / PAUSED; Node 7 Phase 1a public evidence sharing remains ACTIVE / IN PROGRESS with production 404 under code-level investigation
 
 ## Current Project Position
 
@@ -198,6 +198,54 @@ Ayush explicitly approved Node 6 completion after review of the Chat28 verificat
 
 Therefore the Node 6 completion gate is satisfied.
 
+## Node 7 — AI + Final Integration + Demo
+
+**Status: 🔵 ACTIVE / IN PROGRESS**
+
+Node 7 is the only active project node. Nodes 1–6 remain closed and are not reopened by the current investigation.
+
+### Phase 1a — Public Evidence Sharing
+
+**Status: 🟡 IMPLEMENTED / NOT YET ACCEPTED — PRODUCTION 404 UNDER INVESTIGATION**
+
+Current verified implementation state:
+
+```text
+Company Public Evidence Share UI     → ✅ IMPLEMENTED / VISIBLE
+Token generation                     → ✅ VERIFIED IN SOURCE
+Token hashing                        → ✅ VERIFIED IN SOURCE
+trip_public_shares persistence       → ✅ VERIFIED
+Public verification API              → ⚠️ RETURNS 404 / INVESTIGATION ACTIVE
+Public /share/[token] page           → ⚠️ RETURNS 404 / CODE REVIEW REQUIRED
+Event mapping                        → ⚠️ REQUIRES CODE-LEVEL RECONCILIATION
+True replacement transaction         → ⚠️ REQUIRES IMPLEMENTATION REVIEW
+Phase 1a acceptance                  → ⏳ PENDING
+```
+
+The production public-share problem is being treated as a code/runtime-path investigation rather than repeatedly redeploying without a root-cause diagnosis.
+
+The current source review identified:
+
+- The verification API hashes the received token and performs an ACTIVE `trip_public_shares` lookup, returning a generic 404 when the lookup fails.
+- Token generation uses 32 cryptographically secure random bytes encoded as Base64URL and SHA-256 for persistence/lookup.
+- The public share page still uses the pre-Next.js-16 synchronous dynamic-route `params` shape and requires reconciliation with the corrected API route pattern.
+- The public verification evidence mapping currently references `DELIVERY_ARRIVED` and `DELIVERY_CHECKIN`, while the established delivery-event model uses canonical milestone names including `ARRIVED_AT_DELIVERY`, requiring reconciliation before Phase 1a acceptance.
+- The share replacement path is implemented as separate revoke and insert operations; the existing partial unique index provides defensive protection, but the implementation is not a true database transaction/locking mechanism.
+
+No Phase 1b redesign work is included in this status change.
+
+### Phase 1a production investigation boundary
+
+```text
+Do not reopen Nodes 1–6
+Do not perform blind repeated redeployments
+Do not start Phase 1b UI/UX redesign
+Do not add a second evidence source
+Do not expose raw token or secret credentials
+```
+
+The next execution step is a targeted Chat36 code-level remediation/diagnostic pass, followed by focused verification and only then Phase 1a acceptance.
+
 ## Active Roadmap Position
 
 ```text
@@ -209,7 +257,8 @@ Node 4 Driver Marketplace            → 🔒 COMPLETE / ACCEPTED
 Node 5 Whole Delivery Tracking       → 🔒 COMPLETE / ACCEPTED
 Post-Node-5 Dashboard/AI follow-ups  → ✅ CLOSED / VERIFIED
 Node 6 Security + Evidence           → 🔒 COMPLETE / ACCEPTED
-Node 7 AI + Final Integration + Demo → 🔵 NEXT
+Node 7 AI + Final Integration + Demo → 🔵 ACTIVE / IN PROGRESS
+Node 7 Phase 1a Public Sharing       → 🟡 ACTIVE / NOT YET ACCEPTED
 ```
 
 ## Hackathon Day Position
@@ -228,9 +277,9 @@ Day 10 → Reviewer + Password Recovery + Node 3 acceptance/closure     🔒 CLO
 Day 11 → Node 4 completion / acceptance                               🔒 CLOSED
 Day 12 → Node 5 completion / acceptance                               🔒 CLOSED
 Post-Node-5 → Dashboard + historical AI-summary follow-ups            ✅ CLOSED
-Day 13 → No project work                                            ✅ CLOSED
-Current → Node 6 Security + Evidence                                  🔒 CLOSED
-Next → Node 7 AI + Final Integration + Demo                            🔵 NEXT
+Day 13 → Node 7 Phase 1a investigation / project work paused           ✅ CLOSED / PAUSED
+Current → Node 7 Phase 1a Public Evidence Sharing                     🟡 ACTIVE / IN PROGRESS
+Next → Chat36 targeted code-level remediation + verification          🔵 NEXT
 ```
 
 ## Execution Bridge
@@ -270,6 +319,7 @@ Node 5 → 🔒 COMPLETE / ACCEPTED
 Dashboard follow-up → ✅ CLOSED / VERIFIED
 Historical AI-summary follow-up → ✅ CLOSED / VERIFIED
 Node 6 → 🔒 COMPLETE / ACCEPTED
+Node 7 → 🔵 ACTIVE / IN PROGRESS
 
 Day 7  → ✅ CLOSED
 Day 8  → ✅ CLOSED
@@ -277,11 +327,14 @@ Day 9  → ✅ CLOSED
 Day 10 → 🔒 CLOSED
 Day 11 → 🔒 CLOSED
 Day 12 → 🔒 CLOSED
-Day 13 → ✅ CLOSED / NO PROJECT WORK
+Day 13 → ✅ CLOSED / PAUSED
 
-Next → Node 7 AI + Final Integration + Demo
+Node 7 Phase 1a → 🟡 ACTIVE / NOT YET ACCEPTED
+Production public-share verification → ⚠️ 404 / ROOT CAUSE PENDING
+
+Next → Chat36 targeted code-level remediation + verification
 ```
 
 ## Next Action
 
-**Day 13 is closed with no project work. Node 6 Security + Evidence remains closed after technical verification and Ayush approval. Do not reopen Nodes 1–6 unless new evidence identifies a regression or a specific reviewer requirement. Proceed to Node 7 — AI + Final Integration + Demo when the next work session begins.**
+**Resume from the existing Chat36 Node 7 Phase 1a code-level investigation. The next execution should diagnose and correct the public-share verification path, reconcile the Next.js dynamic route and delivery-event mappings, verify the authoritative database/runtime path, and then perform focused acceptance verification. Do not reopen Nodes 1–6 and do not treat repeated redeployment alone as a fix.**
