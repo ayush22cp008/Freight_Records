@@ -1,6 +1,6 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Sep 4, 2026 — Day 13 CLOSED / PAUSED; Node 7 Phase 1a public evidence sharing remains ACTIVE / IN PROGRESS with production 404 under code-level investigation
+**Last updated:** Sep 4, 2026 — Day 14 / Chat37; Node 7 Phase 1a COMPLETE / ACCEPTED; Phase 1b is NEXT
 
 ## Current Project Position
 
@@ -194,57 +194,132 @@ The verified privileged API inventory includes event routes, driver/receiver com
 
 ### Manual acceptance
 
-Ayush explicitly approved Node 6 completion after review of the Chat28 verification result.
+Ayush explicitly approved the Node 6 verification and closure.
 
 Therefore the Node 6 completion gate is satisfied.
 
 ## Node 7 — AI + Final Integration + Demo
 
-**Status: 🔵 ACTIVE / IN PROGRESS**
+**Status: 🔵 ACTIVE — PHASE 1a COMPLETE / PHASE 1b NEXT**
 
-Node 7 is the only active project node. Nodes 1–6 remain closed and are not reopened by the current investigation.
+Node 7 is the only active project node. Nodes 1–6 remain closed and are not reopened by the current work.
 
-### Phase 1a — Public Evidence Sharing
+### Phase 1a — Baseline AI + Shareable Evidence
 
-**Status: 🟡 IMPLEMENTED / NOT YET ACCEPTED — PRODUCTION 404 UNDER INVESTIGATION**
+**Status: 🟢 COMPLETE / ACCEPTED — AYUSH MANUAL VERIFICATION COMPLETE**
 
-Current verified implementation state:
-
-```text
-Company Public Evidence Share UI     → ✅ IMPLEMENTED / VISIBLE
-Token generation                     → ✅ VERIFIED IN SOURCE
-Token hashing                        → ✅ VERIFIED IN SOURCE
-trip_public_shares persistence       → ✅ VERIFIED
-Public verification API              → ⚠️ RETURNS 404 / INVESTIGATION ACTIVE
-Public /share/[token] page           → ⚠️ RETURNS 404 / CODE REVIEW REQUIRED
-Event mapping                        → ⚠️ REQUIRES CODE-LEVEL RECONCILIATION
-True replacement transaction         → ⚠️ REQUIRES IMPLEMENTATION REVIEW
-Phase 1a acceptance                  → ⏳ PENDING
-```
-
-The production public-share problem is being treated as a code/runtime-path investigation rather than repeatedly redeploying without a root-cause diagnosis.
-
-The current source review identified:
-
-- The verification API hashes the received token and performs an ACTIVE `trip_public_shares` lookup, returning a generic 404 when the lookup fails.
-- Token generation uses 32 cryptographically secure random bytes encoded as Base64URL and SHA-256 for persistence/lookup.
-- The public share page still uses the pre-Next.js-16 synchronous dynamic-route `params` shape and requires reconciliation with the corrected API route pattern.
-- The public verification evidence mapping currently references `DELIVERY_ARRIVED` and `DELIVERY_CHECKIN`, while the established delivery-event model uses canonical milestone names including `ARRIVED_AT_DELIVERY`, requiring reconciliation before Phase 1a acceptance.
-- The share replacement path is implemented as separate revoke and insert operations; the existing partial unique index provides defensive protection, but the implementation is not a true database transaction/locking mechanism.
-
-No Phase 1b redesign work is included in this status change.
-
-### Phase 1a production investigation boundary
+The approved Phase 1a baseline was:
 
 ```text
-Do not reopen Nodes 1–6
-Do not perform blind repeated redeployments
-Do not start Phase 1b UI/UX redesign
-Do not add a second evidence source
-Do not expose raw token or secret credentials
+AI evidence-grounded summary
+Timeline integration
+Public shareable read-only evidence link
 ```
 
-The next execution step is a targeted Chat36 code-level remediation/diagnostic pass, followed by focused verification and only then Phase 1a acceptance.
+### Phase 1a verified production functionality
+
+```text
+Company Public Evidence Share UI     → ✅ VERIFIED
+Create Public Share                   → ✅ VERIFIED
+Replace Share                         → ✅ VERIFIED
+Revoke Share                          → ✅ VERIFIED
+Active share state                    → ✅ VERIFIED
+Public read-only URL                  → ✅ VERIFIED
+Completed trip display                → ✅ VERIFIED
+Delivery date                         → ✅ VERIFIED
+Evidence status COMPLETE              → ✅ VERIFIED
+Arrival evidence                      → ✅ VERIFIED
+Receiver check-in evidence            → ✅ VERIFIED
+Delivery departure evidence           → ✅ VERIFIED
+AI evidence summary                   → ✅ GENERATED / VERIFIED
+Event timeline                        → ✅ VISIBLE / VERIFIED
+```
+
+Ayush manually verified the production Public Evidence Share flow and confirmed that the complete trip is visible through the share link, including the delivery date, complete evidence state, generated AI evidence summary, and delivery event timeline.
+
+### Phase 1a root-cause fixes recorded
+
+The Public Share implementation required evidence-backed fixes during Chat37, including:
+
+- Next.js dynamic-route `params` Promise reconciliation.
+- Removal of the public page self-fetch architecture in favor of a shared server-side lookup helper.
+- Trip projection alignment with the actual database schema (`facility_name` / `destination_name`).
+- Event ordering alignment to `server_timestamp`.
+- Canonical event vocabulary alignment to `ARRIVED_AT_DELIVERY`, `RECEIVER_CHECKED_IN`, and `DELIVERY_DEPARTED`.
+- Timeline and delivery-date projection alignment to `server_timestamp`.
+- Observable event-query error handling instead of silently masking query failures as empty evidence.
+
+No database schema redesign was required.
+
+### Phase 1a records
+
+```text
+05_DEBUGGING/investigations/
+Chat37_Node7_Phase1a_PublicShare404_DB_Code_Reconciliation_Investigation.md
+Chat37_Node7_Phase1a_PublicShare404_CreateFlow_DB_Reconciliation_Investigation.md
+Chat37_Node7_Phase1a_PublicShare_Evidence_DB_Code_Reconciliation_Investigation.md
+
+03_IMPLEMENTATION/implementation_reports/
+Chat37_Node7_Phase1a_PublicShare404_LocalizedParamsFix_Implementation_Report.md
+Chat37_Node7_Phase1a_PublicShare404_SharedLookup_ArchitectureFix_Implementation_Report.md
+Chat37_Node7_Phase1a_PublicShare404_CreateFlow_DB_SchemaMismatchFix_Implementation_Report.md
+Chat37_Node7_Phase1a_PublicShare_EvidenceSchemaTimestampFix_Implementation_Report.md
+
+00_PROJECT_CONTROL/CHECKPOINTS/
+Chat37_Node7_Phase1a_Completion_Checkpoint.md
+```
+
+### Phase 1a decision
+
+```text
+Phase 1a → 🟢 COMPLETE / ACCEPTED
+```
+
+No further Phase 1a Public Share remediation should be started unless new contradictory evidence or a regression appears.
+
+## Phase 1b — Full 3-Portal UI/UX Redesign
+
+**Status: 🔵 NEXT / NOT YET STARTED**
+
+The next Node 7 execution phase is the full final user-facing redesign across:
+
+1. Driver portal
+2. Company portal
+3. Reviewer portal
+
+Phase 1b includes the unified visual/design system, navigation clarity, information hierarchy, workflow discoverability, and demo presentation polish defined by the approved Node 7 roadmap.
+
+Do not begin conditional Phase 3 work before Phase 1b is complete and stable.
+
+## Phase 3 — Conditional Add-On Features
+
+**Status: ⏳ PENDING / CONDITIONAL**
+
+Potential add-ons remain:
+
+- AI inconsistency detection
+- Confidence/completeness scoring
+- Multi-signal evidence cross-check
+- Natural-language Q&A over deterministic evidence
+
+These remain optional and should only be considered after Phase 1a and Phase 1b are complete and stable.
+
+## Final Step — E2E + Demo + Presentation
+
+**Status: ⏳ PENDING**
+
+The final Node 7 step remains:
+
+```text
+Full E2E across Driver / Company / Reviewer
+→ Critical bug-fixing buffer
+→ Realistic demo data/scenario
+→ Presentation/demo flow
+→ Final rehearsal
+→ Node 7 final acceptance
+```
+
+This final cycle should happen once at the end, not repeatedly after each feature phase.
 
 ## Active Roadmap Position
 
@@ -257,8 +332,11 @@ Node 4 Driver Marketplace            → 🔒 COMPLETE / ACCEPTED
 Node 5 Whole Delivery Tracking       → 🔒 COMPLETE / ACCEPTED
 Post-Node-5 Dashboard/AI follow-ups  → ✅ CLOSED / VERIFIED
 Node 6 Security + Evidence           → 🔒 COMPLETE / ACCEPTED
-Node 7 AI + Final Integration + Demo → 🔵 ACTIVE / IN PROGRESS
-Node 7 Phase 1a Public Sharing       → 🟡 ACTIVE / NOT YET ACCEPTED
+Node 7 AI + Final Integration + Demo → 🔵 ACTIVE
+Node 7 Phase 1a                      → 🟢 COMPLETE / ACCEPTED
+Node 7 Phase 1b                      → 🔵 NEXT / NOT YET STARTED
+Node 7 Phase 3                       → ⏳ CONDITIONAL
+Node 7 Final E2E/Demo                → ⏳ PENDING
 ```
 
 ## Hackathon Day Position
@@ -277,15 +355,16 @@ Day 10 → Reviewer + Password Recovery + Node 3 acceptance/closure     🔒 CLO
 Day 11 → Node 4 completion / acceptance                               🔒 CLOSED
 Day 12 → Node 5 completion / acceptance                               🔒 CLOSED
 Post-Node-5 → Dashboard + historical AI-summary follow-ups            ✅ CLOSED
-Day 13 → Node 7 Phase 1a investigation / project work paused           ✅ CLOSED / PAUSED
-Current → Node 7 Phase 1a Public Evidence Sharing                     🟡 ACTIVE / IN PROGRESS
-Next → Chat36 targeted code-level remediation + verification          🔵 NEXT
+Day 13 → Node 7 Phase 1a investigation / project work                 ✅ CLOSED
+Day 14 / Chat37 → Node 7 Phase 1a completion / acceptance             🟢 CLOSED
+Current → Node 7 Phase 1b Full 3-Portal UI/UX Redesign                🔵 NEXT
 ```
 
 ## Execution Bridge
 
 ChatGPT = architecture/reasoning/investigation brain  
 Antigravity = implementation/execution agent  
+Ayush = final authority/manual tester  
 GitHub Records = source-of-truth bridge
 
 Implementation prompts:
@@ -308,6 +387,10 @@ Project-control records:
 
 `00_PROJECT_CONTROL/`
 
+Checkpoints:
+
+`00_PROJECT_CONTROL/CHECKPOINTS/`
+
 ## Current Status Summary
 
 ```text
@@ -319,7 +402,7 @@ Node 5 → 🔒 COMPLETE / ACCEPTED
 Dashboard follow-up → ✅ CLOSED / VERIFIED
 Historical AI-summary follow-up → ✅ CLOSED / VERIFIED
 Node 6 → 🔒 COMPLETE / ACCEPTED
-Node 7 → 🔵 ACTIVE / IN PROGRESS
+Node 7 → 🔵 ACTIVE
 
 Day 7  → ✅ CLOSED
 Day 8  → ✅ CLOSED
@@ -327,14 +410,17 @@ Day 9  → ✅ CLOSED
 Day 10 → 🔒 CLOSED
 Day 11 → 🔒 CLOSED
 Day 12 → 🔒 CLOSED
-Day 13 → ✅ CLOSED / PAUSED
+Day 13 → ✅ CLOSED
+Day 14 / Chat37 → 🟢 Phase 1a CLOSED / ACCEPTED
 
-Node 7 Phase 1a → 🟡 ACTIVE / NOT YET ACCEPTED
-Production public-share verification → ⚠️ 404 / ROOT CAUSE PENDING
+Node 7 Phase 1a → 🟢 COMPLETE / ACCEPTED
+Node 7 Phase 1b → 🔵 NEXT / NOT YET STARTED
+Phase 3 → ⏳ CONDITIONAL
+Final E2E / Demo / Presentation → ⏳ PENDING
 
-Next → Chat36 targeted code-level remediation + verification
+Next → Phase 1b Full 3-Portal UI/UX Redesign
 ```
 
 ## Next Action
 
-**Resume from the existing Chat36 Node 7 Phase 1a code-level investigation. The next execution should diagnose and correct the public-share verification path, reconcile the Next.js dynamic route and delivery-event mappings, verify the authoritative database/runtime path, and then perform focused acceptance verification. Do not reopen Nodes 1–6 and do not treat repeated redeployment alone as a fix.**
+**Move from the completed Node 7 Phase 1a baseline into Phase 1b: the full Driver + Company + Reviewer portal UI/UX redesign. Preserve the accepted AI/evidence/public-share architecture and do not reopen Phase 1a unless a new regression or contradictory evidence appears. Do not begin conditional Phase 3 work before Phase 1b is complete and stable.**
