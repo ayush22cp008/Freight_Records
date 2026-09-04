@@ -140,6 +140,28 @@ When the Driver already has an active trip, the same trip remains reviewable but
 
 The page introduces no new trip data, matching logic, eligibility rules, marketplace functionality, or additional claim mechanism. It is a clearer frontend presentation of existing trip information and the existing claim capability.
 
+### Part 4.5 — My Active Trip Final Layout — COMPLETE / LOCKED
+My Active Trip is the Driver's main operational workspace. Its primary purpose is to show where the delivery is, what must happen next, and what evidence has been recorded.
+
+Final hierarchy:
+1. Back/navigation context.
+2. My Active Trip heading and trip identity, including the existing Pickup → Dropoff context.
+3. Current Status as the highest-priority operational information.
+4. Next Required Action with one clear primary Continue/action CTA leading into the existing event-recording flow.
+5. Delivery Progress showing the existing lifecycle with completed (✓), current (●), and upcoming (○) stages.
+6. Evidence Status showing completed/remaining evidence and the overall evidence state, based on actual recorded evidence.
+7. Existing Trip Timeline/Events as the chronological history beneath the operational sections.
+
+The current status and next required action must remain visually dominant. The timeline must not compete with the immediate operational action.
+
+Existing event-recording flows remain the action mechanism. No new delivery stages, event types, evidence types, upload capabilities, or operational workflows are introduced.
+
+As an action succeeds, the active-trip view updates its current stage, lifecycle progress, evidence status where applicable, and timeline from the backend/source of truth.
+
+Completed-trip state: after the final required existing action, show a clear Delivery Completed state, remove operational actions, and provide review access to existing trip history/timeline. The trip then belongs in Completed Trips/History.
+
+The exact source/data mapping for evidence-status presentation remains an implementation-investigation item and must not be invented during implementation.
+
 ## Current Status
 - Driver Part 1 — UX/Product structure: LOCKED
 - Driver Part 2 — Existing structure comparison: LOCKED
@@ -148,8 +170,9 @@ The page introduces no new trip data, matching logic, eligibility rules, marketp
 - Driver Part 4.2 — Dashboard final layout: COMPLETE / LOCKED
 - Driver Part 4.3 — Available Trips final layout: COMPLETE / LOCKED
 - Driver Part 4.4 — Trip Detail final layout: COMPLETE / LOCKED
-- Driver Part 4.5 — My Active Trip final layout: NEXT
-- Driver Part 4 remaining: Completed Trips/History, Profile, Navigation, Responsive behavior, Loading/empty/error states, final Driver blueprint review/lock
+- Driver Part 4.5 — My Active Trip final layout: COMPLETE / LOCKED
+- Driver Part 4.6 — Completed Trips / History final layout: NEXT
+- Driver Part 4 remaining: Profile, Navigation, Responsive behavior, Loading/empty/error states, final Driver blueprint review/lock
 - Driver Part 5 — Implementation investigation/prompt: pending
 - Company Portal blueprint: pending
 - Reviewer Portal blueprint: pending
@@ -157,4 +180,4 @@ The page introduces no new trip data, matching logic, eligibility rules, marketp
 - Implementation: not started
 
 ## Next Discussion
-Move to Driver Part 4.5 — My Active Trip final layout.
+Move to Driver Part 4.6 — Completed Trips / History final layout.
