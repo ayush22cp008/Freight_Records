@@ -100,14 +100,38 @@ Dashboard workflow relationships:
 
 The Dashboard introduces no new workflow or product capability. It is the redesigned entry point to existing Driver functionality.
 
+### Part 4.3 — Available Trips Final Layout — COMPLETE / LOCKED
+The Available Trips page answers: “What delivery opportunities are available for me to review?”
+
+Final structure:
+- Page heading/context.
+- Available Trips section.
+- Responsive collection of existing published-trip cards.
+- Each card presents existing trip information such as Pickup, Dropoff, Distance, Duration, and Payout.
+- Primary card action is View Trip, leading to Trip Detail.
+
+The intended flow is:
+Available Trips → Trip Card → View Trip → Trip Detail → Accept Trip.
+
+Accept Trip is deliberately not the primary card action. Evaluation/review is separated from the commitment to claim, while preserving the existing claim capability.
+
+When the Driver has no active trip, Trip Detail exposes the existing Accept Trip action when eligible.
+
+When the Driver already has an active trip, Available Trips remains visible and viewable, but Trip Detail shows Accept Trip as disabled/unavailable. The Driver cannot claim another trip.
+
+Empty state: show the existing “No published trips available at this time.” state. Do not introduce artificial recommendations.
+
+No new marketplace functionality is included: no search, filters, sorting, favorites, matching logic, or other new capabilities.
+
 ## Current Status
 - Driver Part 1 — UX/Product structure: LOCKED
 - Driver Part 2 — Existing structure comparison: LOCKED
 - Driver Part 3 — Interaction mapping: COMPLETE / LOCKED
 - Driver Part 4.1 — Overall page structure: COMPLETE / LOCKED
 - Driver Part 4.2 — Dashboard final layout: COMPLETE / LOCKED
-- Driver Part 4.3 — Available Trips final layout: NEXT
-- Driver Part 4 remaining: Trip Detail, My Active Trip, Completed Trips/History, Profile, Navigation, Responsive behavior, Loading/empty/error states, final Driver blueprint review/lock
+- Driver Part 4.3 — Available Trips final layout: COMPLETE / LOCKED
+- Driver Part 4.4 — Trip Detail final layout: NEXT
+- Driver Part 4 remaining: My Active Trip, Completed Trips/History, Profile, Navigation, Responsive behavior, Loading/empty/error states, final Driver blueprint review/lock
 - Driver Part 5 — Implementation investigation/prompt: pending
 - Company Portal blueprint: pending
 - Reviewer Portal blueprint: pending
@@ -115,4 +139,4 @@ The Dashboard introduces no new workflow or product capability. It is the redesi
 - Implementation: not started
 
 ## Next Discussion
-Move to Driver Part 4.3 — Available Trips final layout.
+Move to Driver Part 4.4 — Trip Detail final layout.
