@@ -335,6 +335,104 @@ Every state must tell the Driver, clearly and without ambiguity:
 
 Part 4.10 is a presentation/state-definition decision only. It introduces no new delivery stages, event types, evidence types, marketplace functionality, account-management functionality, recovery mechanism, or operational workflow.
 
+### Part 4.11 — Final Driver Blueprint Review — IN PROGRESS
+Part 4.11 is the final consistency review before the Driver blueprint is locked as a complete package. Decisions are being reviewed one-by-one.
+
+#### Decision 1 — Overall Driver Blueprint Consistency — LOCKED
+The complete Driver flow is consistent with the locked page structure, interactions, responsive behavior, and state model:
+
+Dashboard → Available Trips → Trip Detail → Accept Trip → My Active Trip → Delivery completion → Completed Trips → Trip History / Timeline
+
+Profile remains a separate account/identity context.
+
+Consistency rules:
+- One universal navigation vocabulary.
+- One active trip at a time.
+- Available trips remain viewable while active, but cannot be claimed.
+- My Active Trip remains accessible.
+- Existing delivery stages/events only.
+- Evidence reflects actual recorded evidence.
+- Completed trips are review-only.
+- Same workflow and capabilities across phone, tablet/intermediate, and desktop.
+- Loading/empty/error states do not introduce new functionality.
+- No Phase 1b feature expansion.
+
+#### Decision 2 — Driver Page-by-Page Completeness — LOCKED
+Every Driver page/context has a clear job, information hierarchy, and relationship to the workflow:
+1. Dashboard — starting point/status overview.
+2. Available Trips — discover and review available trips.
+3. Trip Detail — evaluate a specific trip and accept when eligible.
+4. My Active Trip — operate the current delivery.
+5. Completed Trips — review completed deliveries.
+6. Profile — identity/account information.
+
+No unnecessary page context or missing core workflow context was identified during this review decision.
+
+#### Decision 3 — Driver Navigation & Workflow Consistency — LOCKED
+Universal navigation is:
+1. Dashboard
+2. Available Trips
+3. My Active Trip
+4. Completed Trips
+5. Profile
+
+Consistency rules:
+- All five destinations exist across mobile, tablet/intermediate, and desktop/laptop.
+- Labels remain exactly the same.
+- My Active Trip remains visible even when there is no active trip.
+- Dashboard provides the overview; dedicated pages handle their respective contexts.
+- Available Trip → Trip Detail → Accept → My Active Trip is the claim path.
+- Completed Trip → Timeline is review-only.
+- Profile is separate from delivery operations.
+- No navigation item introduces a new capability.
+
+#### Decision 4 — Driver Operational Priority — LOCKED
+The operational information hierarchy is:
+
+Current Status → Next Required Action → Delivery Progress → Evidence Status → Timeline / History
+
+The Driver should immediately understand:
+“What is my current status?” → “What do I do next?” → “How far along am I?” → “What evidence exists?” → “What already happened?”
+
+This priority remains consistent across all screen sizes; smaller screens stack the same sections vertically.
+
+#### Decision 5 — Driver State Coverage — LOCKED
+The blueprint covers the complete required Driver state set without adding functionality:
+- Loading
+- Active Trip
+- No Active Trip
+- Available Trips with results
+- Available Trips Empty
+- Completed Trips with results
+- Completed Trips Empty
+- Completed Trip / Review
+- Error
+
+Rules:
+- Loading must not show misleading/incomplete data.
+- No Active Trip does not remove My Active Trip from navigation.
+- Empty states remain truthful and useful.
+- Completed Trip removes operational actions.
+- Errors preserve existing authorization, identity, verification, and profile behavior.
+- No state creates a new workflow or capability.
+
+#### Decision 6 — Driver Responsive Consistency — LOCKED
+The Driver blueprint is one responsive product across phone, tablet/intermediate, and laptop/desktop.
+
+Locked rules:
+- Same five navigation destinations.
+- Same information.
+- Same workflows.
+- Same existing capabilities.
+- Same operational priority.
+- Only layout, spacing, component arrangement, and navigation presentation adapt.
+- Primary actions remain touch-friendly.
+- Normal portal content should not require horizontal scrolling.
+- Tablet uses available space intelligently.
+- Desktop may show more information simultaneously, but does not gain additional functionality.
+
+Decision 6 confirms that responsive adaptation is presentation-only and does not create separate device-specific products or workflows.
+
 ## Current Status
 - Driver Part 1 — UX/Product structure: LOCKED
 - Driver Part 2 — Existing structure comparison: LOCKED
@@ -349,7 +447,7 @@ Part 4.10 is a presentation/state-definition decision only. It introduces no new
 - Driver Part 4.8 — Navigation final layout: COMPLETE / LOCKED
 - Driver Part 4.9 — Responsive behavior: COMPLETE / LOCKED
 - Driver Part 4.10 — Loading / Empty / Error states: COMPLETE / LOCKED
-- Driver Part 4 remaining: Final Driver blueprint review/lock
+- Driver Part 4.11 — Final Driver Blueprint Review: IN PROGRESS; Decisions 1–6 LOCKED
 - Driver Part 5 — Implementation investigation/prompt: pending
 - Company Portal blueprint: pending
 - Reviewer Portal blueprint: pending
@@ -357,4 +455,4 @@ Part 4.10 is a presentation/state-definition decision only. It introduces no new
 - Implementation: not started
 
 ## Next Discussion
-Move to Driver Part 4.11 — Final Driver Blueprint Review / Lock.
+Continue Driver Part 4.11 — Final Driver Blueprint Review with Decision 7.
