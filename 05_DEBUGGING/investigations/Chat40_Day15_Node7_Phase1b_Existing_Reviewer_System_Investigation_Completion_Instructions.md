@@ -1,5 +1,5 @@
 # Chat40 — Day 15 — Node 7 — Phase 1b
-# Existing Reviewer System Investigation — Completion Instructions
+# Existing Reviewer System Investigation — Separate Completion Report Instructions
 
 ## Purpose
 
@@ -7,19 +7,50 @@ This is a continuation/completion instruction for the existing Reviewer System I
 
 The previously produced report contains useful findings, but it is not yet accepted as a complete investigation because it does not provide enough evidence to prove that the **whole existing Reviewer system** was systematically inspected.
 
-The objective now is to complete the investigation and update the existing report. Do not start Reviewer Mental Model, Interaction Mapping, Blueprint, redesign, or implementation.
+The objective now is to complete the investigation **in a separate report**, preserving the original report exactly as an earlier investigation record. Do not overwrite, merge into, or silently alter the existing report.
 
-## Existing Report To Continue
+Do not start Reviewer Mental Model, Interaction Mapping, Blueprint, redesign, or implementation.
 
-Update the existing investigation report at:
+## Existing Report — PRESERVE AS-IS
+
+The original report remains a historical/source record at:
 
 `05_DEBUGGING/investigations/Chat40_Day15_Node7_Phase1b_Existing_Reviewer_System_Investigation_Report.md`
 
-Do not create a second competing final report unless technically necessary. Continue and complete the existing report so it becomes the authoritative Day 15 investigation report.
+**Do not update or overwrite that file.**
+
+The original report must remain unchanged so there is no ambiguity about what was previously reported.
+
+## New Separate Completion Report
+
+Create the completion report at:
+
+`05_DEBUGGING/investigations/Chat40_Day15_Node7_Phase1b_Existing_Reviewer_System_Investigation_Completion_Report.md`
+
+This new report is the Day 15 completion record for the remaining investigation work.
+
+It must clearly identify the original report as the prior investigation record and this file as the completion/follow-up investigation record.
+
+## No-Mismatch Rule
+
+The separate completion report must **not silently replace or contradict the original report**.
+
+At the beginning of the completion report include a **Previous Report Reconciliation** section that explicitly states:
+
+- The original report path.
+- Which previous findings were re-verified and remain valid.
+- Which previous findings were expanded with additional evidence.
+- Which previous findings changed, if any.
+- For every changed finding: previous conclusion, new evidence, current conclusion, and confidence.
+- If no findings changed, explicitly state that no contradiction was found.
+
+This prevents the two Records from appearing to contain unexplained mismatches.
+
+If the new investigation discovers that a statement in the original report was incorrect or incomplete, **do not edit the original report**. Record the correction transparently in the completion report.
 
 ## Strict Completion Rule
 
-**Do not mark the investigation COMPLETE until every required investigation area below has been systematically inspected.**
+**Do not mark the completion investigation COMPLETE until every required investigation area below has been systematically inspected.**
 
 If an item cannot be found or verified:
 
@@ -228,7 +259,7 @@ This section is mandatory.
 
 ### 11. Requirement Coverage Matrix
 
-Add a matrix mapping the original investigation requirements to the final report.
+Add a matrix mapping the original investigation requirements to the completion report.
 
 Minimum columns:
 
@@ -308,20 +339,13 @@ Do not add or implement:
 
 The purpose is only to make the existing-system investigation complete and evidence-grounded.
 
-## Relationship to Existing Report
-
-The existing report's current findings should be preserved where still verified, including the identified queue workflow, `ReviewAction.tsx`, evidence viewing, approve/reject actions, `/api/admin/review`, and the observed navigation trap. Re-verify them where needed rather than deleting them.
-
-If new inspection contradicts an earlier finding, do not silently replace it. Record:
-- Previous finding.
-- New evidence.
-- Current verified conclusion.
-- Confidence.
-
 ## Final Quality Gate
 
 Before declaring completion, Antigravity must self-check:
 
+- [ ] Original investigation report preserved unchanged.
+- [ ] Separate completion report created at the exact specified path.
+- [ ] Previous Report Reconciliation included.
 - [ ] Entire Reviewer route surface inspected.
 - [ ] Entire relevant frontend surface inspected.
 - [ ] Shared navigation/layout inspected.
@@ -352,4 +376,4 @@ Before declaring completion, Antigravity must self-check:
 - Reviewer Blueprint: **NOT STARTED**
 - Current task: **Complete Existing Reviewer System Investigation only**
 
-Antigravity must return the completed investigation report to GitHub Records. Do not message the implementation agent as a separate chat participant; GitHub Records is the bridge.
+Antigravity must return the completed separate investigation report to GitHub Records. Do not message the implementation agent as a separate chat participant; GitHub Records is the bridge.
