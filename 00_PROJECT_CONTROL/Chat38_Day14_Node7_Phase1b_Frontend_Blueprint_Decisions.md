@@ -7,10 +7,11 @@ This record captures the decisions locked during Chat38 / Day14 for the Node 7 P
 Phase 1b redesigns the user-facing frontend structure, presentation, navigation, hierarchy, discoverability, responsiveness, and demo experience around existing product capabilities. It does not introduce new product functionality. New feature ideas are recorded separately as future ideas and remain outside Phase 1b implementation scope.
 
 ## Agreed Blueprint Sequence
-1. Define target UX against existing frontend structure/features
-2. Map interactions/workflows
-3. Consolidate the final frontend blueprint
-4. Investigate implementation against real source code, then prepare implementation instruction
+1. Define target UX/product experience
+2. Compare target UX against existing frontend structure/features
+3. Map interactions/workflows
+4. Consolidate the final frontend blueprint
+5. Investigate implementation against real source code, then prepare implementation instruction
 
 ## Driver Portal — Part 1: UX/Product Structure — LOCKED
 Driver mental model: “What trip am I handling now, what trips are available to see, and what trips have I completed?”
@@ -272,6 +273,68 @@ Desktop/laptop layouts may expose more information simultaneously because of the
 
 Responsive behavior preserves the same Driver workflow, information, and capabilities across phone, tablet/intermediate, and laptop/desktop. It is a presentation adaptation only and introduces no new product functionality.
 
+### Part 4.10 — Loading / Empty / Error States — COMPLETE / LOCKED
+The Driver portal must clearly communicate what is happening, what state the Driver is in, and what the Driver can do next without introducing any new product capability.
+
+#### 1. Loading State
+- Show a clear loading state while the relevant Driver data is being fetched or the page is transitioning into its usable state.
+- Do not present misleading, stale, or incomplete information as if it were final data.
+- After successful loading, transition into the appropriate normal state: Active Trip, No Active Trip, Available Trips, Available Trips Empty, Completed Trips Empty, Completed Trip, or other existing success state.
+- Loading behavior applies consistently to Dashboard, Available Trips, My Active Trip, Completed Trips, Profile, and relevant existing actions.
+
+#### 2. No Active Trip State
+- My Active Trip remains present in universal navigation even when no active trip exists.
+- Opening My Active Trip in this state shows a clear No Active Trip message, such as: “No Active Trip” / “You currently have no active delivery.”
+- Dashboard also communicates the no-active-trip state and then prioritizes Available Trips.
+- This state does not create a new workflow or substitute a different navigation destination.
+
+#### 3. Available Trips Empty State
+- Preserve the existing empty-state meaning and message: “No published trips available at this time.”
+- The Available Trips page remains accessible even when empty.
+- Do not add fake recommendations, matching, search, filters, or other marketplace functionality to fill the empty state.
+
+#### 4. Completed Trips Empty State
+- Preserve the existing empty-state meaning and message: “No completed trips yet.”
+- Completed Trips remains accessible even when there is no history.
+- Do not invent historical content or additional history functionality.
+
+#### 5. Error State
+- Errors must be clearly visible, understandable, and associated with the affected context.
+- Where an existing retry/recovery mechanism is appropriate, the UI may expose that existing recovery action clearly.
+- Do not invent new recovery mechanisms merely as part of the redesign.
+- Existing identity, authorization, verification, and missing Driver Profile errors remain authoritative and must not be replaced or weakened by generic redesign states.
+- Example presentation may communicate: “Something went wrong” / “We couldn't load your trips.” / “Try Again” only where retry is an appropriate existing recovery path.
+
+#### 6. Completed Trip State
+- After the final required existing delivery action succeeds, show a clear “Delivery Completed” state.
+- Remove operational delivery actions from the completed state.
+- Provide review access to the existing trip history/timeline.
+- The completed trip becomes available under Completed Trips / History.
+- No new completion workflow is introduced.
+
+#### 7. State Model
+The Driver portal state model is:
+
+Loading → appropriate existing success state
+
+Existing success variants include:
+- Active Trip
+- No Active Trip
+- Available Trips with results
+- Available Trips Empty
+- Completed Trips with results
+- Completed Trips Empty
+- Completed Trip review state
+
+Any applicable state may instead resolve to Error when the underlying operation/data load fails.
+
+Every state must tell the Driver, clearly and without ambiguity:
+1. What is happening or what state they are in.
+2. What information is currently available.
+3. What they can do next, using only existing capabilities.
+
+Part 4.10 is a presentation/state-definition decision only. It introduces no new delivery stages, event types, evidence types, marketplace functionality, account-management functionality, recovery mechanism, or operational workflow.
+
 ## Current Status
 - Driver Part 1 — UX/Product structure: LOCKED
 - Driver Part 2 — Existing structure comparison: LOCKED
@@ -285,7 +348,8 @@ Responsive behavior preserves the same Driver workflow, information, and capabil
 - Driver Part 4.7 — Profile final layout: COMPLETE / LOCKED
 - Driver Part 4.8 — Navigation final layout: COMPLETE / LOCKED
 - Driver Part 4.9 — Responsive behavior: COMPLETE / LOCKED
-- Driver Part 4 remaining: Loading/empty/error states, final Driver blueprint review/lock
+- Driver Part 4.10 — Loading / Empty / Error states: COMPLETE / LOCKED
+- Driver Part 4 remaining: Final Driver blueprint review/lock
 - Driver Part 5 — Implementation investigation/prompt: pending
 - Company Portal blueprint: pending
 - Reviewer Portal blueprint: pending
@@ -293,4 +357,4 @@ Responsive behavior preserves the same Driver workflow, information, and capabil
 - Implementation: not started
 
 ## Next Discussion
-Move to Driver Part 4.10 — Loading, Empty & Error States.
+Move to Driver Part 4.11 — Final Driver Blueprint Review / Lock.
