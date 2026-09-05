@@ -37,69 +37,94 @@ UX/Product Blueprint → 🟢 COMPLETE / LOCKED
 Day 14 / Chat38      → 🟢 CLOSED
 ```
 
-The authoritative Driver blueprint is:
+Authoritative Driver blueprint:
 
 `00_PROJECT_CONTROL/Chat38_Day14_Node7_Phase1b_Frontend_Blueprint_Decisions.md`
 
-The Day 14 work record is:
-
-`00_PROJECT_CONTROL/Hackathon_Day_14_Work_Progress_Report.md`
-
-All ten Driver final-review decisions are locked:
+#### Company Portal
 
 ```text
-1. Overall Driver Blueprint Consistency       → 🔒 LOCKED
-2. Driver Page-by-Page Completeness           → 🔒 LOCKED
-3. Driver Navigation & Workflow Consistency   → 🔒 LOCKED
-4. Driver Operational Priority                → 🔒 LOCKED
-5. Driver State Coverage                      → 🔒 LOCKED
-6. Driver Responsive Consistency              → 🔒 LOCKED
-7. Driver Implementation Boundary             → 🔒 LOCKED
-8. Data & Evidence Truthfulness               → 🔒 LOCKED
-9. Final Driver Blueprint Completeness         → 🔒 LOCKED
-10. Final Driver Blueprint Lock                → 🔒 LOCKED
+UX/Product Blueprint → 🟢 COMPLETE / LOCKED
+Day 15 / Chat39      → 🟢 CLOSED
 ```
 
-### Locked Driver navigation
+Authoritative Company blueprint:
+
+`00_PROJECT_CONTROL/Chat39_Day15_Node7_Phase1b_Company_Blueprint_Decisions.md`
+
+The Company blueprint was completed through Existing Frontend Structure investigation, Company Mental Model, Interaction Mapping, Final Blueprint, and Implementation-Boundary Review.
+
+Locked decision counts:
+
+```text
+Company Mental Model        → 23
+Interaction Mapping         → 20
+Final Blueprint             → 10
+Implementation Boundary    → 5
+```
+
+### Locked Company model
+
+```text
+One Company
+→ multiple trips
+→ trip-specific Sender/Receiver relationship
+→ shared core delivery visibility
+→ relationship/state-based actions
+```
+
+The Company has one unified portal. Sender and Receiver share core delivery-progress visibility, while available actions differ by relationship and trip state.
+
+### Locked Company navigation
 
 ```text
 Dashboard
-Available Trips
-My Active Trip
-Completed Trips
-Profile
+My Created Trips
+Incoming Deliveries
+History / Timeline
+Profile / Account
 ```
 
-### Locked Driver workflow
+### Locked Company interaction structure
 
 ```text
 Dashboard
-→ Available Trips
-→ Trip Detail
-→ Accept Trip
-→ My Active Trip
-→ Delivery completion
-→ Completed Trips
-→ Trip History / Timeline
-```
+→ Needs Attention
+→ Active Created Trips
+→ Quick Access
 
-### Locked Driver operational priority
+My Created Trips
+→ delivery-progress monitoring
 
-```text
-Current Status
+Incoming Deliveries
+→ Receiver Action Inbox
+→ pending Receiver-specific tasks only
+
+Trip Detail
+→ Current Status
+→ Visual Delivery Progress
 → Next Required Action
-→ Delivery Progress
-→ Evidence Status
+→ Driver / Claim Information
+→ Trip Details
+→ Delivery Evidence
 → Timeline / History
+
+History / Timeline
+→ past trips
+→ read-only Trip Detail
 ```
 
-### Driver Phase 1b scope boundary
+Receiver-action state is driven by the underlying delivery/task state, not by navigation. Completing a Receiver task advances the underlying delivery state and updates relevant Company views consistently.
 
-The Driver redesign is frontend-only. It may reorganize presentation, layout, navigation, hierarchy, responsiveness, and existing actions, but must not introduce new backend capabilities, business logic, delivery stages, evidence types, marketplace rules, claim mechanisms, permissions, authorization rules, or AI capabilities.
+### Locked Company Public Share rule
 
-The redesigned UI must faithfully present existing trip status, lifecycle stages, evidence, timeline events/timestamps, next actions, and AI-supported information without fabrication or silent reinterpretation.
+Public Share remains Receiving Company-only. It is managed from the relevant Trip Detail and existing server-side authorization remains authoritative.
 
-The Driver portal is one responsive product across phone, tablet/intermediate, and laptop/desktop. The same information, workflow, destinations, and existing capabilities remain available at every viewport.
+### Company Phase 1b scope boundary
+
+The Company redesign is frontend-focused: structure, presentation, navigation, hierarchy, discoverability, responsiveness, and verified UI/UX defect correction. Existing APIs/data, business rules, trip lifecycle, evidence rules, and authorization remain the source of truth.
+
+No new backend business functionality, invented data, new authorization rules, new delivery stages, new evidence types, new marketplace behavior, new claim mechanisms, or new AI behavior may be introduced without separate verification and approval. Missing information must be treated as UNKNOWN and verified before any scope expansion.
 
 ## Security State
 
@@ -127,11 +152,11 @@ Node 6                     → COMPLETE / ACCEPTED
 Node 7                     → ACTIVE
 Node 7 Phase 1a            → COMPLETE / ACCEPTED
 Node 7 Phase 1b Driver    → BLUEPRINT COMPLETE / LOCKED
-Node 7 Phase 1b Company   → NEXT
-Node 7 Phase 1b Reviewer  → PENDING
+Node 7 Phase 1b Company   → BLUEPRINT COMPLETE / LOCKED
+Node 7 Phase 1b Reviewer  → NEXT
 Phase 3                    → CONDITIONAL
 Final E2E / Demo           → PENDING
-Day 14 / Chat38            → CLOSED
+Day 15 / Chat39            → CLOSED
 ```
 
 ## Completion Rule
@@ -151,4 +176,4 @@ A Node is `COMPLETE` only when required work, acceptance criteria, investigation
 
 ## Next Action
 
-**Continue Node 7 Phase 1b with the Company Portal Blueprint, starting with Decision 1 — Company Mental Model. Preserve the locked Driver blueprint. Do not begin implementation until the blueprint/investigation sequence reaches implementation preparation.**
+**Continue Node 7 Phase 1b with the Reviewer Portal Blueprint. Preserve the locked Driver and Company blueprints. Do not begin implementation until the required 3-portal blueprint/investigation sequence reaches implementation preparation.**
