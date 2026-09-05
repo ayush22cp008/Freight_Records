@@ -7,11 +7,10 @@ This record captures the decisions locked during Chat38 / Day14 for the Node 7 P
 Phase 1b redesigns the user-facing frontend structure, presentation, navigation, hierarchy, discoverability, responsiveness, and demo experience around existing product capabilities. It does not introduce new product functionality. New feature ideas are recorded separately as future ideas and remain outside Phase 1b implementation scope.
 
 ## Agreed Blueprint Sequence
-1. Define target UX/product experience
-2. Compare target UX against existing frontend structure/features
-3. Map interactions/workflows
-4. Consolidate the final frontend blueprint
-5. Investigate implementation against real source code, then prepare implementation instruction
+1. Define target UX against existing frontend structure/features
+2. Map interactions/workflows
+3. Consolidate the final frontend blueprint
+4. Investigate implementation against real source code, then prepare implementation instruction
 
 ## Driver Portal — Part 1: UX/Product Structure — LOCKED
 Driver mental model: “What trip am I handling now, what trips are available to see, and what trips have I completed?”
@@ -241,6 +240,38 @@ Dashboard ↔ Available Trips / My Active Trip / Completed Trips / Profile
 
 The navigation labels are intentionally not changed to alternate mobile-only terms such as Home, Trips, Active, or History. One product vocabulary is used across all device sizes.
 
+### Part 4.9 — Responsive Behavior — COMPLETE / LOCKED
+The Driver portal is one responsive product, not separate mobile, tablet, and desktop products.
+
+Core responsive rule:
+- The same information, workflow, and existing capabilities remain available at every supported viewport.
+- Only layout, spacing, navigation presentation, and component arrangement adapt to available screen size.
+
+Device behavior:
+- Mobile / phone: single-column presentation where appropriate, compact cards, vertically stacked operational sections, and touch-friendly primary actions.
+- Tablet / intermediate: adaptive layouts that may use two columns where space permits and fall back to single-column presentation where needed.
+- Laptop / desktop: wider content areas and multi-column presentation where useful, allowing more information to be visible simultaneously without changing functionality.
+
+Navigation behavior:
+- Navigation uses the same five labels everywhere: Dashboard, Available Trips, My Active Trip, Completed Trips, Profile.
+- Only the visual navigation presentation adapts by viewport.
+- No workflow or destination disappears because of screen size.
+
+Operational hierarchy:
+Current Status → Next Required Action → Delivery Progress → Evidence Status → Timeline / History
+
+This priority remains consistent across viewports. On smaller screens, content stacks vertically but the operational hierarchy does not change.
+
+Primary actions such as View Trip, Accept Trip, Continue, and existing event actions must remain clear and usable on touch devices.
+
+Normal portal content should not require horizontal scrolling. Trip cards, trip information, lifecycle, evidence, timeline/history, and navigation should adapt to available width.
+
+Tablet/intermediate layouts should use the available space intelligently rather than simply stretching the mobile layout.
+
+Desktop/laptop layouts may expose more information simultaneously because of the larger viewport, but they must not introduce additional functionality or workflows.
+
+Responsive behavior preserves the same Driver workflow, information, and capabilities across phone, tablet/intermediate, and laptop/desktop. It is a presentation adaptation only and introduces no new product functionality.
+
 ## Current Status
 - Driver Part 1 — UX/Product structure: LOCKED
 - Driver Part 2 — Existing structure comparison: LOCKED
@@ -253,7 +284,8 @@ The navigation labels are intentionally not changed to alternate mobile-only ter
 - Driver Part 4.6 — Completed Trips / History final layout: COMPLETE / LOCKED
 - Driver Part 4.7 — Profile final layout: COMPLETE / LOCKED
 - Driver Part 4.8 — Navigation final layout: COMPLETE / LOCKED
-- Driver Part 4 remaining: Responsive behavior, Loading/empty/error states, final Driver blueprint review/lock
+- Driver Part 4.9 — Responsive behavior: COMPLETE / LOCKED
+- Driver Part 4 remaining: Loading/empty/error states, final Driver blueprint review/lock
 - Driver Part 5 — Implementation investigation/prompt: pending
 - Company Portal blueprint: pending
 - Reviewer Portal blueprint: pending
@@ -261,4 +293,4 @@ The navigation labels are intentionally not changed to alternate mobile-only ter
 - Implementation: not started
 
 ## Next Discussion
-Move to Driver Part 4.9 — Responsive behavior.
+Move to Driver Part 4.10 — Loading, Empty & Error States.
