@@ -4,7 +4,7 @@
 **Hackathon window:** Aug 21 – Sep 15, 2026  
 **Roadmap status:** ACTIVE EXECUTION ROADMAP — Node 7 is materially rephased by the approved Chat29 reassessment.  
 **Current execution day:** Day 15  
-**Current chat:** Chat39
+**Current chat:** Chat40
 
 ## Active Roadmap — 7 Nodes
 
@@ -146,15 +146,72 @@ The Company redesign is frontend-focused: structure, presentation, navigation, h
 
 No new backend business functionality, invented data, new authorization rules, new delivery stages, new evidence types, new marketplace behavior, new claim mechanisms, or new AI behavior may be introduced without separate verification and approval. Missing information must be treated as UNKNOWN and verified before scope expansion.
 
+## Reviewer Portal — Investigation + Mental Model Complete / Locked
+
+**Day 15 / Chat40 → 🟢 MENTAL MODEL COMPLETE / LOCKED**
+
+The Reviewer Existing-System Investigation and separate Completion Report were completed before the Mental Model stage.
+
+Authoritative Reviewer investigation completion record:
+
+`05_DEBUGGING/investigations/Chat40_Day15_Node7_Phase1b_Existing_Reviewer_System_Investigation_Completion_Report.md`
+
+Authoritative Reviewer Mental Model record:
+
+`00_PROJECT_CONTROL/Chat40_Day15_Node7_Phase1b_Reviewer_Mental_Model_Decisions.md`
+
+### Reviewer Mental Model — 10 locked decisions
+
+```text
+Primary Job               → Identity & Evidence Verifier
+Primary Object            → Evidence
+Information Model         → Evidence + Applicant + Requested Role
+Verification Model       → Applicant + Role + Evidence → Evaluate → Verify → Approve/Reject
+State Model               → Pending Verification → Verified / Rejected
+Mental Journey            → Verification-first
+Trust & Evidence Model    → Evidence supports claimed identity/role
+Responsibility Boundary  → Narrow verification boundary
+Current Problem            → One coherent Reviewer verification-workflow problem
+Mental-Model Principles   → Evidence-centered, identity-aware, decision-driven
+```
+
+Core Reviewer model:
+
+```text
+Applicant
+    +
+Claimed Role
+    +
+EVIDENCE
+    ↓
+Evaluation
+    ↓
+Identity / Role Verification
+    ↓
+Approve / Reject
+```
+
+Reviewer scope remains narrow: evidence examination, claimed Driver/Company identity verification, and the human approval/rejection decision. No scoring, AI verification, new persistent verification state, new evidence requirement, trip/delivery review, or general administration is introduced by the Mental Model.
+
+### Reviewer existing-system findings preserved
+
+The completed investigation established the current Reviewer routing, frontend surface, review API, data domains, security boundary, storage RLS, and verified defects including Navigation Trap, Role-Confusion Lockout, RLS Bypass Architecture, and degraded native-prompt UX.
+
+These findings are the evidence baseline for the next interaction-mapping and blueprint stages.
+
 ## Remaining Phase 1b Work
 
 ```text
-Driver Portal blueprint       → 🟢 COMPLETE / LOCKED
-Company Portal blueprint      → 🟢 COMPLETE / LOCKED
-Reviewer Portal blueprint     → 🔵 NEXT
+Driver Portal blueprint              → 🟢 COMPLETE / LOCKED
+Company Portal blueprint             → 🟢 COMPLETE / LOCKED
+Reviewer Existing-System Investigation → 🟢 COMPLETE
+Reviewer Mental Model                 → 🟢 COMPLETE / LOCKED
+Reviewer Interaction Mapping         → 🔵 NEXT
+Reviewer Final Blueprint             → ⏳ PENDING
+Implementation-Boundary Review       → ⏳ PENDING
 ```
 
-The next working step is **Reviewer Portal Blueprint**. Preserve the locked Driver and Company blueprints.
+The next working step is **Reviewer Interaction Mapping**. Preserve the locked Driver and Company blueprints and the locked Reviewer Mental Model.
 
 ## Phase 3 — Conditional Add-On Features
 
@@ -235,10 +292,14 @@ Node 7                              → ACTIVE
 Phase 1a                            → COMPLETE / ACCEPTED
 Phase 1b Driver Portal              → BLUEPRINT COMPLETE / LOCKED
 Phase 1b Company Portal             → BLUEPRINT COMPLETE / LOCKED
-Phase 1b Reviewer Portal            → NEXT
+Phase 1b Reviewer Investigation     → COMPLETE
+Phase 1b Reviewer Mental Model      → COMPLETE / LOCKED
+Phase 1b Reviewer Interaction Map   → NEXT
+Phase 1b Reviewer Blueprint         → PENDING
+Implementation-Boundary Review      → PENDING
 Phase 3                             → CONDITIONAL
 Final E2E / Demo                    → PENDING
-Day 15 / Chat39                     → CLOSED
+Day 15 / Chat40                     → CLOSED
 ```
 
 ## Working Method
@@ -263,6 +324,10 @@ Architecture records: `02_ARCHITECTURE/`
 Project control: `00_PROJECT_CONTROL/`  
 Checkpoints: `00_PROJECT_CONTROL/CHECKPOINTS/`
 
+## Day 15 Work Progress Report
+
+`00_PROJECT_CONTROL/Hackathon_Day_15_Work_Progress_Report.md`
+
 ## Next Action
 
-**Continue Node 7 Phase 1b with the Reviewer Portal Blueprint. Preserve the locked Driver and Company blueprints. Do not begin implementation until the required 3-portal blueprint/investigation sequence reaches implementation preparation.**
+**Continue Node 7 Phase 1b with Reviewer Interaction Mapping using the locked Reviewer Mental Model and completed Existing Reviewer System Investigation as the evidence baseline. Do not begin implementation until the Reviewer Interaction Mapping, Final Blueprint, and Implementation-Boundary Review are complete and implementation preparation is explicitly authorized.**
