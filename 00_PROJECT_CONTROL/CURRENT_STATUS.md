@@ -114,25 +114,38 @@ Approve / Reject
 
 The Reviewer remains a human verification decision-maker. No scoring system, AI decision mechanism, new automated verification mechanism, new persistent review state, new evidence requirement, trip/delivery review responsibility, or general administration responsibility is introduced by the Mental Model.
 
-## Day 15 / Chat40 Progress
+## Day 15 Closure
 
 ```text
-Reviewer Mental Model → 🟢 COMPLETE / LOCKED
+Company Portal Blueprint             → 🟢 COMPLETE / LOCKED
+Reviewer Existing-System Investigation → 🟢 COMPLETE
+Reviewer Investigation Completion    → 🟢 COMPLETE
+Reviewer Mental Model                → 🟢 COMPLETE / LOCKED
+Day 15                               → 🔒 CLOSED
 ```
+
+Closure checkpoint:
+
+`00_PROJECT_CONTROL/CHECKPOINTS/Chat40_Day15_Node7_Phase1b_Day15_Closure_Checkpoint.md`
+
+Day 15 Work Progress Report:
+
+`00_PROJECT_CONTROL/Hackathon_Day_15_Work_Progress_Report.md`
 
 No Reviewer implementation was performed as part of the Mental Model work.
 
 ## Remaining Node 7 Work
 
 ```text
-Phase 1b Driver Portal Blueprint    → 🟢 COMPLETE / LOCKED
-Phase 1b Company Portal Blueprint   → 🟢 COMPLETE / LOCKED
-Phase 1b Reviewer Mental Model      → 🟢 COMPLETE / LOCKED
-Phase 1b Reviewer Interaction Map   → 🔵 NEXT
-Phase 1b Reviewer Blueprint         → ⏳ PENDING
-Implementation-Boundary Review     → ⏳ PENDING
-Phase 3 Add-ons                    → ⏳ CONDITIONAL
-Final E2E / Bugfix / Demo           → ⏳ PENDING
+Phase 1b Driver Portal Blueprint              → 🟢 COMPLETE / LOCKED
+Phase 1b Company Portal Blueprint             → 🟢 COMPLETE / LOCKED
+Phase 1b Reviewer Existing-System Investigation → 🟢 COMPLETE
+Phase 1b Reviewer Mental Model                → 🟢 COMPLETE / LOCKED
+Phase 1b Reviewer Interaction Map             → 🔵 NEXT
+Phase 1b Reviewer Blueprint                   → ⏳ PENDING
+Implementation-Boundary Review                → ⏳ PENDING
+Phase 3 Add-ons                               → ⏳ CONDITIONAL
+Final E2E / Bugfix / Demo                     → ⏳ PENDING
 ```
 
 Conditional Phase 3 work must not begin before Phase 1b is complete and stable.
