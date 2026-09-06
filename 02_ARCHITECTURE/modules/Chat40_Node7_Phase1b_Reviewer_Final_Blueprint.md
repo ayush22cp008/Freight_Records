@@ -1,38 +1,74 @@
-# Chat40 — Node 7 — Phase 1b
+# Chat40 — Day 16 — Node 7 — Phase 1b
 # Reviewer Final Blueprint
 
-**Status:** DRAFT FOR CLAUDE ALIGNMENT REVIEW
-**Day:** Day 16
-**Current Node:** Node 7 → Phase 1b
-**Scope:** Reviewer Portal
+**Status:** DRAFT — FOR CLAUDE ALIGNMENT REVIEW
+**Purpose:** Full 13-section Reviewer Blueprint for section-by-section alignment review against the verified Existing-System Investigation, locked Reviewer Mental Model, and seven locked Reviewer Interaction Mapping interactions.
+
+---
 
 ## 1. Blueprint Purpose & Authority
 
-This document consolidates the completed Reviewer Existing-System Investigation, the locked Reviewer Mental Model, and the seven locked Reviewer Interaction Mapping interactions into one implementation-facing blueprint for independent review before implementation preparation.
+### 1.1 Purpose
 
-This blueprint does not replace the underlying evidence records. Existing-system facts remain authoritative to the investigation records; mental-model decisions remain authoritative to the locked mental-model record; interaction behavior remains authoritative to the locked interaction decisions. Any requirement not established by those sources must not be silently invented.
+This blueprint consolidates the completed Reviewer reasoning work into one detailed implementation-facing contract before implementation preparation.
 
-Primary source records:
-- `05_DEBUGGING/investigations/Chat40_Day15_Node7_Phase1b_Existing_Reviewer_System_Investigation_Report.md`
-- `05_DEBUGGING/investigations/Chat40_Day15_Node7_Phase1b_Existing_Reviewer_System_Investigation_Completion_Report.md`
-- `00_PROJECT_CONTROL/Chat40_Day15_Node7_Phase1b_Reviewer_Mental_Model_Decisions.md`
+The blueprint exists to answer, in one place:
+- what the Reviewer is responsible for;
+- what information the Reviewer needs;
+- what Reviewer surfaces and navigation paths are required;
+- how the seven locked interactions behave;
+- what the persistent verification lifecycle is;
+- how evidence, verification, approval, rejection, failures, results, and history behave;
+- how the verified existing-system defects are responded to;
+- what is inside and outside implementation scope.
 
-The seven Interaction Mapping decisions were locked during Chat40 / Day16 and are consolidated in Section 6.
+### 1.2 Governing inputs
+
+This blueprint is derived from:
+1. `05_DEBUGGING/investigations/Chat40_Day15_Node7_Phase1b_Existing_Reviewer_System_Investigation_Report.md`
+2. `05_DEBUGGING/investigations/Chat40_Day15_Node7_Phase1b_Existing_Reviewer_System_Investigation_Completion_Report.md`
+3. `00_PROJECT_CONTROL/Chat40_Day15_Node7_Phase1b_Reviewer_Mental_Model_Decisions.md`
+4. The seven Reviewer Interaction Mapping decisions locked during Chat40 / Day16.
+
+### 1.3 Authority rule
+
+The blueprint consolidates these sources; it does not silently replace them.
+- Existing-system facts remain authoritative to the investigation records.
+- Mental-model decisions remain authoritative to the locked mental-model record.
+- Interaction behavior remains authoritative to the seven locked interaction decisions.
+- Requirements not established by the governing sources must not be invented as already approved.
+- Any conflict discovered during independent review must be surfaced and resolved before implementation.
+
+### 1.4 Approval state
+
+This document is intentionally **DRAFT — FOR CLAUDE ALIGNMENT REVIEW**.
+
+Implementation preparation must wait until the alignment review is resolved and Ayush explicitly approves/locks the resulting blueprint.
+
+---
 
 ## 2. Reviewer Responsibility Boundary
 
-### Reviewer responsibility
+### 2.1 Primary job
 
-The Reviewer is an **Identity & Evidence Verifier**.
+**Identity & Evidence Verifier.**
+
+The Reviewer verifies whether the applicant’s submitted evidence supports the applicant’s claimed Driver or Company identity/role and then makes the final verification decision.
+
+### 2.2 Reviewer responsibilities
 
 The Reviewer:
+- enters the verification workflow as an authorized Reviewer;
+- works on applicants whose verification is pending;
+- sees Applicant + Claimed Role + Evidence as the essential context;
 - examines submitted onboarding evidence;
-- considers the applicant and claimed/requested role context;
-- evaluates whether the evidence supports the claimed identity and role;
-- explicitly verifies identity/role before final approval;
-- approves or rejects the applicant.
+- evaluates whether evidence supports the claimed identity and claimed role;
+- explicitly confirms **Identity / Role Verified** after evidence evaluation;
+- approves or rejects the applicant through the final decision flow;
+- provides a required rejection reason when rejecting;
+- references completed decisions through Verification History.
 
-### Outside Reviewer responsibility
+### 2.3 Outside Reviewer responsibility
 
 The Reviewer is not responsible for:
 - trip operations;
@@ -40,14 +76,19 @@ The Reviewer is not responsible for:
 - claims;
 - Driver operations;
 - Company operations;
+- operational trip/delivery evidence review;
 - general platform administration;
-- operational trip/delivery evidence review.
+- AI-based verification or scoring.
 
-No new Reviewer responsibilities are introduced by this blueprint.
+### 2.4 Responsibility boundary principle
+
+The redesign must make the Reviewer’s actual verification responsibility clearer without expanding the Reviewer persona into a general administrator or operations role.
+
+---
 
 ## 3. Reviewer Mental Model
 
-The locked Reviewer mental model is:
+### 3.1 Locked mental model
 
 ```text
 Applicant
@@ -63,22 +104,37 @@ Identity / Role Verification
 Approve / Reject
 ```
 
-### Core model
+### 3.2 Locked decisions represented in this blueprint
 
-- **Primary Job:** Identity & Evidence Verifier
-- **Primary Object:** Evidence
-- **Information Model:** Evidence + Applicant + Requested Role
-- **Verification / Decision Model:** Applicant + Role + Evidence → Evaluate → Verify → Approve/Reject
-- **State Model:** Pending Verification → Verified / Rejected
-- **Mental Journey:** Verification-first
-- **Trust Model:** Evidence must support the claimed identity/role
-- **Principles:** Evidence-centered, identity-aware, decision-driven
+- **Primary Job:** Identity & Evidence Verifier.
+- **Primary Object:** Evidence.
+- **Information Model:** Evidence + Applicant + Requested Role.
+- **Verification / Decision Model:** Applicant + Role + Evidence → Evaluate → Verify → Approve/Reject.
+- **State Model:** Pending Verification → Verified / Rejected.
+- **Mental Journey:** Verification-first.
+- **Trust & Evidence Model:** Evidence supports the claimed identity/role.
+- **Responsibility Boundary:** Narrow verification boundary.
+- **Current Mental-Model Problem:** navigation/interaction problems and evidence→verification→decision clarity are one coherent Reviewer verification-workflow problem.
+- **Principles:** Evidence-centered, identity-aware, decision-driven.
 
-The mental model does not introduce scoring, AI decision-making, automated verification, multiple-evidence requirements, a persistent `under_review` state, or new Reviewer business responsibilities.
+### 3.3 Explicit non-expansions
+
+The mental model does not authorize:
+- AI verification;
+- automated verification;
+- evidence scoring;
+- confidence scoring;
+- mandatory multiple evidence sources;
+- persistent `under_review` state;
+- trip/delivery review;
+- claims handling;
+- general administration.
+
+---
 
 ## 4. Information Architecture
 
-The Reviewer experience is organized around the complete verification workflow rather than the existing flat queue-only surface.
+### 4.1 Final Reviewer surface model
 
 ```text
 Reviewer
@@ -91,72 +147,77 @@ Reviewer
         └── Submitted Evidence Viewer
 ```
 
-### Verification Queue
+The Reviewer experience is organized around the complete verification workflow rather than the existing single flat queue surface.
 
-Purpose: unfinished Reviewer work.
+### 4.2 Verification Queue
 
-- Contains applicants in **Pending Verification**.
-- Provides applicant identification and claimed/requested role context.
-- Provides direct access to submitted evidence.
-- Each applicant has a dedicated **Review** action.
-- Opening an applicant does not change persistent state.
+**Purpose:** unfinished Reviewer work.
 
-### Applicant Verification
+The Queue represents applicants in **Pending Verification**.
 
-Purpose: dedicated verification workspace for one pending applicant.
+The Queue must:
+- provide entry for an authorized Reviewer;
+- list pending applicants;
+- present applicant identity context and claimed/requested role;
+- provide direct submitted-evidence access;
+- provide a dedicated **Review** action for each applicant;
+- preserve Pending Verification when an applicant is only opened for review.
 
-Required context:
-- Applicant email
-- Claimed/requested role
-- Submitted evidence
+Opening an applicant must not silently commit a persistent state change.
 
-Provides:
+### 4.3 Applicant Verification
+
+**Purpose:** dedicated workspace for one pending applicant.
+
+The view contains:
+- Applicant email;
+- Claimed Role;
+- Submitted Evidence;
 - dedicated evidence viewing area;
-- explicit Back to Verification Queue navigation;
-- verification and final-decision actions according to the locked interaction flow.
+- clear **Back to Verification Queue** navigation;
+- the explicit verification and final decision interactions defined in Section 6.
 
-### Decision Result
+### 4.4 Decision Result
 
-Purpose: clearly communicate the result after a successful final decision.
+After a successful final decision, the result state clearly communicates:
+- Applicant email;
+- Claimed role;
+- Final decision (Verified or Rejected);
+- rejection reason when applicable;
+- clear return action to Verification Queue.
 
-Shows:
-- Applicant email
-- Claimed role
-- Final decision
-- Rejection reason when applicable
-- Clear return action to Verification Queue
+### 4.5 Verification History
 
-### Verification History
+**Purpose:** completed decision records.
 
-Purpose: completed decision records.
+History is:
+- a simple chronological list;
+- ordered newest decision first;
+- initially without filtering;
+- paginated for larger sets;
+- equipped with a clear empty state when no completed records exist.
 
-- Simple chronological list.
-- Newest decision first.
-- No filtering in the initial workflow.
-- Pagination for larger result sets.
-- Clear empty state when no completed records exist.
+### 4.6 Read-only Verification Record
 
-### Read-only Verification Record
+Selecting a completed History entry opens a dedicated read-only verification record.
 
-Purpose: reference a completed verification decision without reopening the decision workflow.
-
-Shows:
-- Applicant
-- Claimed role
-- Final decision
-- Rejection reason when applicable
-- Decision date/time as represented by the History entry
-- Access to submitted evidence
-
-Provides:
-- evidence viewer in the same read-only record view;
-- **Back to Verification History** control.
+It provides:
+- Applicant;
+- Claimed Role;
+- Final Decision;
+- rejection reason when applicable;
+- decision date/time context;
+- access to submitted evidence;
+- a submitted-evidence viewer within the same read-only record;
+- **Back to Verification History** navigation.
 
 Completed decisions cannot be changed from History.
 
+---
+
 ## 5. State Model
 
-The persistent lifecycle remains:
+### 5.1 Persistent lifecycle
 
 ```text
 Pending Verification
@@ -168,285 +229,491 @@ Pending Verification
 Verified     Rejected
 ```
 
-### Persistent state rules
+### 5.2 Persistent-state rules
 
-- Opening a queue item does not change state.
-- Leaving unfinished review does not create persistent review progress.
-- There is no persistent `Under Review` state.
-- Selecting **Identity / Role Verified** is a human verification action, not a new persistent state.
-- Final **Approve** commits the Verified outcome.
-- Final **Reject** commits the Rejected outcome.
-- If a final decision request fails, the applicant remains Pending Verification and the Reviewer can retry.
+1. A pending applicant enters the workflow as **Pending Verification**.
+2. Opening an applicant does not alter persistent state.
+3. Viewing/examining evidence does not alter persistent state.
+4. Leaving unfinished review does not create persistent `Under Review` state.
+5. **Identity / Role Verified** is a human verification action, not a new persistent lifecycle state.
+6. The Reviewer may undo/reconsider the verification action before final decision.
+7. Final **Approve** commits the Verified outcome.
+8. Final **Reject** commits the Rejected outcome.
+9. A completed decision is not editable through Verification History.
+10. If a final decision request fails, the applicant remains Pending Verification.
+
+### 5.3 Critical distinction
+
+```text
+UI verification action ≠ persistent verification state
+
+Identity / Role Verified
+        ↓
+   human confirmation
+        ↓
+Approve / Reject
+        ↓
+persistent outcome
+```
+
+---
 
 ## 6. Complete Interaction Contract
+
+This section is the complete consolidated contract for all seven locked Reviewer interactions.
 
 ### Interaction 1 — Reviewer Entry → Verification Queue
 
 1. An authorized Reviewer enters directly into the **Verification Queue**.
-2. The Queue provides direct preview/access to submitted evidence; no artificial/generated Evidence Summary is assumed.
-3. Each applicant has a dedicated **Review** action that opens Applicant Verification.
-4. Applicant Verification contains Applicant, Claimed Role, Submitted Evidence, and a dedicated evidence viewing area; exact responsive layout/viewer capabilities are finalized within this blueprint without inventing unsupported evidence behavior.
-5. Opening an applicant does not change persistent state; it remains Pending Verification.
+2. The Queue provides direct preview/access to submitted evidence; no artificial/generated **Evidence Summary** is introduced.
+3. Each applicant has a dedicated **Review** action.
+4. Review opens **Applicant Verification** containing Applicant, Claimed Role, Submitted Evidence, and a dedicated evidence-viewing area.
+5. Opening an applicant does not change persistent state; the applicant remains Pending Verification.
 
 ### Interaction 2 — Queue → Applicant Verification
 
 1. Applicant Verification immediately presents applicant identity, claimed role, and submitted evidence.
 2. A clear **Back to Verification Queue** control is provided.
-3. Applicant identity context is limited to email + claimed role unless separately justified by verified requirements.
+3. Applicant identity context is **email + claimed role**; unnecessary profile information is not introduced.
 4. Evidence is presented within the same verification view.
-5. If evidence cannot be viewed because of a technical/access issue, show a clear error with retry/open-access behavior; do not auto-reject or hide the problem.
-6. Leaving unfinished review does not create persistent state/progress; applicant remains Pending Verification.
+5. If evidence cannot be viewed because of a technical/access problem, the UI shows a clear error with retry/open-access behavior; it does not auto-reject or hide the problem.
+6. Leaving unfinished review creates no persistent state/progress; the applicant remains Pending Verification.
 
 ### Interaction 3 — Applicant Verification → Evidence Examination
 
-1. A dedicated large evidence viewer exists within Applicant Verification while applicant email and claimed role remain visible.
-2. The viewer supports viewing, scrolling, and zoom/resize where applicable; download is not a required Reviewer behavior.
-3. Exactly one onboarding evidence document is handled under the already-approved onboarding rule:
+1. A dedicated large evidence viewer exists within Applicant Verification.
+2. Applicant email and claimed role remain visible while evidence is examined.
+3. The viewer supports viewing, scrolling, and zoom/resize where applicable; download is not a required Reviewer behavior.
+4. Exactly one onboarding evidence document is handled under the already-approved onboarding rule:
    - Driver → Driving Licence
    - Company → GST document
-4. Reviewer evaluates whether evidence supports the applicant's claimed identity and claimed role.
-5. Reviewer explicitly confirms **Identity / Role Verified** after evaluation; this is a human action, not a new persistent state.
-6. If evidence does not adequately support claimed identity/role, Reviewer rejects with a required rejection reason. Technical inability to view evidence remains a separate failure case.
-7. After Identity / Role Verified, Reviewer stays in the same verification view and Approve becomes enabled; verification and approval remain separate.
+5. The Reviewer evaluates whether the evidence supports the applicant’s claimed identity and claimed role.
+6. The Reviewer explicitly confirms **Identity / Role Verified** after evaluation; this is a human action, not a new persistent state.
+7. If evidence does not adequately support the claimed identity/role, the Reviewer rejects with a required rejection reason.
+8. Technical inability to view evidence remains separate from substantive evidence insufficiency.
+9. After Identity / Role Verified, the Reviewer remains in the same verification view and Approve becomes enabled; verification and approval remain separate.
 
 ### Interaction 4 — Evidence Examination → Identity / Role Verification
 
 1. **Identity / Role Verified** is an explicit action after evidence examination; viewing evidence alone does not constitute verification.
-2. After selection, show a clear confirmation/state and enable Approve in the same view.
-3. Reviewer can undo/reconsider verification before final Approve/Reject; no new persistent state is created.
-4. If Reviewer has not reached a confident verification conclusion, applicant remains Pending Verification and Reviewer can exit/return later. This does not override the separate rule that evidence substantively found insufficient should be rejected with a reason.
-5. If Reviewer selects Identity / Role Verified but leaves before Approve, verification is not committed and applicant remains Pending Verification.
+2. After selecting it, the same view shows a clear confirmation/state and enables Approve.
+3. The Reviewer may undo/reconsider verification before final Approve/Reject; no new persistent state is created.
+4. If the Reviewer has not reached a confident verification conclusion, the applicant remains Pending Verification and the Reviewer may exit/return later. This does not override the separate rule that evidence substantively found insufficient should be rejected with a reason.
+5. If the Reviewer selects Identity / Role Verified but leaves before Approve, verification is not committed; the applicant remains Pending Verification.
 
 ### Interaction 5 — Verification → Approve / Reject
 
-1. After Identity / Role Verified, the same view clearly shows Approve and Reject.
+1. After Identity / Role Verified, the same view clearly shows **Approve** and **Reject**.
 2. Approve requires final confirmation before commit.
 3. Reject requires a required rejection reason and final confirmation before commit.
 4. After final confirmation, decision controls are disabled and a clear processing state is shown until the result is confirmed.
-5. Successful decision shows a clear result state and then returns to Verification Queue.
-6. Completed applicants are removed from the Pending Verification queue; the queue represents unfinished work only.
-7. If the final decision request fails, the applicant remains Pending Verification, a clear error is shown, and retry remains possible; success is never assumed without confirmation.
+5. Successful decision produces a clear result state and then returns to Verification Queue.
+6. Completed applicants are removed from the Pending Verification queue; the Queue represents unfinished work only.
+7. If the final decision API/server/network request fails, the applicant remains Pending Verification, a clear error is shown, and retry remains possible; success is never assumed without confirmation.
 
 ### Interaction 6 — Decision → Result / Verification History
 
-1. After successful final decision, result state shows Applicant email, Claimed role, Final decision, rejection reason when applicable, and a clear action to return to Verification Queue.
+1. After a successful final decision, clear result state shows Applicant email, Claimed role, Final decision, rejection reason when applicable, and a clear action to return to Verification Queue.
 2. A dedicated **Verification History** contains completed Verified/Rejected decisions.
-3. History entries show Applicant email, Claimed role, Final decision, and rejection reason when applicable; History is a decision-record view, not a duplicate evidence-examination workspace.
+3. History entries show Applicant email, Claimed role, Final decision, and rejection reason when applicable. History is a decision-record view, not a duplicate evidence-examination workspace.
 4. Selecting a completed History record opens a **read-only verification record** with Applicant, Claimed role, Final decision, rejection reason if applicable, and access to submitted evidence. Completed decisions cannot be changed from History.
 5. The read-only record provides a clear **Back to Verification History** control.
 
 ### Interaction 7 — Verification History → Completed Record / Navigation
 
 1. Verification History is a simple chronological list of completed verification records.
-2. Records are ordered newest decision first.
+2. Records are ordered **newest decision first**.
 3. Each entry shows Applicant email, Claimed role, Final decision, and decision date/time.
-4. Initial History has no filtering.
-5. Empty History shows a clear message such as **“No completed verification records yet.”** with a **Back to Verification Queue** action.
-6. Larger History sets use pagination.
-7. Selecting a History entry opens a separate dedicated read-only verification record.
-8. Submitted evidence is viewable in an evidence viewer within that same read-only record.
-9. Evidence is view-only in completed History; no Identity/Role Verified, Approve, Reject, or decision-change action is available.
+4. Initial History has **no filtering**.
+5. Empty History shows **“No completed verification records yet.”** with a **Back to Verification Queue** action.
+6. Larger History sets use **pagination**.
+7. Selecting a History entry opens a **separate dedicated read-only verification record**.
+8. Submitted evidence is viewable through an evidence viewer within that same read-only record.
+9. Evidence is **view-only** in completed History; no Identity / Role Verified, Approve, Reject, or decision-change action is available.
 10. Returning to History preserves the Reviewer’s previous History page/position context.
+
+---
 
 ## 7. Evidence Rules
 
-The evidence model remains evidence-centered.
+### 7.1 Evidence role
 
-- Evidence directly supports the identity/role evaluation.
-- The Reviewer sees submitted evidence within the verification workflow.
-- The already-approved onboarding rule determines the single expected document by claimed role:
-  - Driver → Driving Licence
-  - Company → GST document
-- No additional evidence types are introduced.
-- No mandatory multiple-evidence requirement is introduced.
-- No scoring or confidence automation is introduced.
-- Technical evidence viewing failure is not treated as substantive rejection.
-- Completed History provides evidence access only for reference; evidence is view-only there.
+Evidence is the primary object of Reviewer reasoning. Applicant and Claimed Role provide the necessary verification context.
+
+### 7.2 Active verification evidence
+
+During active verification:
+- submitted evidence is directly accessible;
+- evidence is handled in a dedicated viewing area;
+- Applicant email and Claimed Role remain available as context;
+- the Reviewer evaluates the evidence against the claimed identity/role.
+
+### 7.3 Evidence type boundary
+
+Under the already-approved one-document onboarding rule:
+- Driver → Driving Licence;
+- Company → GST document.
+
+This blueprint does not create a new onboarding rule.
+
+### 7.4 Evidence viewing behavior
+
+The dedicated viewer supports appropriate viewing, scrolling, and zoom/resize where applicable. Download is not a required Reviewer behavior.
+
+### 7.5 Evidence failure handling
+
+Technical/access failure to view evidence must produce a clear error and retry/open-access path.
+
+Technical viewing failure must not automatically become rejection.
+
+Substantive evidence insufficiency is a separate verification outcome and requires rejection with a reason.
+
+### 7.6 Completed-record evidence
+
+Completed History records retain access to submitted evidence for reference. Evidence in the completed record is strictly view-only.
+
+### 7.7 Prohibited additions
+
+No new:
+- evidence types;
+- multiple-evidence requirements;
+- scoring model;
+- confidence model;
+- AI verification;
+- automated verification mechanism.
+
+---
 
 ## 8. Decision Rules
 
-### Verification
+### 8.1 Identity / Role Verification
 
-- Evidence examination precedes Identity / Role Verified.
-- Identity / Role Verified is explicit and human-controlled.
-- It is not a persistent workflow state.
-- Reviewer may reconsider/undo the verification action before final decision.
+Identity / Role Verified is an explicit human action following evidence examination.
 
-### Approve
+The Reviewer is not considered to have verified an applicant merely because the evidence was opened or viewed.
+
+The Reviewer may reconsider/undo this verification action before the final decision. The action does not create a new persistent lifecycle state.
+
+### 8.2 Approve flow
 
 ```text
+Evidence Examination
+        ↓
 Identity / Role Verified
         ↓
-Final confirmation
+Final Approve Confirmation
         ↓
 Processing
         ↓
 Server-confirmed success
         ↓
-Verified result
+Verified Result
         ↓
-Return to Verification Queue
+Verification Queue
 ```
 
-### Reject
+### 8.3 Reject flow
 
 ```text
-Evidence insufficient for claimed identity/role
+Evidence evaluated as insufficient
         ↓
-Required rejection reason
+Required Rejection Reason
         ↓
-Final confirmation
+Final Reject Confirmation
         ↓
 Processing
         ↓
 Server-confirmed success
         ↓
-Rejected result
+Rejected Result
         ↓
-Return to Verification Queue
+Verification Queue
 ```
 
-### Decision failure
+### 8.4 Final decision failure
 
-If the final request fails:
-- no successful decision is assumed;
+If the final decision request fails:
+- the outcome is not assumed;
 - applicant remains Pending Verification;
-- clear error is shown;
-- Reviewer can retry.
+- a clear error is shown;
+- the Reviewer can retry.
+
+### 8.5 Completed-decision boundary
+
+Once a decision is committed as Verified or Rejected, the History record is read-only. History does not reopen the decision workflow.
+
+---
 
 ## 9. History Rules
 
-Verification History represents completed decisions only.
+### 9.1 Purpose
 
-- Chronological list.
+Verification History is the Reviewer’s completed-decision reference surface.
+
+### 9.2 List model
+
+- Simple chronological list.
 - Newest decision first.
-- Entry summary: Applicant email + Claimed role + Final decision + Decision date/time.
 - No filtering in the initial workflow.
 - Pagination for larger result sets.
-- Empty state: **“No completed verification records yet.”** plus Queue navigation.
-- Selecting an entry opens a dedicated read-only verification record.
-- The completed record includes submitted evidence access.
-- Evidence is view-only.
-- No completed decision can be changed from History.
-- Clear **Back to Verification History** navigation is provided.
-- Previous History page/position context is preserved when returning.
 
-History is not a duplicate active verification workspace and does not reintroduce final decision controls.
+### 9.3 Entry information
+
+Each History entry contains:
+- Applicant email;
+- Claimed Role;
+- Final Decision;
+- Decision date/time;
+- rejection reason when applicable.
+
+### 9.4 Empty History
+
+When no completed records exist, show:
+
+> **No completed verification records yet.**
+
+and provide **Back to Verification Queue**.
+
+### 9.5 Completed record
+
+Selecting a History entry opens a dedicated read-only verification record containing:
+- Applicant;
+- Claimed Role;
+- Final Decision;
+- rejection reason when applicable;
+- access to submitted evidence.
+
+The submitted evidence viewer remains inside the same read-only record.
+
+### 9.6 Read-only rule
+
+From History, the Reviewer cannot:
+- change the final decision;
+- approve;
+- reject;
+- select Identity / Role Verified;
+- reopen the completed workflow.
+
+The record provides **Back to Verification History**.
+
+### 9.7 Context preservation
+
+Returning to History preserves the Reviewer’s previous History page/position context.
+
+---
 
 ## 10. Navigation & Responsive Requirements
 
-### Navigation
+### 10.1 Required navigation relationships
 
-The Reviewer experience must provide role-appropriate navigation rather than trapping the Reviewer in the existing shared navigation behavior.
+```text
+Reviewer Entry
+      ↓
+Verification Queue
+      ↓
+Applicant Verification
+      ↓
+Back to Verification Queue
 
-Required workflow navigation includes:
-- Reviewer entry → Verification Queue
-- Queue → Applicant Verification
-- Applicant Verification → Back to Verification Queue
-- Successful decision → Verification Queue
-- Verification History → Read-only Verification Record
-- Read-only Verification Record → Back to Verification History
+Successful Decision
+      ↓
+Verification Queue
 
-The existing investigation identified the shared Navbar Dashboard/Timeline navigation trap. The final implementation must not preserve a navigation pattern that repeatedly redirects a Reviewer back to the Queue.
+Verification History
+      ↓
+Read-only Verification Record
+      ↓
+Back to Verification History
+```
 
-The exact visual navigation component and layout are implementation details and must remain within the locked behavioral boundary.
+### 10.2 Existing navigation trap response
 
-### Responsive behavior
+The Existing-System Investigation verified that the shared Navbar exposes Dashboard and Timeline paths that can bounce a Reviewer back to the Queue. The redesigned Reviewer experience must not preserve that navigation trap.
 
-The Reviewer workflow must remain usable across:
+Reviewer navigation must expose the actual verification workflow rather than forcing the Reviewer into unrelated or looping navigation.
+
+### 10.3 Explicit navigation rule
+
+Primary workflow navigation must use explicit Reviewer-appropriate controls, including:
+- **Back to Verification Queue** from active Applicant Verification;
+- **Back to Verification History** from the completed read-only record.
+
+Browser-back is not the sole primary navigation contract.
+
+### 10.4 Responsive requirement
+
+The complete Reviewer workflow must remain usable on:
 - desktop;
 - tablet;
 - mobile.
 
-The exact responsive component arrangement, dimensions, and evidence-viewer presentation are implementation-detail decisions subject to this behavioral contract and must not introduce new functionality.
+The exact responsive component layout, dimensions, and evidence-viewer arrangement remain implementation-detail decisions, provided they preserve the locked behavior and do not introduce unsupported functionality.
+
+---
 
 ## 11. Existing-System Defects → Blueprint Response
 
-The verified existing-system defects are carried forward as implementation concerns.
+The Existing-System Investigation verified four Reviewer defects.
 
-| Defect | Blueprint response boundary |
-|---|---|
-| **REV-01 Navigation Trap** | Reviewer-specific navigation must provide the complete verification workflow without Dashboard/Timeline redirect loops. |
-| **REV-02 Role-Confusion Lockout** | Reviewer routing must not permanently prevent a user with another valid operational identity from reaching their operational experience. Exact multi-role routing behavior must be verified/approved before implementation if not already specified elsewhere. |
-| **REV-03 RLS Bypass Architecture** | Reviewer API/data mutation security requires correction away from reliance on service-role god-mode access, using an explicitly approved secure authorization/RLS design. Exact implementation must be separately verified before fix execution. |
-| **REV-04 Degraded UX** | Replace native browser rejection prompt behavior with the application's approved UI interaction pattern, including proper rejection input, confirmation, and clear error/success handling. |
+### REV-01 — Navigation Trap
 
-### Existing-system items to preserve
+**Verified baseline:** Shared navigation exposes Dashboard/Timeline paths that redirect/bounce the Reviewer back to Queue.
 
-- Reviewer storage evidence RLS is correctly protected and should not be weakened.
-- Existing onboarding identity/evidence data model should be reused where appropriate.
-- Existing verified authentication/authorization boundary remains the basis for Reviewer access, subject to the approved security correction.
+**Blueprint response:** Replace the defective Reviewer navigation behavior with role-appropriate navigation representing Verification Queue, Applicant Verification, decision result, and Verification History without redirect loops.
+
+### REV-02 — Role-Confusion Lockout
+
+**Verified baseline:** Reviewer authorization is checked before Freight Identity and can unconditionally redirect a dual-role user to `/reviewer/queue`, preventing normal operational dashboard access.
+
+**Blueprint response:** Do not preserve an unconditional dual-role lockout. The exact multi-role routing resolution must remain separately verified/approved before implementation if not already specified by another locked decision.
+
+### REV-03 — RLS Bypass Architecture
+
+**Verified baseline:** Reviewer queue/API operations rely on Supabase service-role access rather than explicit Reviewer RLS policies for the core data mutations/reads; authorization is enforced primarily through manual Reviewer checks.
+
+**Blueprint response:** Correct the security architecture so Reviewer data access/mutation does not unnecessarily depend on service-role god-mode access. The exact secure RLS/authorization implementation must be separately verified and approved before execution.
+
+### REV-04 — Degraded UX / Native Prompt
+
+**Verified baseline:** Rejection uses native browser `prompt()`, errors are raw inline text, and success is represented by a refresh without a dedicated result state.
+
+**Blueprint response:** Replace the native prompt with the application-approved rejection input/confirmation pattern and provide clear processing, success, and failure states consistent with the locked interaction workflow.
+
+### 11.1 Existing behavior to preserve unless a verified change is required
+
+- Reviewer authorization remains required for Reviewer access.
+- Evidence storage protection must not be weakened.
+- Existing onboarding identity/evidence data should be reused where compatible.
+- Reviewer remains outside trip/delivery operational authority.
+
+---
 
 ## 12. Implementation Boundary
 
-### In scope
+### 12.1 In scope
 
-- Reviewer frontend redesign around the locked verification workflow.
-- Dedicated Verification Queue experience.
+The implementation may include:
+- Reviewer-specific entry/routing redesign required by the locked workflow and verified defects.
+- Verification Queue redesign.
 - Dedicated Applicant Verification view.
-- Dedicated evidence viewing area.
+- Dedicated evidence examination/viewer experience.
+- Applicant + Claimed Role + Evidence context.
 - Explicit Identity / Role Verified interaction.
-- Explicit Approve/Reject confirmation flow.
-- Clear processing, success, and failure states.
+- Approve/Reject confirmation behavior.
+- Required rejection reason input.
+- Processing state.
+- Clear success state.
+- Clear failure/error state.
 - Verification History.
-- Read-only completed verification record.
+- Dedicated read-only completed verification record.
 - View-only evidence access from completed records.
-- Reviewer-appropriate navigation and responsive behavior.
-- Fixes for the verified Reviewer UX/routing defects.
-- Required security correction for the verified RLS/service-role bypass defect, after implementation-level security design is verified and approved.
+- Explicit Reviewer workflow navigation.
+- Responsive Reviewer workflow across desktop/tablet/mobile.
+- Verified Reviewer UX/routing defect fixes.
+- Required security correction for the verified service-role/RLS bypass defect, after the secure implementation design is independently verified and approved.
 - Reuse of existing APIs/data where compatible with the locked behavior.
 
-### Out of scope unless separately verified and approved
+### 12.2 Out of scope unless separately verified and approved
 
 - New Reviewer business responsibilities.
-- Trip/delivery management or review.
-- Claims or marketplace functionality.
-- Operational evidence review outside onboarding identity verification.
-- AI verification or AI decision-making.
+- Trip management.
+- Delivery management.
+- Claims.
+- Marketplace/claim mechanisms.
+- Operational trip/delivery evidence review.
+- AI verification.
+- Automated verification.
 - Evidence scoring/confidence scoring.
-- New persistent Reviewer workflow states such as `under_review`.
-- New evidence types or multiple-evidence requirements.
-- New authorization rules not required by a verified defect fix.
-- General administration dashboard/metrics as a new Reviewer responsibility.
+- New persistent `under_review` workflow state.
+- New evidence types.
+- Mandatory multiple-evidence requirements.
+- General Reviewer metrics/admin dashboard as a new responsibility.
 - Unverified backend business functionality.
+- New authorization rules unrelated to the verified defect/security requirements.
+
+### 12.3 Implementation discipline
+
+Antigravity must implement only from an approved implementation plan that traces back to this blueprint.
+
+Antigravity must not:
+- infer new Reviewer business rules from visual gaps;
+- invent additional persistent states;
+- expand Reviewer responsibility;
+- add AI/scoring/automation;
+- treat an unverified security assumption as a completed fix.
+
+Investigation and fix remain separate. Security/API fixes require their own verification evidence and are not complete merely because the UI appears to work.
+
+---
 
 ## 13. Acceptance / Completion Criteria
 
-This blueprint is ready for implementation preparation only when independent review confirms alignment with the three governing inputs.
+### 13.1 Source alignment criteria
 
-### Behavioral acceptance
+The blueprint is acceptable only if independent review confirms:
+- all 13 sections remain traceable to the governing sources;
+- no section contradicts a locked mental-model or interaction decision;
+- existing-system facts are represented accurately;
+- unsupported assumptions are identified rather than silently accepted.
+
+### 13.2 Interaction acceptance
 
 - All seven locked interactions are represented.
-- Reviewer mental journey remains verification-first.
-- Evidence, Applicant, and Claimed Role remain the core verification context.
-- Persistent lifecycle remains Pending Verification → Verified/Rejected.
-- No persistent `under_review` state is introduced.
-- Identity/Role Verified remains a human action, not a new persistent state.
-- Approve/Reject remain explicit final decisions.
-- Final decision failure preserves Pending Verification.
-- Completed History is read-only and cannot change decisions.
+- Verification-first journey is preserved.
+- Applicant + Claimed Role + Evidence remain the core context.
+- Evidence examination precedes Identity / Role Verified.
+- Identity / Role Verified remains an explicit human action.
+- Approve/Reject remain separate final decisions.
+- Successful decisions produce a clear result and return to Queue.
+- Completed work is available through History.
+- History records are read-only.
 
-### Scope acceptance
+### 13.3 State acceptance
+
+- Persistent lifecycle remains Pending Verification → Verified / Rejected.
+- No persistent `under_review` state is introduced.
+- Opening/evidence examination/leaving unfinished review does not create a persistent review state.
+- Final decision failure preserves Pending Verification.
+
+### 13.4 Evidence acceptance
+
+- Evidence remains central to verification.
+- The already-approved one-document onboarding rule remains unchanged.
+- Technical evidence-view failure is separate from substantive evidence insufficiency.
+- Completed evidence is view-only.
+- No AI/scoring/multiple-evidence behavior is added.
+
+### 13.5 Defect acceptance
+
+- REV-01 through REV-04 have explicit blueprint responses.
+- Evidence storage protection is preserved.
+- Security correction is independently verified before being declared complete.
+
+### 13.6 Scope acceptance
 
 - Reviewer responsibility remains narrow.
-- No trip/delivery/claims/general-admin responsibilities are introduced.
-- No AI/scoring/automation is introduced.
-- No unsupported evidence requirements are introduced.
+- No trip/delivery/claims/general-admin responsibility is introduced.
+- No unsupported backend business functionality is added.
+- Implementation remains within the stated boundary.
 
-### Existing-system acceptance
+### 13.7 Independent Claude review contract
 
-- The blueprint addresses the verified Reviewer defects REV-01 through REV-04 within the stated boundaries.
-- Existing evidence-storage protection is preserved.
-- Existing data/domain relationships are reused where compatible.
-- Security corrections are not treated as completed until independently verified.
+Claude must review **all 13 sections individually**, not just the document as a whole.
 
-### Review status
+For each section, Claude must classify:
+- **✅ Fully Aligned**
+- **⚠️ Needs Clarification**
+- **❌ Contradiction / Unsupported**
 
-**Current status: DRAFT FOR CLAUDE ALIGNMENT REVIEW**
+For every ⚠️ or ❌ finding, Claude should identify:
+- the exact blueprint section/subsection;
+- the exact conflict, omission, or unsupported assumption;
+- the governing source and decision/evidence it conflicts with.
 
-This document is intentionally not marked Final/Locked. Claude review should identify any contradiction, omission, unsupported assumption, scope expansion, or mismatch against:
-1. Existing Reviewer System Investigation;
-2. Reviewer Mental Model;
-3. Seven locked Reviewer Interaction Mapping interactions.
+Claude must **not redesign the blueprint** or add new functionality during this review.
 
-No implementation should begin from this draft until the alignment review is resolved and the blueprint is explicitly approved/locked.
+### 13.8 Current status
+
+**DRAFT — FOR CLAUDE ALIGNMENT REVIEW**
+
+No implementation should begin until the alignment review is resolved and Ayush explicitly approves/locks the blueprint.
