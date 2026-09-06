@@ -1,8 +1,8 @@
 # Freight — Shared Cross-Portal Design System Decisions
 
 **Record:** Chat41 / Node7 / Phase1b
-**Status:** REVIEW CANDIDATE — NOT YET LOCKED
-**Purpose:** Establish one shared design foundation for Driver, Company, and Reviewer portals before implementation. This record consolidates the design reasoning already established in the current project context and identifies what remains open for independent review.
+**Status:** RECONCILED REVIEW CANDIDATE — NOT YET LOCKED
+**Purpose:** Establish one shared design foundation for Driver, Company, and Reviewer portals before implementation. This record consolidates the design reasoning already established in the current project context, Claude review findings, and the reconciled decisions from review.
 
 ---
 
@@ -12,7 +12,7 @@ This record defines the proposed shared design foundation that should apply acro
 
 The purpose is not to redesign or reopen the locked Driver, Company, or Reviewer workflows. It is to establish a common visual and UX language for unspecified shared details so implementation does not produce three visually unrelated portal experiences.
 
-This document is a review candidate. It becomes final/locked only after independent review, reconciliation of findings, and explicit project decision.
+This document remains a review candidate until the final lock gate is explicitly completed.
 
 ### Scope
 
@@ -24,6 +24,7 @@ This record covers:
 - status semantics;
 - accessibility principles;
 - cross-portal consistency rules;
+- shared theme/language/motion/spacing boundaries;
 - boundaries protecting locked blueprints;
 - review questions and finalization criteria.
 
@@ -38,7 +39,9 @@ This record does not authorize:
 - new claim mechanisms;
 - new AI behavior;
 - changes to established business rules;
-- changes to the locked Driver, Company, or Reviewer workflow models.
+- changes to the locked Driver, Company, or Reviewer workflow models;
+- dark theme implementation in Phase 1b;
+- internationalization, localization, or RTL implementation in Phase 1b.
 
 ---
 
@@ -252,6 +255,21 @@ The Driver blueprint is already locked and remains authoritative for its workflo
 
 This is a shared presentation principle only. Individual portal blueprints remain authoritative for their actual information architecture and workflow.
 
+### Reviewer cross-check
+
+The shared hierarchy was explicitly checked against the locked Reviewer Mental Model and locked Reviewer Interaction Mapping.
+
+**Result: NO CONFLICT.**
+
+The hierarchy is compatible with the Reviewer sequence because:
+- Context corresponds to Applicant + Claimed Role;
+- Current State corresponds to Pending Verification / decision state;
+- Important Information centers the submitted Evidence;
+- Required Action corresponds to Evaluate → Identity/Role Verified → Approve/Reject;
+- Supporting Evidence/History corresponds to evidence viewing and completed Verification History.
+
+The shared hierarchy therefore remains a general presentation principle and does not override the Reviewer verification-first workflow.
+
 ### 5.4 Shared component language
 
 The three portals should share the fundamental visual vocabulary for:
@@ -302,8 +320,7 @@ The three portals should share the fundamental visual vocabulary for:
 | Border | `#E2E8F0` | Dividers and component boundaries |
 | Success | `#15803D` | Verified / completed / accepted |
 | Success Soft | `#F0FDF4` | Success background |
-| Attention | `#D97706` | Requires attention/action |
-| Warning | `#B45309` | Warning/caution |
+| Warning / Attention | `#B45309` | Requires awareness/action; caution/important condition |
 | Error | `#B91C1C` | Rejected / failed / invalid |
 | Error Soft | `#FEF2F2` | Error background |
 | Information | `#0369A1` | Informational state |
@@ -330,19 +347,41 @@ Normal UI should primarily consist of neutral backgrounds/surfaces and dark read
 
 The same semantic color meaning must apply across Driver, Company, and Reviewer.
 
-Conceptual meanings:
-- Success → verified/completed/accepted;
-- Attention → requires awareness/action;
-- Warning → caution/important condition;
-- Error → failed/rejected/invalid;
-- Information → informational content;
-- Neutral → inactive/unspecified/non-semantic state.
+The shared UI semantic categories are:
+- **Neutral** → inactive/unspecified/non-semantic state;
+- **Information** → informational content;
+- **Warning / Attention** → requires awareness or action but is not an error/rejection;
+- **Success** → verified/completed/accepted;
+- **Error** → failed/rejected/invalid.
 
-### 6.6 Color must not be the only signal
+**Important distinction:** The UI semantic category **Warning / Attention** is separate from any project-monitor severity terminology. Existing Monitor WARNING severity, where applicable, is not changed by this design-system decision.
 
-**Decision:** Status should be reinforced by text, labels, icons where appropriate, or other non-color indicators.
+### 6.6 Status communication rule
 
-**Why:** Accessibility and operational clarity both require state meaning to survive color limitations.
+**Decision:** Every meaningful operational status must have a visible text label. Color is supplementary, never the sole indicator. An icon may reinforce a status when useful, but an icon is not a replacement for the text label.
+
+Requirements:
+- Text status label: **REQUIRED**;
+- Color: **SUPPLEMENTARY**;
+- Icon: **OPTIONAL REINFORCEMENT**;
+- Color-only status: **NOT ALLOWED**;
+- Icon-only status for a meaningful state: **NOT ALLOWED**;
+- Same semantic meaning across portals: **REQUIRED**.
+
+Examples include `Verified`, `Warning / Attention`, and `Rejected`.
+
+### 6.7 Color contrast validation
+
+The proposed palette was checked against white for common normal-text usage during reconciliation:
+- Primary `#1D4ED8` → 6.70:1, suitable for normal text;
+- Success `#15803D` → 5.02:1, suitable for normal text;
+- Error `#B91C1C` → 6.47:1, suitable for normal text;
+- Information `#0369A1` → 5.93:1, suitable for normal text;
+- Warning / Attention `#B45309` → 5.02:1, suitable for normal text;
+- The former Attention `#D97706` → 3.19:1 and is therefore not retained as the normal-text semantic token;
+- Disabled `#94A3B8` → 2.56:1 and is therefore restricted to appropriate disabled-state presentation rather than normal informational text.
+
+Exact component-level combinations still require implementation-level validation because contrast depends on the actual foreground/background pairing and text size.
 
 ---
 
@@ -352,9 +391,7 @@ The following are shared requirements for the design system, subject to implemen
 
 ### 7.1 Contrast
 
-The proposed exact HEX values are **candidate tokens**, not yet final locked values. They must be checked against the actual foreground/background combinations in which they will be used.
-
-The goal is to avoid approving a palette based only on visual preference.
+Exact color tokens must be checked against the actual foreground/background combinations in which they will be used. The palette should not be approved based only on visual preference.
 
 ### 7.2 State communication
 
@@ -362,9 +399,10 @@ Do not rely solely on:
 - color;
 - a color-only dot;
 - a color-only border;
-- color-only chart/status encoding.
+- color-only chart/status encoding;
+- an icon without a meaningful text label for an important operational state.
 
-Use text and/or other semantic cues as appropriate.
+Use visible text labels plus supplementary color and/or icon cues as appropriate.
 
 ### 7.3 Focus and interaction
 
@@ -372,15 +410,71 @@ Interactive controls must have an identifiable focus/active state that remains u
 
 ### 7.4 Disabled states
 
-Disabled controls should be visibly distinct but should not be the only way important information is communicated.
+Disabled controls should be visibly distinct but should not be the only way important information is communicated. The disabled token is not intended for normal body/status text where its contrast would be insufficient.
 
 ### 7.5 Typography readability
 
 Typography decisions must prioritize legibility of operational data, evidence details, timestamps, labels, and actions over stylistic novelty.
 
+### 7.6 Motion accessibility
+
+Motion must not be required to understand important state or workflow information. Where supported by the implementation environment, reduced-motion preferences should be respected.
+
 ---
 
-## 8. Cross-Portal Consistency Rules
+## 8. Shared Theme, Language, Motion, and Spacing Boundaries
+
+### 8.1 Theme
+
+**Decision:** Phase 1b supports the **Light theme only**.
+
+Dark mode is outside Phase 1b scope and requires a separate future design/architecture decision if introduced.
+
+This is a scope boundary, not a prohibition against future dark-theme work.
+
+### 8.2 Internationalization / RTL
+
+**Decision:** Phase 1b supports the current product language and **LTR layout only**.
+
+Internationalization, localization, language switching, and RTL support are outside Phase 1b scope and require a separate future decision.
+
+Layouts should avoid unnecessary hard-coded directional assumptions where practical so future support is not needlessly obstructed, without adding an i18n/RTL implementation layer now.
+
+### 8.3 Motion
+
+**Decision:** Motion should be **minimal, purposeful, and functional**.
+
+Use short transitions for interactions such as opening/closing panels, navigation changes, loading feedback, and meaningful state transitions where useful.
+
+Do not use:
+- decorative animation;
+- excessive movement;
+- long transitions that slow operational workflows;
+- motion as the sole communication of important information.
+
+Exact timing values remain an implementation-level choice within this principle rather than an architecture-level fixed millisecond contract.
+
+### 8.4 Spacing
+
+**Decision:** Use a shared **4px-based spacing scale** across Driver, Company, and Reviewer.
+
+| Token | Size | Typical use |
+|---|---:|---|
+| `space-1` | 4px | Very small gaps |
+| `space-2` | 8px | Icon/text and compact gaps |
+| `space-3` | 12px | Small component spacing |
+| `space-4` | 16px | Standard component spacing |
+| `space-5` | 20px | Medium spacing |
+| `space-6` | 24px | Card/section spacing |
+| `space-8` | 32px | Major section spacing |
+| `space-10` | 40px | Large separation |
+| `space-12` | 48px | Page-level separation |
+
+The scale establishes consistency without prescribing exact spacing for every individual screen. Responsive layouts may adapt spacing contextually by viewport and workflow.
+
+---
+
+## 9. Cross-Portal Consistency Rules
 
 ### Must remain shared
 
@@ -417,7 +511,7 @@ Role identity should primarily come from workflow, content, permissions, and res
 
 ---
 
-## 9. Locked Blueprint Protection
+## 10. Locked Blueprint Protection
 
 This shared design package must not be used to reinterpret or override locked decisions.
 
@@ -425,7 +519,7 @@ The following remain authoritative:
 - locked Driver blueprint;
 - locked Company blueprint;
 - locked Reviewer Mental Model;
-- approved Reviewer interaction/blueprint decisions when confirmed by the project-control state;
+- locked Reviewer Interaction Mapping and any later confirmed Reviewer blueprint decisions;
 - existing APIs/data/business rules/lifecycle/evidence/authorization behavior.
 
 If a proposed shared visual rule conflicts with a locked blueprint or established system behavior:
@@ -436,7 +530,7 @@ Do not silently modify the locked boundary.
 
 ---
 
-## 10. What We Are Deliberately Avoiding
+## 11. What We Are Deliberately Avoiding
 
 Freight should not be visually repositioned as:
 - a flashy consumer app;
@@ -451,71 +545,76 @@ Freight should not be visually repositioned as:
 
 ---
 
-## 11. Decision Classification Summary
+## 12. Decision Classification Summary
 
 | Decision area | Classification | Current state |
 |---|---|---|
 | Product/problem foundation | SOURCE-SUPPORTED | Established |
 | Evidence-centered product character | DESIGN INFERENCE | Established for design work |
-| Shared UX principles | DESIGN DECISION | Proposed in this record |
-| Shared visual language | DESIGN DECISION | Proposed in this record |
-| Blue primary direction | DESIGN INFERENCE + PROPOSED | Review required |
-| Exact HEX tokens | PROPOSED | Contrast validation required |
-| Semantic color meanings | DESIGN DECISION | Proposed; should be shared |
-| Accessibility rules | DESIGN REQUIREMENT | Proposed; implementation validation required |
-| Cross-portal consistency rules | DESIGN DECISION | Proposed |
-| Typography | OPEN | Next design decision |
-| Spacing scale | OPEN | Next design decision |
-| Component specifications | OPEN | To follow after foundation approval |
+| Shared UX principles | DESIGN DECISION | Reconciled |
+| Shared visual language | DESIGN DECISION | Reconciled |
+| Shared page hierarchy | DESIGN DECISION | Reconciled; Reviewer cross-check passed |
+| Blue primary direction | DESIGN INFERENCE + PROPOSED | Reconciled; remains design-system choice |
+| Exact HEX tokens | PROPOSED | Contrast-validated for common white-background text use; component validation remains required |
+| Semantic color meanings | DESIGN DECISION | Reconciled; Warning / Attention consolidated |
+| Status communication rule | DESIGN REQUIREMENT | Reconciled |
+| Accessibility rules | DESIGN REQUIREMENT | Reconciled; implementation validation remains required |
+| Theme | SCOPE DECISION | Light only for Phase 1b |
+| i18n / RTL | SCOPE DECISION | Out of scope for Phase 1b; current LTR only |
+| Motion | DESIGN DECISION | Minimal, purposeful; reduced-motion consideration |
+| Spacing scale | DESIGN DECISION | Reconciled; shared 4px-based scale |
+| Cross-portal consistency rules | DESIGN DECISION | Reconciled |
+| Typography | OPEN / IMPLEMENTATION DETAIL | Exact typography tokens still to be selected during implementation preparation |
+| Component specifications | OPEN / IMPLEMENTATION DETAIL | To follow after foundation lock |
 
 ---
 
-## 12. Claude Independent Review Request
+## 13. Claude Independent Review and Reconciliation
 
-Claude should review this record independently against the current Freight Records repository and available project source material.
+Claude independently reviewed the candidate shared design system and returned **APPROVE WITH CHANGES**.
 
-Claude should specifically evaluate:
+The review findings were reconciled individually rather than applied blindly.
 
-1. **Source grounding** — Are the product/problem/purpose statements actually supported by project evidence?
-2. **Locked-boundary safety** — Does any proposed shared design decision accidentally reopen or alter a locked portal decision?
-3. **Cross-portal consistency** — Is the shared-vs-role-specific boundary coherent?
-4. **UX coherence** — Do the shared principles fit Driver, Company, and Reviewer without forcing identical workflows?
-5. **Visual fit** — Does the proposed visual language appropriately communicate Freight's evidence/operational character?
-6. **Color rationale** — Is the proposed blue/neutral/semantic strategy justified, restrained, and internally coherent?
-7. **Color accessibility** — Which proposed combinations require adjustment after contrast testing?
-8. **Semantic status safety** — Are success/attention/warning/error/information/neutral meanings sufficiently precise and consistent?
-9. **Missing decisions** — Is any important shared design foundation missing before implementation preparation?
-10. **Overreach** — Does any item introduce functionality, business logic, authorization, lifecycle, evidence, or AI behavior that is outside the design-system scope?
-11. **Implementation readiness** — After review and reconciliation, would this provide a sufficiently clear shared foundation for implementation without requiring Antigravity to invent the visual system independently?
+### Reconciled findings
 
-Claude should distinguish:
-- confirmed/supportable decisions;
-- reasonable design inferences;
-- proposed choices;
-- conflicts;
-- missing evidence;
-- recommended changes.
+1. **Contrast:** The candidate palette requires actual contrast validation. Common normal-text combinations were checked; the former Attention token was removed from normal semantic use, while Information was confirmed to pass normal-text contrast on white.
+2. **Disabled state:** Disabled `#94A3B8` has low contrast and is restricted to appropriate disabled-state presentation rather than normal text.
+3. **Attention vs Warning:** No Freight-specific evidence required two separate UI semantic categories, so they are consolidated as **Warning / Attention**. This does not change any separate project-monitor WARNING severity terminology.
+4. **Reviewer layout:** The shared page hierarchy was cross-checked against the locked Reviewer Mental Model and Interaction Mapping and found to have **no substantive conflict**.
+5. **Status communication:** Meaningful statuses require visible text labels; color is supplementary and icons are optional reinforcement, never replacements for status labels.
+6. **Theme:** Light theme only for Phase 1b.
+7. **i18n / RTL:** Current product language and LTR only for Phase 1b; future support requires a separate decision.
+8. **Motion:** Minimal and purposeful, with reduced-motion consideration; exact timing remains implementation-level.
+9. **Spacing:** Shared 4px-based spacing scale established without prescribing every screen's exact spacing.
 
-Claude should not treat this candidate record as locked merely because it contains proposed values.
+### Review conclusion
+
+The Claude review identified no substantive contradiction with the locked portal boundaries after reconciliation. The remaining implementation-level details do not block the shared foundation, provided they do not override locked workflow decisions.
 
 ---
 
-## 13. Finalization Gate
+## 14. Finalization Gate
 
-This record should become a final locked shared design-system decision only after:
+This record should become the final locked shared design-system decision only after:
 
 **REVIEW → FINDINGS → RECONCILIATION → AYUSH DECISION → FINAL LOCK**
 
-At finalization, unresolved items must remain explicitly marked UNKNOWN/OPEN rather than being silently filled by assumption.
+The following stages are now complete:
+
+**REVIEW → FINDINGS → RECONCILIATION → AYUSH DECISION**
+
+Final lock remains a separate explicit project-control decision.
+
+At finalization, unresolved implementation-level details must remain explicitly marked UNKNOWN/OPEN rather than being silently filled by assumption.
 
 Only after this gate should the shared visual system be treated as authoritative input for implementation preparation.
 
 ---
 
-## 14. Current Status
+## 15. Current Status
 
-**Status:** REVIEW CANDIDATE — awaiting Claude independent review and subsequent reconciliation.
+**Status:** RECONCILED REVIEW CANDIDATE — READY FOR EXPLICIT FINAL LOCK.
 
 **Implementation status:** No implementation authorization is created by this document.
 
-**Lock status:** Not locked.
+**Next architectural gate:** Explicitly lock the Shared Cross-Portal Design System, then use the locked foundation together with the locked Driver, Company, and Reviewer blueprints for implementation-boundary review and implementation preparation.
