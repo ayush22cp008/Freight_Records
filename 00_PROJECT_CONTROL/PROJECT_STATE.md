@@ -126,6 +126,52 @@ The Company redesign is frontend-focused: structure, presentation, navigation, h
 
 No new backend business functionality, invented data, new authorization rules, new delivery stages, new evidence types, new marketplace behavior, new claim mechanisms, or new AI behavior may be introduced without separate verification and approval. Missing information must be treated as UNKNOWN and verified before any scope expansion.
 
+#### Reviewer Portal
+
+```text
+Existing-System Investigation     → 🟢 COMPLETE
+Investigation Completion          → 🟢 COMPLETE
+Mental Model                      → 🟢 COMPLETE / LOCKED
+Day 15 / Chat40                  → 🟢 CLOSED
+```
+
+Authoritative Reviewer Mental Model:
+
+`00_PROJECT_CONTROL/Chat40_Day15_Node7_Phase1b_Reviewer_Mental_Model_Decisions.md`
+
+Reviewer Mental Model decisions locked:
+
+```text
+Primary Job               → Identity & Evidence Verifier
+Primary Object            → Evidence
+Information Model         → Evidence + Applicant + Requested Role
+Verification Model       → Applicant + Role + Evidence → Evaluate → Verify → Approve/Reject
+State Model               → Pending Verification → Verified / Rejected
+Mental Journey            → Verification-first
+Trust & Evidence Model    → Evidence supports claimed identity/role
+Responsibility Boundary  → Narrow verification boundary
+Current Problem            → One coherent Reviewer verification-workflow problem
+Mental-Model Principles   → Evidence-centered, identity-aware, decision-driven
+```
+
+Reviewer core mental model:
+
+```text
+Applicant
+    +
+Claimed Role
+    +
+EVIDENCE
+    ↓
+Evaluation
+    ↓
+Identity / Role Verification
+    ↓
+Approve / Reject
+```
+
+The Reviewer remains a human verification decision-maker. No scoring system, AI decision mechanism, new automated verification mechanism, new persistent review state, new evidence requirement, trip/delivery review responsibility, or general administration responsibility is introduced by the Mental Model.
+
 ## Security State
 
 ```text
@@ -153,10 +199,12 @@ Node 7                     → ACTIVE
 Node 7 Phase 1a            → COMPLETE / ACCEPTED
 Node 7 Phase 1b Driver    → BLUEPRINT COMPLETE / LOCKED
 Node 7 Phase 1b Company   → BLUEPRINT COMPLETE / LOCKED
-Node 7 Phase 1b Reviewer  → NEXT
+Node 7 Phase 1b Reviewer Investigation → COMPLETE
+Node 7 Phase 1b Reviewer Mental Model → COMPLETE / LOCKED
+Node 7 Phase 1b Reviewer Interaction Mapping → NEXT
 Phase 3                    → CONDITIONAL
 Final E2E / Demo           → PENDING
-Day 15 / Chat39            → CLOSED
+Day 15 / Chat40            → CLOSED
 ```
 
 ## Completion Rule
@@ -174,6 +222,10 @@ A Node is `COMPLETE` only when required work, acceptance criteria, investigation
 00_PROJECT_CONTROL/CHECKPOINTS/        → completion checkpoints
 ```
 
+## Day 15 Work Progress Report
+
+`00_PROJECT_CONTROL/Hackathon_Day_15_Work_Progress_Report.md`
+
 ## Next Action
 
-**Continue Node 7 Phase 1b with the Reviewer Portal Blueprint. Preserve the locked Driver and Company blueprints. Do not begin implementation until the required 3-portal blueprint/investigation sequence reaches implementation preparation.**
+**Continue Node 7 Phase 1b with Reviewer Interaction Mapping using the locked Reviewer Mental Model and completed Existing Reviewer System Investigation as the evidence baseline. Do not begin implementation until the Reviewer Interaction Mapping, Final Blueprint, and Implementation-Boundary Review are complete and implementation preparation is explicitly authorized.**
