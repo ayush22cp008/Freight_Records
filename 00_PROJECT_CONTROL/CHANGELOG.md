@@ -1,5 +1,25 @@
 # CHANGELOG.md
 
+## Sep 6, 2026 — Day 15 — Company Blueprint + Reviewer Mental Model Closure
+- Completed and locked the Node 7 Phase 1b Company Portal Blueprint during Chat39 / Day15.
+- Company blueprint closure covered Existing Frontend Structure investigation, Company Mental Model, Interaction Mapping, Final Blueprint, and Implementation-Boundary Review.
+- Locked Company decision counts: 23 Mental Model, 20 Interaction Mapping, 10 Final Blueprint, and 5 Implementation Boundary decisions.
+- Preserved the Company scope boundary: frontend redesign around existing capabilities, existing APIs/data and authorization, verified UI defect correction, and no unverified backend/business expansion.
+- Completed the Node 7 Phase 1b Existing Reviewer System Investigation during Chat40 / Day15.
+- Completed the separate Reviewer Investigation Completion / Reconciliation report without overwriting the original investigation report.
+- Reviewer investigation established the existing routing, frontend surface, review API, data domains, security boundary, storage RLS, verified defects, and explicit Not Found / Not Verified boundaries.
+- Completed and locked the Reviewer Mental Model with 10 decisions: Identity & Evidence Verifier, Evidence-centered object model, Evidence + Applicant + Requested Role context, verification-first journey, Pending Verification → Verified/Rejected state model, narrow responsibility boundary, and evidence-centered/identity-aware/decision-driven principles.
+- No Driver, Company, or Reviewer implementation was started during Day 15 blueprint/mental-model work.
+- Added `00_PROJECT_CONTROL/Hackathon_Day_15_Work_Progress_Report.md` as the complete Day 15 closure record.
+- Updated `00_PROJECT_CONTROL/CURRENT_STATUS.md`, `00_PROJECT_CONTROL/PROJECT_STATE.md`, and `00_PROJECT_CONTROL/ROADMAP.md` to reflect the Day 15 closure and current Reviewer Interaction Mapping next step.
+- Day 15 is now closed.
+
+## Sep 5, 2026 — Day 14 — Driver Portal Blueprint Closure
+- Completed and locked the Node 7 Phase 1b Driver Portal Blueprint during Chat38 / Day14.
+- Preserved Phase 1a as COMPLETE / ACCEPTED.
+- Locked Driver navigation, dashboard, available trips, trip detail, active trip, completed history, profile, responsive behavior, state coverage, data/evidence truthfulness, and frontend-only implementation boundary.
+- No Driver implementation was started during the Day 14 blueprint work.
+
 ## Sep 2, 2026 — Day 12 — Node 6 Security + Evidence Closure
 - Completed the Node 6 Security + Evidence investigation and formal verification cycle.
 - Chat27 investigation concluded: `NO SECURITY GAP FOUND`.
