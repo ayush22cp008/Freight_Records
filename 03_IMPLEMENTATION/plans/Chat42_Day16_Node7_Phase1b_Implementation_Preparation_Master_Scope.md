@@ -2,7 +2,7 @@
 
 ## 1. Preparation Status
 
-- Preparation: **READY FOR REVIEW**
+- Preparation: **FINALIZED / APPROVED BASELINE**
 - Implementation: **NOT AUTHORIZED**
 - Authorization owner: Ayush
 - Architecture/reasoning: ChatGPT
@@ -200,7 +200,7 @@ Identity and evidence verification only.
 - Replace queue-only presentation with the locked verification workflow using existing Reviewer data/capabilities.
 - Fix Reviewer navigation trap through role-aware frontend navigation.
 - Present applicant, role, and evidence context clearly.
-- Replace native `window.prompt` rejection UX with a custom frontend modal.
+- Replace native `window.prompt` with a custom frontend modal.
 - Improve decision result and record presentation where existing data supports it.
 - Use existing evidence viewer/storage mechanisms.
 
@@ -335,6 +335,6 @@ Antigravity must stop and report instead of guessing when:
 
 **Implementation remains NOT AUTHORIZED.**
 
-This preparation record is complete enough to create the implementation master prompt and then request Ayush's explicit authorization.
+This preparation record is complete and is now the approved preparation baseline for creating the implementation master prompt and requesting Ayush's explicit authorization.
 
 The next operational artifact should be the master implementation prompt under `03_IMPLEMENTATION/prompts/`. That prompt must reference this preparation record and must explicitly state that execution cannot begin until Ayush authorizes it.
