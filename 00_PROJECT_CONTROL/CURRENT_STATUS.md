@@ -1,6 +1,6 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Sep 6, 2026 — Day 15 / Chat39
+**Last updated:** Sep 6, 2026 — Day 15 / Chat40
 
 ## Current Project Position
 
@@ -44,7 +44,7 @@ Authoritative Driver blueprint record:
 
 `00_PROJECT_CONTROL/Chat38_Day14_Node7_Phase1b_Frontend_Blueprint_Decisions.md`
 
-### Company Portal — BLUEPRINT COMPLETE / LOCKED
+### Company Portal — COMPLETE / LOCKED
 
 **Day 15 / Chat39 result: 🟢 BLUEPRINT COMPLETE / LOCKED**
 
@@ -71,77 +71,66 @@ Final Blueprint             → 10 decisions locked
 Implementation Boundary    → 5 decisions locked
 ```
 
-### Locked Company mental model
+### Reviewer Portal — MENTAL MODEL COMPLETE / LOCKED
+
+**Day 15 / Chat40 result: 🟢 MENTAL MODEL COMPLETE / LOCKED**
+
+The Existing Reviewer System Investigation and separate Completion Report were completed before this Mental Model stage. The Reviewer Mental Model is therefore an architecture/reasoning stage and is not a second existing-system investigation.
+
+Authoritative Reviewer Mental Model record:
+
+`00_PROJECT_CONTROL/Chat40_Day15_Node7_Phase1b_Reviewer_Mental_Model_Decisions.md`
+
+The Reviewer Mental Model contains 10 locked decisions:
 
 ```text
-One Company
-→ multiple trips
-→ trip-specific Sender/Receiver relationship
-→ shared core delivery visibility
-→ relationship/state-based actions
+Primary Job               → Identity & Evidence Verifier
+Primary Object            → Evidence
+Information Model         → Evidence + Applicant + Requested Role
+Verification Model       → Applicant + Role + Evidence → Evaluate → Verify → Approve/Reject
+State Model               → Pending Verification → Verified / Rejected
+Mental Journey            → Verification-first
+Trust & Evidence Model    → Evidence supports claimed identity/role
+Responsibility Boundary  → Narrow verification boundary
+Current Problem            → One coherent Reviewer verification-workflow problem
+Mental-Model Principles   → Evidence-centered, identity-aware, decision-driven
 ```
 
-Both Sender and Receiver share core delivery-progress visibility. Their available actions differ according to their relationship to the trip and its current state.
-
-Public Share remains a Receiving Company-only responsibility.
-
-### Locked Company interaction model
+Reviewer core mental model:
 
 ```text
-Dashboard
-→ What needs my attention?
-→ My Created Trips = delivery-progress monitoring
-→ Incoming Deliveries = Receiver Action Inbox
-→ Trip Detail = unified delivery picture
-→ History / Timeline = completed/past review
-→ Profile / Account = existing Company/account information
+Applicant
+    +
+Claimed Role
+    +
+EVIDENCE
+    ↓
+Evaluation
+    ↓
+Identity / Role Verification
+    ↓
+Approve / Reject
 ```
 
-Receiver tasks are state-driven, not navigation-driven. A Receiving Company can reach the same pending task from My Created Trips or directly from Incoming Deliveries. Completing the task advances the underlying delivery state and updates all relevant Company views consistently.
+The Reviewer remains a human verification decision-maker. No scoring system, AI decision mechanism, new automated verification mechanism, new persistent review state, new evidence requirement, trip/delivery review responsibility, or general administration responsibility is introduced by the Mental Model.
 
-### Locked Company navigation
+## Day 15 / Chat40 Progress
 
 ```text
-Dashboard
-My Created Trips
-Incoming Deliveries
-History / Timeline
-Profile / Account
+Reviewer Mental Model → 🟢 COMPLETE / LOCKED
 ```
 
-### Locked Company Trip Detail hierarchy
-
-```text
-Current Status
-→ Visual Delivery Progress
-→ Next Required Action
-→ Driver / Claim Information
-→ Trip Details
-→ Delivery Evidence
-→ Timeline / History
-```
-
-Sender and Receiver use the same core Trip Detail structure; relationship-specific actions appear only when authorized and appropriate.
-
-### Locked Company implementation boundary
-
-Company Phase 1b is a frontend redesign around existing capabilities. Existing APIs/data, server-side authorization, trip lifecycle, evidence, and Public Share rules remain authoritative. Verified UI/UX defects may be corrected. New backend business functionality, invented data, new authorization rules, new delivery stages, new evidence types, new marketplace behavior, and new AI behavior are out of scope unless separately verified and approved.
-
-If required UI information is not exposed by the existing system, it must be treated as UNKNOWN and verified before scope expansion.
-
-## Day 15 Closure
-
-```text
-Day 15 / Chat39 Company Portal Blueprint → 🟢 COMPLETE / LOCKED
-```
-
-No Company implementation was performed as part of the blueprint work.
+No Reviewer implementation was performed as part of the Mental Model work.
 
 ## Remaining Node 7 Work
 
 ```text
+Phase 1b Driver Portal Blueprint    → 🟢 COMPLETE / LOCKED
 Phase 1b Company Portal Blueprint   → 🟢 COMPLETE / LOCKED
-Phase 1b Reviewer Portal Blueprint  → 🔵 NEXT
+Phase 1b Reviewer Mental Model      → 🟢 COMPLETE / LOCKED
+Phase 1b Reviewer Interaction Map   → 🔵 NEXT
+Phase 1b Reviewer Blueprint         → ⏳ PENDING
+Implementation-Boundary Review     → ⏳ PENDING
 Phase 3 Add-ons                    → ⏳ CONDITIONAL
 Final E2E / Bugfix / Demo           → ⏳ PENDING
 ```
@@ -166,4 +155,4 @@ Checkpoints: `00_PROJECT_CONTROL/CHECKPOINTS/`
 
 ## Next Action
 
-**Continue Node 7 Phase 1b with the Reviewer Portal Blueprint. Preserve the locked Driver and Company blueprints. Do not begin implementation until the required 3-portal blueprint/investigation sequence reaches implementation preparation.**
+**Continue Node 7 Phase 1b with Reviewer Interaction Mapping using the locked Reviewer Mental Model and completed Existing Reviewer System Investigation as the evidence baseline. Do not begin implementation until the Reviewer Interaction Mapping, Final Blueprint, and Implementation-Boundary Review are complete and implementation preparation is explicitly authorized.**
