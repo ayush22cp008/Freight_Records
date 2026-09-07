@@ -12,6 +12,8 @@
 
 After the Driver confirms the final delivery action, the Driver currently receives a temporary success response on the completion page. The Driver then needs a reliable way to find the completion/waiting state again after navigating to another page.
 
+A second visibility issue was identified during live manual verification: when the Receiving Company performs the final confirmation after the Driver is already waiting, the trip can disappear from `/driver/active` because it is no longer an active trip. The Driver is then left on a generic **No Active Trip** state without an explicit completion transition message.
+
 The desired UX is:
 
 1. Driver confirms delivery completion.
@@ -19,6 +21,7 @@ The desired UX is:
 3. The trip remains active while waiting for Receiving Company confirmation.
 4. The Driver can leave the page and later return to the same trip's completion status.
 5. Once Receiving Company confirmation exists, the Driver sees a dedicated completed state and can open the existing trip history/timeline.
+6. If final completion occurs while the Driver is on My Active Trip, the Driver should have a clear way to understand that the trip has completed rather than seeing only a generic empty state.
 
 The completion page must therefore not depend on browser history, a temporary local success state, or an unspecified "first active trip" lookup.
 
@@ -57,9 +60,50 @@ The Driver dashboard already distinguishes:
 
 **Finding:** existing Driver-facing state can already distinguish the waiting condition, but the current completion page itself does not provide a persistent trip-specific completion-status destination.
 
+### 2.4 Live manual verification — three final-completion cases
+
+The following cases were manually exercised in the local application during Day 17 verification:
+
+**Case A — Receiving Company confirms first**
+
+- Driver reaches the final completion flow.
+- Receiving Company confirmation already exists.
+- Driver submits final confirmation.
+- Driver is taken directly to the **Trip Completed** state.
+- Result: **VERIFIED CORRECT**.
+
+**Case B — Driver confirms first**
+
+- Driver submits final confirmation first.
+- Driver is shown **Delivery Tasks Completed / Waiting for Receiving Company Confirmation**.
+- No further Driver action is requested while waiting.
+- Result: **VERIFIED CORRECT**.
+
+**Case C — Receiving Company confirms while Driver is still on My Active Trip**
+
+- Driver is on `/driver/active` while the trip is waiting for the other party.
+- The Receiving Company performs the final confirmation.
+- The trip becomes completed and therefore no longer qualifies as an active trip.
+- The Driver's `/driver/active` page then shows **No Active Trip** with **Find Available Trips**.
+- Result: **FUNCTIONALLY CONSISTENT WITH ACTIVE-TRIP FILTERING, BUT UX VISIBILITY GAP**.
+
+The important distinction is that Case C does **not** prove the completion lifecycle is wrong. It demonstrates that the Driver loses the operational context of the just-completed trip when the active-trip query stops returning it.
+
 ---
 
-## 3. Locked Lifecycle Constraint
+## 3. Company-Side Source Verification
+
+The locked Company blueprint states that both participating companies retain shared core delivery-progress visibility, completed history, and read-only completed Trip Detail. It also states that operational active work should move to History/Completed once completed. fileciteturn208file0
+
+The existing Company frontend investigation shows that the Company Dashboard currently distinguishes active/in-progress Incoming Deliveries from a **Completed Deliveries** section. It also already has state text for the waiting condition where the receiver has confirmed but the driver has not finalized. fileciteturn209file0
+
+Therefore, the Company side has an existing completed-history destination, but the current evidence is not sufficient to claim that the exact live transition from an open active/incoming view to completed state has been manually verified in this investigation.
+
+**Decision:** Company-side final-completion visibility should be explicitly verified before Company Phase 1b acceptance, but no backend change is authorized or implied by this finding.
+
+---
+
+## 4. Locked Lifecycle Constraint
 
 Node 5's accepted completion lifecycle remains authoritative:
 
@@ -71,31 +115,36 @@ Final completion requires both confirmations. This investigation does not propos
 
 ---
 
-## 4. Locked Driver Blueprint Alignment
+## 5. Locked Driver Blueprint Alignment
 
 The locked Driver blueprint defines **My Active Trip** as the Driver's operational workspace and states that, after the final required existing action, the Driver should see a clear completion state and review access to the existing trip history/timeline. Once the trip is completed, it belongs in Completed Trips/History.
 
 Therefore, My Active Trip should remain the durable entry point for the Driver while the trip is still active and waiting for Receiving Company confirmation.
 
+The new Case C observation adds one UX requirement to verify: when that active trip becomes completed externally, the Driver needs a discoverable transition to the completed/history state rather than only a generic no-active-trip empty state.
+
 ---
 
-## 5. Root Cause / UX Gap
+## 6. Root Cause / UX Gap
 
 The issue is not a missing backend completion rule. The accepted Node 5 lifecycle and existing completion API already provide the required state.
 
-The gap is frontend state identity and navigation:
+The confirmed frontend state/navigation gaps are:
 
 - the completion page is currently selected by an active-trip lookup rather than an explicit trip ID;
 - the server page redirects away once Driver confirmation is already recorded;
 - the success state exists only in client-local state;
 - the current CTA returns to Dashboard instead of providing a durable completion-status path;
-- the Driver needs a stable route from My Active Trip to the exact trip's completion status.
+- the Driver needs a stable route from My Active Trip to the exact trip's completion status;
+- when the trip ceases to be active because the other party completes it, `/driver/active` can legitimately return no active trip and currently provides no explicit indication that the recently active trip completed.
 
 This is a Phase 1b presentation/navigation issue, subject to the protected-boundary constraints above.
 
+**Important:** The last item is a confirmed UX observation, but the exact implementation mechanism for recognizing the just-completed trip must still be derived from existing application data/navigation. Do not introduce polling, realtime, notifications, or new backend state without separate authorization.
+
 ---
 
-## 6. Recommended UX Decision
+## 7. Recommended UX Decision
 
 ### A. Trip-specific completion status
 
@@ -151,9 +200,17 @@ No new lifecycle event, confirmation mechanism, or evidence mechanism should be 
 
 After the existing lifecycle reaches completed status, the trip should follow the already-locked Completed Trips/History behavior. The existing timeline/history route remains the review surface.
 
+### F. Case C transition visibility
+
+The Driver must not be left with only an ambiguous **No Active Trip** result immediately after a known active trip has completed externally.
+
+Before implementation, verify which existing persisted trip/history information can support a clear transition. Preferred behavior is to surface the just-completed trip through an existing completed/history destination or a trip-specific completion-status route.
+
+Do **not** create a new notification subsystem, realtime subscription, polling loop, completion event, or backend endpoint as part of this Phase 1b issue.
+
 ---
 
-## 7. Important Implementation Constraint: Revalidation
+## 8. Important Implementation Constraint: Revalidation
 
 The investigation does **not** authorize a new automatic polling or realtime mechanism.
 
@@ -161,9 +218,11 @@ The implementation must first use the existing data-fetch/revalidation/navigatio
 
 A refresh or re-entry into the trip-specific completion-status page may resolve the latest existing trip state if that is consistent with the current application architecture.
 
+For Case C specifically, if the current architecture cannot identify the just-completed trip after `/driver/active` loses it, the implementation must stop at that boundary and record the limitation rather than inventing a new source of truth.
+
 ---
 
-## 8. Non-Goals
+## 9. Non-Goals
 
 Do not change:
 
@@ -178,13 +237,16 @@ Do not change:
 - completion event types;
 - trip status transitions;
 - backend completion behavior;
-- AI behavior.
+- AI behavior;
+- notification infrastructure;
+- realtime subscriptions;
+- polling infrastructure.
 
 ---
 
-## 9. Decision Gate
+## 10. Decision Gate
 
-**Investigation conclusion:** Proceed to a focused Phase 1b implementation prompt for Driver final-completion navigation/state persistence.
+**Investigation conclusion:** Proceed to a focused Phase 1b implementation prompt for Driver final-completion navigation/state persistence, with Case C transition visibility explicitly included as a verification requirement.
 
 **Implementation must be frontend-only and must preserve the accepted Node 5 lifecycle.**
 
@@ -194,21 +256,26 @@ Required implementation outcomes:
 2. Driver can leave and later find the status through My Active Trip while the trip remains active;
 3. waiting-for-receiver state is durable rather than only local client state;
 4. completed state exposes existing trip history/timeline;
-5. no duplicate lifecycle/API/backend behavior is introduced;
-6. build/test succeeds;
-7. Ayush performs manual Driver verification before acceptance.
+5. when final completion occurs externally, the Driver has a clear existing-path way to discover the completed trip, or the limitation is explicitly recorded if existing architecture cannot support it without new backend/realtime behavior;
+6. no duplicate lifecycle/API/backend behavior is introduced;
+7. build/test succeeds;
+8. Ayush performs manual Driver verification before acceptance;
+9. Company-side equivalent final-completion visibility is verified before Company Phase 1b acceptance.
 
 ---
 
-## 10. Evidence Basis
+## 11. Evidence Basis
 
 - Existing Driver completion page source: `src/app/(authenticated)/completion/driver/page.tsx`
 - Existing Driver completion client: `src/app/(authenticated)/completion/driver/DriverCompletionClient.tsx`
 - Existing completion APIs: `src/app/api/completion/driver/route.ts`, `src/app/api/completion/receiver/route.ts`
 - Existing Driver dashboard state/navigation
+- Live manual verification of three final-completion cases on the local application
 - `02_ARCHITECTURE/locked_blueprints/Driver_Locked_Blueprint.md`
+- `02_ARCHITECTURE/locked_blueprints/Company_Locked_Blueprint.md`
+- `05_DEBUGGING/investigations/Chat39_Day15_Company_Portal_Existing_Structure_Investigation_Report.md`
 - Accepted Node 5 dual-confirmation completion records
 
 **Investigation status:** COMPLETE
 
-**Next governance step:** Create implementation prompt only after this investigation/decision is accepted.
+**Next governance step:** Create/update the focused implementation prompt only after this investigation/decision is accepted.
