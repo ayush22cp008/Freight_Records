@@ -80,3 +80,39 @@ The intended UX remains exactly:
 `Trip Detail → Claim Trip → Trip Successfully Claimed → Go to My Active Trip → My Active Trip`
 
 No unrelated Driver, Company, or Reviewer changes are authorized by this investigation.
+
+## 7. Investigation Findings
+
+### 1. Root Cause
+The root cause is a React component unmount/state destruction triggered by a Server Component re-render. 
+When the Driver clicks "Claim Trip", the `handleClaim` function sets the local client state `isClaimed = true` to show the success UI, but immediately calls `router.refresh()`. 
+
+The `router.refresh()` instructs Next.js to re-fetch the parent Server Component (`TripDetail` at `/driver/trip/[id]/page.tsx`) from the server. The server queries the database, sees the trip is now claimed (so `hasActiveTrip = true` for this driver), calculates `isEligibleToClaim = false`, and returns the disabled "Claim Trip" fallback UI instead of rendering `<ClaimTripButton />`. When the client receives this new server payload, React reconciles the DOM, unmounting `<ClaimTripButton />` (destroying the `isClaimed` state) and replacing it with the disabled button.
+
+### 2. Exact File / Component
+- **`src/app/(authenticated)/ClaimTripButton.tsx`**: Calls `router.refresh()` after setting success state.
+- **`src/app/(authenticated)/driver/trip/[id]/page.tsx`**: Conditionally renders `<ClaimTripButton />` based on `isEligibleToClaim`.
+
+### 3. Evidence Status
+**VERIFIED**. 
+Code inspection confirms the conditional logic:
+```tsx
+// In driver/trip/[id]/page.tsx
+const isEligibleToClaim = trip.status === 'published' && !trip.driver_id && !hasActiveTrip;
+
+// ...
+{isEligibleToClaim ? (
+  <ClaimTripButton tripId={trip.id} />
+) : (
+  <div className="text-center">
+    <button disabled>Claim Trip</button>
+    // ...
+  </div>
+)}
+```
+After a successful claim, `isEligibleToClaim` evaluates to `false`, causing the server to omit `<ClaimTripButton />` in the refreshed layout.
+
+### 4. Minimal Frontend-Only Fix Recommendation
+**Remove the `router.refresh()` call from `ClaimTripButton.tsx`.**
+
+Since the intended UX is to present a success message containing a link that navigates the user away to `/driver/active`, there is no need to refresh the current page's server state. Removing `router.refresh()` will preserve the `isClaimed = true` client state, keeping the "Trip Successfully Claimed" UI visible indefinitely until the driver clicks the CTA to leave the page.
