@@ -2,9 +2,9 @@
 
 **Project:** Freight — AI Builders Hackathon  
 **Hackathon window:** Aug 21 – Sep 15, 2026  
-**Roadmap status:** ACTIVE EXECUTION ROADMAP — Node 7 is materially rephased by the approved Chat29 reassessment.  
-**Current execution day:** Day 15  
-**Current chat:** Chat40
+**Roadmap status:** ACTIVE EXECUTION ROADMAP — Node 7 Phase 1b implementation-ready, authorization pending.  
+**Current execution day:** Day 16  
+**Current chat:** Chat42
 
 ## Active Roadmap — 7 Nodes
 
@@ -42,7 +42,7 @@ Baseline AI evidence-grounded summary, timeline integration, and public shareabl
 
 ### Phase 1b — Full 3-Portal UI/UX Redesign
 
-**Status: 🔵 ACTIVE**
+**Status: 🔵 IMPLEMENTATION-READY / AUTHORIZATION PENDING**
 
 Scope:
 
@@ -56,162 +56,125 @@ Phase 1b redesigns frontend structure, presentation, navigation, hierarchy, disc
 
 **Day 14 / Chat38 → 🟢 COMPLETE / LOCKED**
 
-Authoritative record:
+Authoritative locked record:
 
-`00_PROJECT_CONTROL/Chat38_Day14_Node7_Phase1b_Frontend_Blueprint_Decisions.md`
+`02_ARCHITECTURE/locked_blueprints/Driver_Locked_Blueprint.md`
+
+Implementation order: **first after explicit Ayush authorization**.
 
 ## Company Portal — Blueprint Complete / Locked
 
 **Day 15 / Chat39 → 🟢 COMPLETE / LOCKED**
 
-The Company Portal blueprint was completed through:
+Authoritative locked record:
+
+`02_ARCHITECTURE/locked_blueprints/Company_Locked_Blueprint.md`
+
+Implementation order: **second, only after Driver acceptance**.
+
+## Reviewer Portal — Architecture Complete / Locked
+
+**Day 15–16 / Chat40–42 → 🟢 COMPLETE / LOCKED FOR IMPLEMENTATION PREPARATION**
+
+Completed:
 
 ```text
-Existing Company Frontend Structure investigation
-→ Company Mental Model
-→ Company Interaction Mapping
-→ Company Final Blueprint
-→ Implementation-Boundary Review
+Existing-System Investigation       → 🟢 COMPLETE
+Investigation Completion            → 🟢 COMPLETE
+Mental Model                        → 🟢 COMPLETE / LOCKED
+Interaction Mapping                 → 🟢 COMPLETE / LOCKED
+Final Blueprint                     → 🟢 COMPLETE / LOCKED
 ```
+
+Authoritative locked blueprint:
+
+`02_ARCHITECTURE/locked_blueprints/Reviewer_Locked_Blueprint.md`
+
+Implementation order: **third, only after Company acceptance and R-05 readiness check**.
+
+## Shared Cross-Portal Design System
+
+**Status: 🔒 LOCKED**
 
 Authoritative record:
 
-`00_PROJECT_CONTROL/Chat39_Day15_Node7_Phase1b_Company_Blueprint_Decisions.md`
+`00_PROJECT_CONTROL/Chat41_Node7_Phase1b_Shared_Design_System_Decisions.md`
 
-Locked decision counts:
-
-```text
-Company Mental Model        → 23
-Interaction Mapping         → 20
-Final Blueprint             → 10
-Implementation Boundary    → 5
-```
-
-### Company final structure
+Shared foundation includes:
 
 ```text
-Company Portal
-├── Dashboard
-│   ├── Needs Attention
-│   ├── Active Created Trips
-│   └── Quick Access → My Created Trips / Incoming Deliveries
-├── My Created Trips
-├── Incoming Deliveries
-│   └── Receiver Action Inbox
-├── History / Timeline
-└── Profile / Account
+Evidence first
+State clarity
+Action clarity
+Role clarity
+Timeline clarity
+Trust through transparency
+Consistency
+Operational simplicity
+Responsive by design
+Accessible by default
 ```
 
-Core Company model:
+Phase 1b remains light theme, LTR, 4px spacing, restrained motion, responsive, and accessibility-focused. Shared design does not authorize backend/product-behavior changes.
+
+## Implementation Boundary
+
+Authoritative decision:
+
+`00_PROJECT_CONTROL/DECISIONS/Chat42_Day16_Node7_Phase1b_Implementation_Boundary_Decision.md`
+
+Status:
 
 ```text
-One Company
-→ multiple trips
-→ trip-specific Sender/Receiver relationship
-→ shared core delivery visibility
-→ relationship/state-based actions
+Boundary → 🟢 READY FOR AUTHORIZATION
+Implementation → 🔒 NOT AUTHORIZED
 ```
 
-The Company uses one unified portal. Sender and Receiver share core delivery-progress visibility, while available actions differ by relationship and trip state. Public Share remains Receiving Company-only.
+Phase 1b is frontend-only. APIs/contracts, database/schema, RLS/security, auth/role rules, business rules, lifecycle semantics, claiming/marketplace behavior, evidence requirements/integrity, persistent review state, backend behavior, AI behavior, and Reviewer authority expansion are protected.
 
-Core interaction rule:
+C-05 and R-03 remain protected/out of scope. R-05 remains a narrow Reviewer History data-source readiness dependency.
+
+## Implementation Preparation
+
+Authoritative preparation record:
+
+`03_IMPLEMENTATION/plans/Chat42_Day16_Node7_Phase1b_Implementation_Preparation_Master_Scope.md`
+
+Status:
 
 ```text
-My Created Trips
-→ delivery-progress monitoring
-
-Incoming Deliveries
-→ pending Receiver-specific tasks
-
-Receiver task completion
-→ underlying delivery state advances
-→ relevant Company views update consistently
+Preparation → 🟢 FINALIZED / APPROVED
+Authorization → 🔒 NOT GRANTED
 ```
 
-Company Trip Detail uses:
+Master execution contract:
+
+`03_IMPLEMENTATION/prompts/Chat42_Day16_Node7_Phase1b_Master_Implementation_Prompt.md`
+
+The Master Prompt keeps its execution gate closed until Ayush explicitly authorizes implementation.
+
+## Mandatory Implementation Sequence
 
 ```text
-Current Status
-→ Visual Delivery Progress
-→ Next Required Action
-→ Driver / Claim Information
-→ Trip Details
-→ Delivery Evidence
-→ Timeline / History
+1. Ayush explicit authorization
+2. Driver build
+3. Driver build/test/evidence
+4. Ayush Driver manual verification
+5. Driver acceptance
+6. Company build
+7. Company build/test/evidence
+8. Ayush Company manual verification
+9. Company acceptance
+10. Reviewer R-05 data-source readiness check
+11. Reviewer build
+12. Reviewer build/test/evidence
+13. Ayush Reviewer manual verification
+14. Reviewer acceptance
+15. Cross-Portal E2E
+16. Final bugfix / demo readiness
 ```
 
-### Company scope boundary
-
-The Company redesign is frontend-focused: structure, presentation, navigation, hierarchy, discoverability, responsiveness, and verified UI/UX defect correction. Existing APIs/data, business rules, trip lifecycle, evidence rules, and authorization remain the source of truth.
-
-No new backend business functionality, invented data, new authorization rules, new delivery stages, new evidence types, new marketplace behavior, new claim mechanisms, or new AI behavior may be introduced without separate verification and approval. Missing information must be treated as UNKNOWN and verified before scope expansion.
-
-## Reviewer Portal — Investigation + Mental Model Complete / Locked
-
-**Day 15 / Chat40 → 🟢 MENTAL MODEL COMPLETE / LOCKED**
-
-The Reviewer Existing-System Investigation and separate Completion Report were completed before the Mental Model stage.
-
-Authoritative Reviewer investigation completion record:
-
-`05_DEBUGGING/investigations/Chat40_Day15_Node7_Phase1b_Existing_Reviewer_System_Investigation_Completion_Report.md`
-
-Authoritative Reviewer Mental Model record:
-
-`00_PROJECT_CONTROL/Chat40_Day15_Node7_Phase1b_Reviewer_Mental_Model_Decisions.md`
-
-### Reviewer Mental Model — 10 locked decisions
-
-```text
-Primary Job               → Identity & Evidence Verifier
-Primary Object            → Evidence
-Information Model         → Evidence + Applicant + Requested Role
-Verification Model       → Applicant + Role + Evidence → Evaluate → Verify → Approve/Reject
-State Model               → Pending Verification → Verified / Rejected
-Mental Journey            → Verification-first
-Trust & Evidence Model    → Evidence supports claimed identity/role
-Responsibility Boundary  → Narrow verification boundary
-Current Problem            → One coherent Reviewer verification-workflow problem
-Mental-Model Principles   → Evidence-centered, identity-aware, decision-driven
-```
-
-Core Reviewer model:
-
-```text
-Applicant
-    +
-Claimed Role
-    +
-EVIDENCE
-    ↓
-Evaluation
-    ↓
-Identity / Role Verification
-    ↓
-Approve / Reject
-```
-
-Reviewer scope remains narrow: evidence examination, claimed Driver/Company identity verification, and the human approval/rejection decision. No scoring, AI verification, new persistent verification state, new evidence requirement, trip/delivery review, or general administration is introduced by the Mental Model.
-
-### Reviewer existing-system findings preserved
-
-The completed investigation established the current Reviewer routing, frontend surface, review API, data domains, security boundary, storage RLS, and verified defects including Navigation Trap, Role-Confusion Lockout, RLS Bypass Architecture, and degraded native-prompt UX.
-
-These findings are the evidence baseline for the next interaction-mapping and blueprint stages.
-
-## Remaining Phase 1b Work
-
-```text
-Driver Portal blueprint              → 🟢 COMPLETE / LOCKED
-Company Portal blueprint             → 🟢 COMPLETE / LOCKED
-Reviewer Existing-System Investigation → 🟢 COMPLETE
-Reviewer Mental Model                 → 🟢 COMPLETE / LOCKED
-Reviewer Interaction Mapping         → 🔵 NEXT
-Reviewer Final Blueprint             → ⏳ PENDING
-Implementation-Boundary Review       → ⏳ PENDING
-```
-
-The next working step is **Reviewer Interaction Mapping**. Preserve the locked Driver and Company blueprints and the locked Reviewer Mental Model.
+No portal is to be implemented in parallel.
 
 ## Phase 3 — Conditional Add-On Features
 
@@ -294,12 +257,18 @@ Phase 1b Driver Portal              → BLUEPRINT COMPLETE / LOCKED
 Phase 1b Company Portal             → BLUEPRINT COMPLETE / LOCKED
 Phase 1b Reviewer Investigation     → COMPLETE
 Phase 1b Reviewer Mental Model      → COMPLETE / LOCKED
-Phase 1b Reviewer Interaction Map   → NEXT
-Phase 1b Reviewer Blueprint         → PENDING
-Implementation-Boundary Review      → PENDING
+Phase 1b Reviewer Interaction Map   → COMPLETE / LOCKED
+Phase 1b Reviewer Final Blueprint   → COMPLETE / LOCKED
+Shared Cross-Portal Design System   → LOCKED
+Implementation Boundary             → READY FOR AUTHORIZATION
+Implementation Preparation          → FINALIZED / APPROVED
+Implementation Authorization        → NOT GRANTED
+Driver Implementation               → NEXT AFTER AUTHORIZATION
+Company Implementation              → AFTER DRIVER ACCEPTANCE
+Reviewer Implementation             → AFTER COMPANY ACCEPTANCE + R-05
+Cross-Portal E2E / Demo              → PENDING
 Phase 3                             → CONDITIONAL
-Final E2E / Demo                    → PENDING
-Day 15 / Chat40                     → CLOSED
+Day 16                              → CLOSED
 ```
 
 ## Working Method
@@ -318,16 +287,17 @@ Observe
 ```
 
 Implementation prompts: `03_IMPLEMENTATION/prompts/`  
+Implementation preparation: `03_IMPLEMENTATION/plans/`  
 Implementation reports: `03_IMPLEMENTATION/implementation_reports/`  
 Investigations: `05_DEBUGGING/investigations/`  
 Architecture records: `02_ARCHITECTURE/`  
 Project control: `00_PROJECT_CONTROL/`  
 Checkpoints: `00_PROJECT_CONTROL/CHECKPOINTS/`
 
-## Day 15 Work Progress Report
+## Day 16 Work Progress Report
 
-`00_PROJECT_CONTROL/Hackathon_Day_15_Work_Progress_Report.md`
+`00_PROJECT_CONTROL/Hackathon_Day_16_Work_Progress_Report.md`
 
 ## Next Action
 
-**Continue Node 7 Phase 1b with Reviewer Interaction Mapping using the locked Reviewer Mental Model and completed Existing Reviewer System Investigation as the evidence baseline. Do not begin implementation until the Reviewer Interaction Mapping, Final Blueprint, and Implementation-Boundary Review are complete and implementation preparation is explicitly authorized.**
+**Wait at the explicit Ayush implementation-authorization gate. When authorized, start Driver only. Driver must be built, tested, evidenced, manually verified, and accepted before Company begins; Company must be accepted before Reviewer begins.**
