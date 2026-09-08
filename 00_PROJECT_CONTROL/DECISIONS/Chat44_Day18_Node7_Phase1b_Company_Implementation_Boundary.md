@@ -2,20 +2,19 @@
 
 ## Status
 
-**Company Implementation Boundary — PROPOSED / READY FOR LOCK**
+**COMPANY IMPLEMENTATION BOUNDARY — LOCKED**
 
-This record defines the evidence-based implementation boundary for the Company Portal following the Day 18 / Chat44 existing-state implementation inspection.
+Claude independent peer review: **APPROVE WITH CHANGES**. The two low-severity documentation clarifications identified by Claude have been incorporated below. No material scope or protection change was required.
 
-It is derived from:
+This record defines the evidence-based implementation boundary for the Company Portal following the Day 18 / Chat44 existing-state implementation inspection and peer review.
+
+## Governing Evidence
 
 1. `02_ARCHITECTURE/locked_blueprints/Company_Locked_Blueprint.md`
 2. `03_IMPLEMENTATION/plans/Chat42_Day16_Node7_Phase1b_Implementation_Preparation_Master_Scope.md`
 3. `05_DEBUGGING/investigations/Chat44_Day18_Node7_Phase1b_Company_Existing_State_Implementation_Inspection_Report.md`
-4. `00_PROJECT_CONTROL/DECISIONS/Chat42_Day16_Node7_Phase1b_Implementation_Boundary_Decision.md`
-
-The current Company implementation gap is primarily **frontend restructuring, frontend surface creation, navigation, and responsive presentation**. Existing backend/data capabilities are to be reused rather than expanded.
-
----
+4. `01_BRAIN_HANDOFFS/Claude/Chat44_Day18_Node7_Phase1b_Company_Implementation_Boundary_Claude_Review_Report.md`
+5. `00_PROJECT_CONTROL/DECISIONS/Chat42_Day16_Node7_Phase1b_Implementation_Boundary_Decision.md`
 
 ## 1. Boundary Objective
 
@@ -29,11 +28,7 @@ The Company implementation must close the verified frontend gaps without expandi
 
 If a blueprint requirement cannot be implemented using existing supported capabilities, implementation must stop and escalate rather than inventing or adding backend functionality.
 
----
-
 ## 2. Allowed to Change — COMPANY FRONTEND SCOPE
-
-The following areas are inside the Company implementation boundary.
 
 ### 2.1 Company navigation
 
@@ -43,6 +38,8 @@ Allowed:
 - Implement role-aware presentation using the existing authentication/role foundation.
 - Correct navigation traps or inaccessible Company UI paths.
 - Improve mobile navigation presentation.
+
+**Explicit known navigation issue:** the shared Navbar currently exposes `/timeline`, which is not an appropriate Company-specific history destination. Company implementation may correct this navigation exposure/presentation without changing backend authorization behavior.
 
 Required target structure:
 - Dashboard
@@ -152,8 +149,6 @@ Allowed:
 - Create Company-specific presentation components where needed.
 - Modify shared presentation components only when the change is demonstrably compatible with the locked Driver Portal and shared design system.
 
----
-
 ## 3. Must Preserve — Existing Working Capabilities
 
 The following existing capabilities should be preserved unless a verified frontend restructuring is required:
@@ -172,8 +167,6 @@ The following existing capabilities should be preserved unless a verified fronte
 - Shared design-system decisions already locked.
 
 Preservation means **do not rewrite working backend/product behavior merely to make the frontend easier to implement**.
-
----
 
 ## 4. Protected — OUTSIDE COMPANY IMPLEMENTATION
 
@@ -211,11 +204,15 @@ The following are explicitly outside the Company implementation boundary:
 
 ### Known C-05 boundary
 
-The Receiver Completion response-shape mismatch remains protected. The Company frontend must not modify the completion API contract or backend response solely to make the UI convenient.
+The Receiver Completion response-shape mismatch remains protected.
+
+The specific protected backend file is:
+
+`src/app/api/completion/route.ts`
+
+The Company frontend must not modify the completion API contract or backend response solely to make the UI convenient.
 
 If the existing frontend can be safely adapted to the established contract without changing protected behavior, that is a frontend implementation concern. If not, stop and escalate.
-
----
 
 ## 5. Stop & Escalate Conditions
 
@@ -239,8 +236,6 @@ Antigravity must stop Company implementation and record the blocker if any of th
 
 **Do not work around a protected boundary by assumption.**
 
----
-
 ## 6. Company Scope by Blueprint Gap
 
 | Company Blueprint Area | Current State | Boundary Treatment |
@@ -255,9 +250,7 @@ Antigravity must stop Company implementation and record the blocker if any of th
 | Public Share | Present | Preserve; frontend repositioning allowed |
 | Responsive / Mobile | Partially present | Frontend responsive work allowed |
 
-These classifications originate from the Chat44 existing-state inspection and are implementation-planning inputs, not permission to modify protected system behavior.
-
----
+These classifications originate from the Chat44 existing-state inspection and Claude peer review. They are implementation-planning inputs, not permission to modify protected system behavior.
 
 ## 7. Expected Implementation Result
 
@@ -268,8 +261,6 @@ At Company implementation completion, the frontend should expose the locked Comp
 with a consistent **Company Trip Detail** surface connecting the relevant workflows.
 
 The implementation should reuse existing backend/data capabilities and preserve all protected system behavior.
-
----
 
 ## 8. Verification Requirements
 
@@ -293,8 +284,6 @@ Before Company can be considered implementation-complete, Antigravity must provi
 
 After implementation evidence is complete, **STOP for Ayush manual browser verification**. Do not declare Company accepted or locked without Ayush's manual verification and explicit acceptance.
 
----
-
 ## 9. Authorization Boundary
 
 This document defines the scope; it does **not** by itself authorize source-code execution.
@@ -303,12 +292,15 @@ Execution authorization remains under Ayush's control according to the project w
 
 Antigravity must not begin Company source-code modification until Ayush explicitly authorizes implementation after reviewing the applicable implementation prompt.
 
----
+## 10. Lock Decision
 
-## 10. Decision State
+**LOCKED — Company Implementation Boundary approved after Claude independent peer review.**
 
-**Current state: PROPOSED / READY FOR LOCK**
+Claude's two LOW-severity documentation clarifications were incorporated:
 
-This boundary should be treated as the governing Company implementation boundary only after the required checkpoint/lock decision is explicitly recorded.
+1. The shared `/timeline` Company navigation issue is explicitly named under Company navigation.
+2. `src/app/api/completion/route.ts` is explicitly named in the protected C-05 section.
 
-Until locked, do not treat this document as authorization to expand scope or modify protected areas.
+No material scope or protection issue remained after review.
+
+**Next authorized reasoning artifact:** Company Master Implementation Prompt.
