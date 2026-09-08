@@ -2,9 +2,9 @@
 
 **Project:** Freight — AI Builders Hackathon  
 **Hackathon window:** Aug 21 – Sep 15, 2026  
-**Roadmap status:** ACTIVE EXECUTION ROADMAP — Node 7 Phase 1b implementation-ready, authorization pending.  
-**Current execution day:** Day 16  
-**Current chat:** Chat42
+**Roadmap status:** ACTIVE EXECUTION ROADMAP — Driver accepted/locked; Company implementation next.  
+**Current execution day:** Day 17  
+**Current chat:** Chat43
 
 ## Active Roadmap — 7 Nodes
 
@@ -42,7 +42,7 @@ Baseline AI evidence-grounded summary, timeline integration, and public shareabl
 
 ### Phase 1b — Full 3-Portal UI/UX Redesign
 
-**Status: 🔵 IMPLEMENTATION-READY / AUTHORIZATION PENDING**
+**Status: 🔵 DRIVER ACCEPTED / COMPANY IMPLEMENTATION NEXT**
 
 Scope:
 
@@ -52,15 +52,23 @@ Scope:
 
 Phase 1b redesigns frontend structure, presentation, navigation, hierarchy, discoverability, responsiveness, and demo experience around existing capabilities. It does not introduce new product functionality.
 
-## Driver Portal — Blueprint Complete / Locked
+## Driver Portal — Implemented / Accepted / Locked
 
-**Day 14 / Chat38 → 🟢 COMPLETE / LOCKED**
+**Day 17 / Chat43 → 🔒 COMPLETE / ACCEPTED / LOCKED**
 
 Authoritative locked record:
 
 `02_ARCHITECTURE/locked_blueprints/Driver_Locked_Blueprint.md`
 
-Implementation order: **first after explicit Ayush authorization**.
+Driver implementation is complete, build/test verified, manually verified by Ayush in production, and locked.
+
+Day 17 closure report:
+
+`00_PROJECT_CONTROL/Hackathon_Day_17_Work_Progress_Report.md`
+
+Day 17 closure checkpoint:
+
+`00_PROJECT_CONTROL/CHECKPOINTS/Chat43_Day17_Node7_Phase1b_Day17_Driver_Closure_Checkpoint.md`
 
 ## Company Portal — Blueprint Complete / Locked
 
@@ -70,7 +78,7 @@ Authoritative locked record:
 
 `02_ARCHITECTURE/locked_blueprints/Company_Locked_Blueprint.md`
 
-Implementation order: **second, only after Driver acceptance**.
+Implementation order: **next, after Driver acceptance**.
 
 ## Reviewer Portal — Architecture Complete / Locked
 
@@ -126,8 +134,10 @@ Authoritative decision:
 Status:
 
 ```text
-Boundary → 🟢 READY FOR AUTHORIZATION
-Implementation → 🔒 NOT AUTHORIZED
+Boundary → 🟢 READY / ACTIVE EXECUTION
+Driver → 🔒 COMPLETE / ACCEPTED / LOCKED
+Company → ⏳ NEXT
+Reviewer → ⏳ AFTER COMPANY + R-05
 ```
 
 Phase 1b is frontend-only. APIs/contracts, database/schema, RLS/security, auth/role rules, business rules, lifecycle semantics, claiming/marketplace behavior, evidence requirements/integrity, persistent review state, backend behavior, AI behavior, and Reviewer authority expansion are protected.
@@ -144,34 +154,33 @@ Status:
 
 ```text
 Preparation → 🟢 FINALIZED / APPROVED
-Authorization → 🔒 NOT GRANTED
+Driver → 🟢 COMPLETE / ACCEPTED / LOCKED
+Company → ⏳ NEXT
+Reviewer → ⏳ AFTER COMPANY ACCEPTANCE + R-05
 ```
 
 Master execution contract:
 
 `03_IMPLEMENTATION/prompts/Chat42_Day16_Node7_Phase1b_Master_Implementation_Prompt.md`
 
-The Master Prompt keeps its execution gate closed until Ayush explicitly authorizes implementation.
-
 ## Mandatory Implementation Sequence
 
 ```text
-1. Ayush explicit authorization
-2. Driver build
-3. Driver build/test/evidence
-4. Ayush Driver manual verification
-5. Driver acceptance
-6. Company build
-7. Company build/test/evidence
-8. Ayush Company manual verification
-9. Company acceptance
-10. Reviewer R-05 data-source readiness check
-11. Reviewer build
-12. Reviewer build/test/evidence
-13. Ayush Reviewer manual verification
-14. Reviewer acceptance
-15. Cross-Portal E2E
-16. Final bugfix / demo readiness
+1. Driver build
+2. Driver build/test/evidence
+3. Ayush Driver manual verification
+4. Driver acceptance / lock → 🟢 COMPLETE
+5. Company build
+6. Company build/test/evidence
+7. Ayush Company manual verification
+8. Company acceptance
+9. Reviewer R-05 data-source readiness check
+10. Reviewer build
+11. Reviewer build/test/evidence
+12. Ayush Reviewer manual verification
+13. Reviewer acceptance
+14. Cross-Portal E2E
+15. Final bugfix / demo readiness
 ```
 
 No portal is to be implemented in parallel.
@@ -249,26 +258,26 @@ Node 3                              → COMPLETE / ACCEPTED
 Node 4                              → COMPLETE / ACCEPTED
 Node 5                              → COMPLETE / ACCEPTED
 Dashboard follow-up                → CLOSED / VERIFIED
-Historical AI follow-up            → CLOSED / VERIFIED
+Historical AI follow-up             → CLOSED / VERIFIED
 Node 6                              → COMPLETE / ACCEPTED
 Node 7                              → ACTIVE
 Phase 1a                            → COMPLETE / ACCEPTED
-Phase 1b Driver Portal              → BLUEPRINT COMPLETE / LOCKED
+Phase 1b Driver Portal              → COMPLETE / ACCEPTED / LOCKED
 Phase 1b Company Portal             → BLUEPRINT COMPLETE / LOCKED
 Phase 1b Reviewer Investigation     → COMPLETE
 Phase 1b Reviewer Mental Model      → COMPLETE / LOCKED
 Phase 1b Reviewer Interaction Map   → COMPLETE / LOCKED
 Phase 1b Reviewer Final Blueprint   → COMPLETE / LOCKED
 Shared Cross-Portal Design System   → LOCKED
-Implementation Boundary             → READY FOR AUTHORIZATION
+Implementation Boundary             → READY / ACTIVE EXECUTION
 Implementation Preparation          → FINALIZED / APPROVED
-Implementation Authorization        → NOT GRANTED
-Driver Implementation               → NEXT AFTER AUTHORIZATION
-Company Implementation              → AFTER DRIVER ACCEPTANCE
+Driver Implementation               → COMPLETE / ACCEPTED / LOCKED
+Company Implementation              → NEXT
 Reviewer Implementation             → AFTER COMPANY ACCEPTANCE + R-05
 Cross-Portal E2E / Demo              → PENDING
 Phase 3                             → CONDITIONAL
 Day 16                              → CLOSED
+Day 17                              → CLOSED
 ```
 
 ## Working Method
@@ -283,7 +292,7 @@ Observe
 → Build/Test
 → Ayush manual verification
 → Record implementation report
-→ Mark Node complete
+→ Mark portal complete / lock
 ```
 
 Implementation prompts: `03_IMPLEMENTATION/prompts/`  
@@ -294,10 +303,10 @@ Architecture records: `02_ARCHITECTURE/`
 Project control: `00_PROJECT_CONTROL/`  
 Checkpoints: `00_PROJECT_CONTROL/CHECKPOINTS/`
 
-## Day 16 Work Progress Report
+## Day 17 Work Progress Report
 
-`00_PROJECT_CONTROL/Hackathon_Day_16_Work_Progress_Report.md`
+`00_PROJECT_CONTROL/Hackathon_Day_17_Work_Progress_Report.md`
 
 ## Next Action
 
-**Wait at the explicit Ayush implementation-authorization gate. When authorized, start Driver only. Driver must be built, tested, evidenced, manually verified, and accepted before Company begins; Company must be accepted before Reviewer begins.**
+**Start Company Portal implementation.** Company must be built, tested, manually verified, and accepted before Reviewer implementation begins; Reviewer also requires the R-05 readiness check. No parallel portal implementation.
