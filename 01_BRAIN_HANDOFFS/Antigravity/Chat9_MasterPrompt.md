@@ -1,38 +1,39 @@
-# Antigravity Handoff: Chat 9 Master Prompt
+# Freight Hackathon - Antigravity Handoff: Chat9 Master Prompt
 
-## 1. Current Project Status & Immediate Context
-We are currently working on **Node 7: Phase 1b** of the Freight application. This phase is strictly dedicated to **Frontend UI/UX Redesign** and improving user flows based on finalized blueprints.
+## 1. Project Context & Status
+**Current Phase:** Node 7 — Phase 1b (Stage 1 Complete, moving to Stage 2)
 
-In the previous session, we successfully completed all required existing-system investigations and finalized the implementation boundaries. We are now officially ready to begin the implementation phase of Phase 1b.
+We have successfully completed a comprehensive round of bug fixing and stabilization for the **Driver Portal** (Phase 1b Stage 1). The application is deployed on Vercel and all recent codebase changes have been committed and synced to both repositories (`freight_hackathon` for the Next.js app, `Freight_Records` for documentation).
 
-## 2. Work Completed in the Previous Session
-The following critical investigations and boundary rules were established and pushed to the `Freight_Records` repository:
+## 2. Work Completed in Previous Session
 
-1. **Driver Portal Investigation**: Mapped the existing Driver Portal structure against the locked Driver Blueprint.
-2. **Company Portal Investigation**: 
-   - Mapped the Company Portal architecture, API/Data dependencies, and shared components.
-   - Verified that "Sender" and "Receiver" are trip-specific roles governed by `trips.company_id` and `trips.receiving_company_id`.
-   - Discovered a frontend bug in the `ReceiverCompletionClient.tsx` where the client expects a state payload but the API only returns `{ success: true }`.
-3. **Reviewer System Investigation**: 
-   - Verified the extremely narrow Reviewer surface (a single `/reviewer/queue` page).
-   - Documented critical UI defects: A "Navigation Trap" (navbar links cause an infinite redirect loop for reviewers) and a "Role Confusion Lockout" (reviewers who are also drivers/companies cannot access their operational dashboards).
-4. **Implementation Boundary Review**:
-   - **Authorized Sequence**: The required implementation order is **Driver → Company → Reviewer**.
-   - **Allowed Changes**: Page structure, visual hierarchy, responsive layout (fixing mobile squishing), typography, and shared color/status treatments.
-   - **Protected Systems**: The backend APIs, PostgreSQL database schema, authorization rules, RLS policies, and evidence integrity mechanisms are strictly protected and **must not be modified** during Phase 1b.
+During the previous session, we successfully resolved several critical regressions and architectural constraints in the Driver Portal:
 
-## 3. Immediate Next Steps for the New Agent
-You are tasked with starting the **Phase 1b Implementation**.
+### A. Next.js 15+ `searchParams` Promise Regression
+- **Issue:** The Completed Trips -> View Timeline flow would always fall back to displaying the driver's most recent active trip instead of the selected historical trip.
+- **Fix:** Next.js 16.3.1 treats `searchParams` as a Promise. We updated `src/app/(authenticated)/timeline/page.tsx` to properly `await` the `searchParams` to extract the `tripId`, restoring correct historical navigation.
 
-1. **Start with the Driver Portal**: 
-   - Refer to the locked blueprint at `02_ARCHITECTURE/locked_blueprints/Driver_Locked_Blueprint.md` (or equivalent current location).
-   - Begin modifying the Driver frontend UI/UX to match the blueprint.
-2. **Follow Boundary Rules**:
-   - Do not modify any API route logic or database schema. Confine your work strictly to React components, Tailwind styling, and frontend logic.
-3. **Responsive Design**:
-   - Ensure you fix all static grid assumptions (e.g., hardcoded `grid-cols-2`) and implement proper mobile-first responsive design using Tailwind breakpoints (`sm:`, `md:`).
+### B. Mobile Photo Layout Horizontal Overflow
+- **Issue:** Event success screens with uploaded photo evidence were rendering a large black space on the right side of mobile viewports because the photo `<img>` used `max-w-sm` without `w-full`.
+- **Fix:** We corrected this across all 10 affected screens: Timeline, Arrival, Goods Unloaded, Pickup Departed, Load, In-Transit, Departure, Delivery Departed, Check-in, and Arrived at Delivery. We added `w-full max-w-sm` to perfectly contain the image on mobile while preventing excessive stretching on desktop.
 
-## 4. Operating Rules & Reporting Protocol
-- **Rules Reference**: Always follow `ANTIGRAVITY_OPERATING_RULES.md`.
-- **Evidence-Driven Development**: Always produce evidence for your work (build logs, test results, terminal output).
-- **Reporting Workflow**: Whenever you create an implementation report or plan, save it locally, commit and push it to the `Freight_Records` repository, delete the local file, and return the raw GitHub URL to the user in a copy-paste block.
+### C. Persistent Photo Upload Failure
+- **Issue:** Driver photo uploads intermittently failed with "Failed to upload photo." Crucially, after a first failure, subsequent retries of the same photo *always* failed until the page was refreshed.
+- **Root Cause:** Modern mobile cameras produced payloads exceeding Vercel's Serverless Function limit (4.5MB). The persistent retry failure occurred because React state reused the exact same oversized `File` payload, continuously hitting the exact same serverless 413/504 limit on every retry.
+- **Fix:** Implemented lightweight client-side HTML5 Canvas image compression directly inside `src/lib/capture/uploadPhoto.ts`. All photos are now seamlessly resized to a maximum of 1920px (at 0.8 JPEG quality) *before* hitting the Vercel infrastructure, completely eliminating the upload payload limitation and the associated retry loop.
+
+## 3. Strict Development Rules
+
+1. **Rule of Documentation:** Every time you build a report, investigation, or implementation plan, you MUST save it as a separate markdown file in the appropriate directory (`05_DEBUGGING/investigations/` or `03_IMPLEMENTATION/implementation_reports/` inside `Freight_Records`). You must then stage, commit, push the file to GitHub, and immediately `rm` (delete) it from the local filesystem. Always provide the raw GitHub URL in a copy-paste block in your response.
+2. **Rule of Direct Action:** If the user asks for an "investigation report" or an "implementation report", you MUST skip the "implementation plan" phase. Just do the investigation, write the report, push it, and delete it locally. Do not block on asking for permission to plan.
+3. **Rule of Scope:** Only modify the exact frontend files necessary to solve a bug. Do NOT modify APIs, Database schemas, RLS policies, Authentication logic, or Storage buckets without an explicit architectural decision.
+
+## 4. Current Objectives for New Agent
+
+We are now ready to pivot to **Phase 1b Stage 2**, which focuses on the **Company Portal**. 
+
+Your next tasks will be directed by the user, but expect to be implementing, debugging, or refining the Company Portal interfaces (e.g., Company Dashboard, Company Completion, or Receiver Check-in flows). 
+
+If the user reports any further bugs from the Driver Portal, tackle them utilizing the exact same systematic investigation -> implementation report pattern used in the previous session.
+
+*You have full context. Await the user's next command.*
