@@ -8,15 +8,18 @@
 **Chat:** Chat46  
 **Date:** 2026-09-09  
 **Decision owner:** ChatGPT — Architecture / Governance Brain  
-**Status:** PROPOSED — AWAITING AYUSH EXPLICIT AUTHORIZATION
+**Approval authority:** Ayush  
+**Status:** **OPTION B APPROVED / NARROW R-05 EXCEPTION AUTHORIZED**
 
 ---
 
 ## 1. Purpose
 
-This record converts the completed Reviewer investigation, locked Reviewer Blueprint, existing implementation-gap analysis, and independent Claude review into the final project-control decision point for R-05.
+This record converts the completed Reviewer investigation, locked Reviewer Blueprint, implementation-gap analysis, and independent Claude review into the final project-control decision for R-05.
 
-It does not itself authorize implementation. It records the evidence-backed decision that must be explicitly accepted by Ayush before any protected backend/data/security work is attempted.
+Ayush has explicitly approved **Option B**: the minimum backend/data-access/security dependencies required to support the locked Reviewer Verification History may cross the Phase 1b frontend-only boundary, subject to the narrow limits in this record and separate implementation/evidence gates.
+
+This is an authorization of the **dependency scope**, not a blanket authorization to modify backend behavior.
 
 ---
 
@@ -37,7 +40,7 @@ Independent Claude review result:
 - Gap analysis: PASS, with minor refinements.
 - Boundary decision: PASS.
 - R-05: NOT READY.
-- Reviewer implementation: NOT AUTHORIZED by the Claude review.
+- Reviewer implementation: NOT AUTHORIZED by the review.
 
 ---
 
@@ -54,7 +57,7 @@ The locked Reviewer Blueprint requires Verification History with:
 
 The existing Reviewer system does not currently provide all required supporting capabilities.
 
-The verified blockers are:
+Verified blockers:
 
 ### 3.1 Decision-time data
 
@@ -66,143 +69,162 @@ The current Reviewer read path is built around Pending Verification records and 
 
 ### 3.3 Reviewer-scoped authorization for completed records
 
-The current implementation does not provide an established Reviewer-scoped authorization path for the required completed identity records. The existing Queue path uses a server-side service-role mechanism, which must not be silently extended as a new History authorization design.
+The current implementation does not provide an established Reviewer-scoped authorization path for the required completed identity records. The existing Queue path uses a server-side service-role mechanism and must not be silently extended as a new History authorization design.
 
-These are structural/backend/data/security dependencies, not merely visual UI gaps.
+These are structural/backend/data/security dependencies rather than merely visual UI gaps.
 
 ---
 
 ## 4. Additional Confirmed Frontend Gap
 
-Before the final Reviewer implementation scope is written, the gap list must explicitly include:
+The eventual Reviewer implementation gap list must explicitly include:
 
 **Identity / Role Verified** as a distinct frontend interaction after evidence examination and before final Approve.
 
-This is a locked Blueprint requirement and is separate from the final Approve action. It does not create a new persistent lifecycle state.
-
-This refinement does not change the R-05 readiness verdict.
+This is a locked Blueprint interaction and is separate from the final Approve action. It does not create a new persistent lifecycle state.
 
 ---
 
-## 5. Decision Options
+## 5. Approved Option B Scope
 
-### Option A — Keep Phase 1b strictly frontend-only
+Ayush explicitly approved Option B.
 
-Do not permit any backend/schema/RLS/API changes.
+The following minimum R-05 dependencies are authorized for the next narrowly scoped implementation effort:
 
-Reviewer frontend implementation may only use capabilities already proven to exist. Unsupported Verification History/completed-record functionality would remain explicitly outside the implemented scope until a later authorized phase.
+### 5.1 Persisted decision timestamp
 
-**Effect:** preserves the current Phase 1b boundary completely, but the locked Reviewer Blueprint would remain only partially implementable.
+Introduce one persisted timestamp such as `reviewed_at` or another explicitly justified equivalent, populated as part of the existing final verification decision path.
 
-### Option B — Permit a narrowly scoped R-05 dependency authorization
+The implementation must:
+- preserve existing Verified/Rejected semantics;
+- avoid introducing a new lifecycle state;
+- avoid introducing a new review table unless separately demonstrated to be unavoidable;
+- avoid changing unrelated data-model behavior.
 
-Permit only the minimum backend/data-access/security changes needed to make the locked Verification History supportable, while keeping all other protected areas unchanged.
+### 5.2 Completed-record read path
 
-The minimum dependency set is:
+Introduce one narrow, authorized read path sufficient for the Reviewer to:
+- retrieve completed Verified records;
+- retrieve completed Rejected records;
+- order them by the approved decision timestamp, newest first;
+- support a selected completed record for the read-only History detail experience.
 
-1. **One persisted decision timestamp** such as `reviewed_at` (or an explicitly approved equivalent), populated by the existing final review decision path.
-2. **One authorized completed-record read path** scoped to the Reviewer role, sufficient to retrieve completed Verified/Rejected records for History and a selected read-only completed record.
-3. Any corresponding **minimal authorization/RLS adjustment** required to make that completed-record read path valid and secure.
+The read path must remain scoped to the Reviewer use case and must not become a general administration interface.
 
-No new table, lifecycle state, evidence type, scoring model, AI verification, automated verification, or Reviewer authority expansion is included.
+### 5.3 Minimal authorization/security support
 
-**Effect:** preserves the locked Reviewer Blueprint while crossing the Phase 1b frontend-only boundary in the smallest technically necessary way.
+Make the minimum corresponding authorization/RLS/security adjustment necessary for the completed-record read path to be valid and secure.
 
----
-
-## 6. Recommended Project-Control Position
-
-**Recommended: Option B — narrowly scoped R-05 dependency authorization.**
-
-Reasoning:
-
-1. The Verification History and completed-record experience are locked first-class Reviewer requirements, not optional decoration.
-2. The investigation and Claude review independently confirm that these requirements are currently unsupported.
-3. The minimum dependency set is small and technically bounded.
-4. The dependency set does not require expanding Reviewer responsibility, introducing new business rules, changing lifecycle semantics, adding evidence types, or introducing AI/automation.
-5. Keeping the entire boundary frontend-only would force the implementation to leave a first-class locked Reviewer surface unsupported.
-6. The correct governance pattern is therefore to authorize only the identified R-05 dependencies separately, rather than silently weakening the Blueprint or bypassing the protected boundary.
+The implementation must not use a broader permission change than required by the R-05 use case.
 
 ---
 
-## 7. Authorization Boundary
+## 6. Explicitly Not Authorized
 
-This record does **not** authorize implementation by itself.
+This approval does **not** authorize:
 
-Before any protected change is made, Ayush must explicitly authorize the narrow R-05 dependency set described in Section 5, Option B.
-
-If Ayush authorizes Option B, the next records/work items must be created separately:
-
-1. a dedicated R-05 implementation/dependency authorization record;
-2. a narrowly scoped implementation prompt for the authorized backend/data/security work;
-3. implementation evidence and test results;
-4. re-evaluation of R-05 readiness;
-5. only after R-05 becomes READY, the Reviewer frontend implementation prompt.
-
-No Reviewer implementation prompt should be created before the authorization and readiness gates are satisfied.
-
----
-
-## 8. Protected Scope That Remains Locked
-
-Even under Option B, the following remain protected unless separately and explicitly approved:
-
-- unrelated database/schema redesign;
+- unrelated schema redesign;
 - unrelated RLS/security changes;
 - authentication changes;
 - role-model changes;
-- new API contracts beyond the minimum R-05 read/write capability;
-- business-rule changes;
+- broad authorization expansion;
+- new business rules;
 - lifecycle-state changes;
-- claiming/marketplace behavior;
-- evidence-model changes;
 - persistent `under_review` state;
+- new evidence types or requirements;
+- evidence-model redesign;
+- AI verification or scoring;
+- automated verification;
 - Reviewer authority expansion;
-- AI verification/scoring/automation;
-- trip/delivery review responsibilities;
-- C-05 and R-03 protected items.
+- trip/delivery review functionality;
+- marketplace/claiming changes;
+- C-05 changes;
+- R-03 changes;
+- unrelated API-contract changes.
+
+Any newly discovered requirement outside the exact R-05 scope is a stop condition and requires a new decision.
 
 ---
 
-## 9. R-05 Status After This Record
+## 7. Mandatory Separation of Work
 
-**Current R-05 status: NOT READY.**
+The approved work must remain separated into gates:
 
-This record does not itself make R-05 READY.
+**Gate A — R-05 dependency implementation**  
+Implement only the authorized timestamp, completed-record read path, and minimum authorization/security support.
 
-R-05 becomes eligible for a new readiness assessment only after the separately authorized minimum dependency work has been implemented, tested, and evidenced.
+**Gate B — Build/test/evidence**  
+Run relevant tests/checks, inspect security behavior and runtime behavior, and record evidence.
+
+**Gate C — Fresh R-05 readiness assessment**  
+Re-check every locked R-05 requirement against the implemented evidence.
+
+**Gate D — Reviewer frontend authorization**  
+Only after R-05 is independently READY may the Reviewer frontend implementation prompt be created/used.
+
+**Gate E — Reviewer implementation/build/test**  
+Implement the locked Reviewer frontend experience and validate it.
+
+**Gate F — Ayush manual verification/acceptance**  
+Ayush manually verifies the complete Reviewer workflow before Reviewer acceptance/lock.
+
+**Gate G — Cross-Portal E2E**  
+Only after Driver, Company, and Reviewer are individually accepted.
 
 ---
 
-## 10. Implementation Gate
+## 8. Governance Rule
 
-Until explicit Ayush authorization is recorded:
+The approval is a **narrow boundary exception**, not a reopening of the Phase 1b architecture.
 
-- do not modify backend/schema/RLS/API behavior;
-- do not create the R-05 backend implementation prompt;
-- do not create the Reviewer frontend implementation prompt;
-- do not declare Reviewer implementation READY;
-- do not declare Phase 1b complete.
+The protected Phase 1b boundary remains the default. Only the exact R-05 dependencies explicitly named in this record may cross it.
+
+Antigravity must stop and hand back the issue if implementation reveals:
+- a larger schema change than the single timestamp need;
+- a broader authorization/RLS redesign;
+- a new API contract outside the R-05 read/write need;
+- a lifecycle/business-rule change;
+- an evidence-model change;
+- a Reviewer authority expansion;
+- an architectural conflict with the locked Blueprint.
 
 ---
 
-## 11. Final Decision Statement
+## 9. R-05 Status
 
-> **Proposed project-control decision:** authorize, as a narrowly bounded exception to the Phase 1b frontend-only boundary, only the minimum backend/data-access/security changes required to support the locked Reviewer Verification History requirements, subject to separate implementation authorization, evidence, testing, and a fresh R-05 readiness gate.
+**Current status: NOT READY.**
 
-**Final authorization state:** PENDING AYUSH EXPLICIT APPROVAL  
+Approval authorizes work toward readiness. It does not itself make R-05 READY.
+
+R-05 becomes READY only after the authorized dependency changes are implemented, tested, evidenced, and positively re-assessed.
+
+---
+
+## 10. Reviewer Implementation Status
+
+**Reviewer frontend implementation: NOT YET AUTHORIZED.**
+
+The next frontend implementation prompt must wait until the fresh R-05 readiness gate passes.
+
+---
+
+## 11. Final Approved Decision
+
+> **Ayush approved Option B:** authorize only the minimum backend/data-access/security changes required to support the locked Reviewer Verification History requirements, with strict scope limits, separate implementation evidence, and a mandatory fresh R-05 readiness gate before Reviewer frontend implementation.
+
+**Ayush approval:** YES  
+**Option selected:** B  
+**Boundary exception:** APPROVED — NARROW / R-05 ONLY  
 **R-05:** NOT READY  
-**Reviewer implementation:** NOT AUTHORIZED  
+**Reviewer frontend implementation:** NOT YET AUTHORIZED  
 **Phase 1b:** IN PROGRESS
 
 ---
 
 ## 12. Next Gate
 
-The next action is not implementation.
+The next action is to create the **R-05 dependency implementation/investigation handoff** for Antigravity through the Freight_Records GitHub bridge.
 
-The next gate is Ayush's explicit acceptance or rejection of the proposed Option B boundary exception.
+That handoff must cover only the approved scope in Section 5 and must require Antigravity to return implementation evidence through the Records repository.
 
-If accepted, the project proceeds to a narrowly scoped R-05 dependency implementation authorization and investigation/implementation handoff.
-
-If rejected, Phase 1b remains frontend-only and unsupported History capabilities must remain explicitly out of implementation.
+No Reviewer frontend implementation prompt should be created yet.
