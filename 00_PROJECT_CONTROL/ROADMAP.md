@@ -2,9 +2,9 @@
 
 **Project:** Freight — AI Builders Hackathon  
 **Hackathon window:** Aug 21 – Sep 15, 2026  
-**Roadmap status:** ACTIVE EXECUTION ROADMAP — Driver accepted/locked; Company implementation next.  
-**Current execution day:** Day 17  
-**Current chat:** Chat43
+**Roadmap status:** ACTIVE EXECUTION ROADMAP — Driver and Company accepted/locked; Reviewer R-05 readiness next.  
+**Current execution day:** Day 18  
+**Current chat:** Chat45
 
 ## Active Roadmap — 7 Nodes
 
@@ -42,7 +42,7 @@ Baseline AI evidence-grounded summary, timeline integration, and public shareabl
 
 ### Phase 1b — Full 3-Portal UI/UX Redesign
 
-**Status: 🔵 DRIVER ACCEPTED / COMPANY IMPLEMENTATION NEXT**
+**Status: 🔵 DRIVER LOCKED / COMPANY LOCKED / REVIEWER NEXT**
 
 Scope:
 
@@ -50,7 +50,7 @@ Scope:
 2. Company portal
 3. Reviewer portal
 
-Phase 1b redesigns frontend structure, presentation, navigation, hierarchy, discoverability, responsiveness, and demo experience around existing capabilities. It does not introduce new product functionality.
+Phase 1b redesigns frontend structure, presentation, navigation, hierarchy, discoverability, responsiveness, and demo experience around existing capabilities. The explicitly approved Company Receiver Delivery Request / Accept / Reject layer was implemented as a contained Company workflow dependency before Company lock.
 
 ## Driver Portal — Implemented / Accepted / Locked
 
@@ -70,19 +70,50 @@ Day 17 closure checkpoint:
 
 `00_PROJECT_CONTROL/CHECKPOINTS/Chat43_Day17_Node7_Phase1b_Day17_Driver_Closure_Checkpoint.md`
 
-## Company Portal — Blueprint Complete / Locked
+## Company Portal — Implemented / Accepted / Locked
 
-**Day 15 / Chat39 → 🟢 COMPLETE / LOCKED**
+**Day 18 / Chat45 → 🔒 COMPLETE / ACCEPTED / LOCKED**
 
-Authoritative locked record:
+Authoritative current integrated blueprint:
+
+`02_ARCHITECTURE/locked_blueprints/Company_Integrated_Upgraded_Blueprint.md`
+
+Historical baseline preserved:
 
 `02_ARCHITECTURE/locked_blueprints/Company_Locked_Blueprint.md`
 
-Implementation order: **next, after Driver acceptance**.
+Company implementation is complete, build/test verified, manually verified by Ayush, audited against the integrated blueprint with **142/142 requirements VERIFIED**, and formally locked.
+
+Company implementation report:
+
+`03_IMPLEMENTATION/implementation_reports/Chat45_Day18_Node7_Phase1b_Company_Receiver_Accept_Reject_Implementation_Report.md`
+
+Company final system audit:
+
+`05_DEBUGGING/investigations/Chat45_Day18_Node7_Phase1b_Company_Integrated_Blueprint_Final_System_Audit_Report.md`
+
+Company lock approval:
+
+`06_APPROVALS/Chat45_Day18_Node7_Phase1b_Company_Portal_Lock_Approval.md`
+
+Company closure includes:
+
+```text
+Receiver Accept / Reject              → 🟢 IMPLEMENTED / VERIFIED
+Server-side Publish gate              → 🟢 VERIFIED
+Independent server-side Claim gate    → 🟡 INFERRED PASS / SOURCE VERIFIED
+Pending Requests                      → 🟢 VERIFIED
+Sender/Receiver History               → 🟢 VERIFIED
+Existing completion lifecycle         → 🟢 VERIFIED / PRESERVED
+Final Blueprint Audit                 → 🟢 142/142 VERIFIED
+Company Portal                        → 🔒 LOCKED
+```
+
+No Company product change should be introduced without explicit governance reopening or a separately governed defect investigation.
 
 ## Reviewer Portal — Architecture Complete / Locked
 
-**Day 15–16 / Chat40–42 → 🟢 COMPLETE / LOCKED FOR IMPLEMENTATION PREPARATION**
+**Day 15–16 / Chat40–42 → 🟢 ARCHITECTURE COMPLETE / LOCKED FOR IMPLEMENTATION**
 
 Completed:
 
@@ -98,7 +129,7 @@ Authoritative locked blueprint:
 
 `02_ARCHITECTURE/locked_blueprints/Reviewer_Locked_Blueprint.md`
 
-Implementation order: **third, only after Company acceptance and R-05 readiness check**.
+Implementation order: **next, only after the R-05 readiness check passes**.
 
 ## Shared Cross-Portal Design System
 
@@ -123,7 +154,7 @@ Responsive by design
 Accessible by default
 ```
 
-Phase 1b remains light theme, LTR, 4px spacing, restrained motion, responsive, and accessibility-focused. Shared design does not authorize backend/product-behavior changes.
+Phase 1b remains light theme, LTR, 4px spacing, restrained motion, responsive, and accessibility-focused. Shared design does not authorize additional backend/product-behavior changes.
 
 ## Implementation Boundary
 
@@ -136,11 +167,13 @@ Status:
 ```text
 Boundary → 🟢 READY / ACTIVE EXECUTION
 Driver → 🔒 COMPLETE / ACCEPTED / LOCKED
-Company → ⏳ NEXT
-Reviewer → ⏳ AFTER COMPANY + R-05
+Company → 🔒 COMPLETE / ACCEPTED / LOCKED
+Reviewer → ⏳ NEXT — AFTER R-05 READINESS
 ```
 
-Phase 1b is frontend-only. APIs/contracts, database/schema, RLS/security, auth/role rules, business rules, lifecycle semantics, claiming/marketplace behavior, evidence requirements/integrity, persistent review state, backend behavior, AI behavior, and Reviewer authority expansion are protected.
+The baseline Phase 1b boundary remains protected. The Company Receiver Delivery Request / Accept / Reject workflow was separately investigated and explicitly approved because it was required for the final Company product before lock.
+
+Additional APIs/contracts, database/schema changes, RLS/security changes, auth/role-rule changes, business rules, lifecycle changes, claiming/marketplace changes, evidence changes, persistent review-state changes, backend behavior changes, AI behavior changes, or Reviewer authority expansion remain protected unless separately investigated and explicitly approved.
 
 C-05 and R-03 remain protected/out of scope. R-05 remains a narrow Reviewer History data-source readiness dependency.
 
@@ -155,8 +188,8 @@ Status:
 ```text
 Preparation → 🟢 FINALIZED / APPROVED
 Driver → 🟢 COMPLETE / ACCEPTED / LOCKED
-Company → ⏳ NEXT
-Reviewer → ⏳ AFTER COMPANY ACCEPTANCE + R-05
+Company → 🟢 COMPLETE / ACCEPTED / LOCKED
+Reviewer → ⏳ NEXT — AFTER R-05 READINESS
 ```
 
 Master execution contract:
@@ -173,12 +206,12 @@ Master execution contract:
 5. Company build
 6. Company build/test/evidence
 7. Ayush Company manual verification
-8. Company acceptance
-9. Reviewer R-05 data-source readiness check
+8. Company acceptance / lock → 🟢 COMPLETE
+9. Reviewer R-05 data-source readiness check → ⏳ NEXT
 10. Reviewer build
 11. Reviewer build/test/evidence
 12. Ayush Reviewer manual verification
-13. Reviewer acceptance
+13. Reviewer acceptance / lock
 14. Cross-Portal E2E
 15. Final bugfix / demo readiness
 ```
@@ -263,7 +296,7 @@ Node 6                              → COMPLETE / ACCEPTED
 Node 7                              → ACTIVE
 Phase 1a                            → COMPLETE / ACCEPTED
 Phase 1b Driver Portal              → COMPLETE / ACCEPTED / LOCKED
-Phase 1b Company Portal             → BLUEPRINT COMPLETE / LOCKED
+Phase 1b Company Portal             → COMPLETE / ACCEPTED / LOCKED
 Phase 1b Reviewer Investigation     → COMPLETE
 Phase 1b Reviewer Mental Model      → COMPLETE / LOCKED
 Phase 1b Reviewer Interaction Map   → COMPLETE / LOCKED
@@ -272,12 +305,14 @@ Shared Cross-Portal Design System   → LOCKED
 Implementation Boundary             → READY / ACTIVE EXECUTION
 Implementation Preparation          → FINALIZED / APPROVED
 Driver Implementation               → COMPLETE / ACCEPTED / LOCKED
-Company Implementation              → NEXT
-Reviewer Implementation             → AFTER COMPANY ACCEPTANCE + R-05
+Company Implementation              → COMPLETE / ACCEPTED / LOCKED
+Reviewer R-05 Readiness              → NEXT
+Reviewer Implementation             → AFTER R-05 READINESS
 Cross-Portal E2E / Demo              → PENDING
 Phase 3                             → CONDITIONAL
 Day 16                              → CLOSED
 Day 17                              → CLOSED
+Day 18                              → CLOSED
 ```
 
 ## Working Method
@@ -301,7 +336,22 @@ Implementation reports: `03_IMPLEMENTATION/implementation_reports/`
 Investigations: `05_DEBUGGING/investigations/`  
 Architecture records: `02_ARCHITECTURE/`  
 Project control: `00_PROJECT_CONTROL/`  
-Checkpoints: `00_PROJECT_CONTROL/CHECKPOINTS/`
+Checkpoints: `00_PROJECT_CONTROL/CHECKPOINTS/`  
+Approvals: `06_APPROVALS/`
+
+## Day 18 Company Closure Records
+
+Company implementation report:
+
+`03_IMPLEMENTATION/implementation_reports/Chat45_Day18_Node7_Phase1b_Company_Receiver_Accept_Reject_Implementation_Report.md`
+
+Company final system audit:
+
+`05_DEBUGGING/investigations/Chat45_Day18_Node7_Phase1b_Company_Integrated_Blueprint_Final_System_Audit_Report.md`
+
+Company lock approval:
+
+`06_APPROVALS/Chat45_Day18_Node7_Phase1b_Company_Portal_Lock_Approval.md`
 
 ## Day 17 Work Progress Report
 
@@ -309,4 +359,4 @@ Checkpoints: `00_PROJECT_CONTROL/CHECKPOINTS/`
 
 ## Next Action
 
-**Start Company Portal implementation.** Company must be built, tested, manually verified, and accepted before Reviewer implementation begins; Reviewer also requires the R-05 readiness check. No parallel portal implementation.
+**Run the Reviewer R-05 readiness check. After R-05 passes, begin Reviewer Portal implementation.** Driver and Company are formally locked. No parallel portal implementation and no Company reopening without explicit governance approval.
