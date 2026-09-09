@@ -1,6 +1,6 @@
 # Company Portal — Integrated Final Blueprint
 
-**Status:** INTEGRATED BLUEPRINT — FINAL VALIDATION / LOCK PENDING  
+**Status:** LOCKED  
 **Portal:** Company  
 **Node:** Node 7 — Phase 1b  
 **Purpose:** Consolidate the original Company Locked Blueprint with the later approved and implemented Company upgrades so one document represents the current intended Company product behavior.
@@ -594,68 +594,70 @@ The following are now part of the current intended Company product:
 
 ### Navigation
 
-- [ ] Dashboard
-- [ ] My Created Trips
-- [ ] Incoming Deliveries
-- [ ] History / Timeline
-- [ ] Profile / Account
+- [x] Dashboard
+- [x] My Created Trips
+- [x] Incoming Deliveries
+- [x] History / Timeline
+- [x] Profile / Account
 
 ### Dashboard
 
-- [ ] Needs Attention is state-driven.
-- [ ] Pending Receiver Request appears as attention.
-- [ ] Take Action routes to `/company/incoming`.
-- [ ] Accept/Reject controls are not duplicated on Dashboard.
-- [ ] Existing Check-in/Completion attention remains intact.
-- [ ] No false Receiver Request alert appears without a PENDING request.
+- [x] Needs Attention is state-driven.
+- [x] Pending Receiver Request appears as attention.
+- [x] Take Action routes to `/company/incoming`.
+- [x] Accept/Reject controls are not duplicated on Dashboard.
+- [x] Existing Check-in/Completion attention remains intact.
+- [x] No false Receiver Request alert appears without a PENDING request.
 
 ### Receiver Request
 
-- [ ] External request starts PENDING.
-- [ ] Receiver can Accept.
-- [ ] Receiver can Reject.
-- [ ] Unauthorized users cannot decide.
-- [ ] PENDING blocks Publish.
-- [ ] REJECTED blocks Publish.
-- [ ] ACCEPTED permits normal publication.
-- [ ] Claim independently checks acceptance.
-- [ ] Only one active PENDING request exists per Trip.
+- [x] External request starts PENDING.
+- [x] Receiver can Accept.
+- [x] Receiver can Reject.
+- [x] Unauthorized users cannot decide.
+- [x] PENDING blocks Publish.
+- [x] REJECTED blocks Publish.
+- [x] ACCEPTED permits normal publication.
+- [x] Claim independently checks acceptance.
+- [x] Only one active PENDING request exists per Trip.
 
 ### History
 
-- [ ] All works.
-- [ ] Sent works.
-- [ ] Received works.
-- [ ] Sent/Received labels are visible.
-- [ ] Completed Trip Detail opens correctly.
+- [x] All works.
+- [x] Sent works.
+- [x] Received works.
+- [x] Sent/Received labels are visible.
+- [x] Completed Trip Detail opens correctly.
 
 ### Existing lifecycle
 
-- [ ] Driver Claim remains atomic.
-- [ ] Receiver Check-in remains correct.
-- [ ] Receiver Completion remains correct.
-- [ ] Driver Completion remains correct.
-- [ ] Completion/history behavior remains correct.
+- [x] Driver Claim remains atomic.
+- [x] Receiver Check-in remains correct.
+- [x] Receiver Completion remains correct.
+- [x] Driver Completion remains correct.
+- [x] Completion/history behavior remains correct.
 
 ### Security
 
-- [ ] Receiver-only Accept/Reject authorization.
-- [ ] Cross-tenant access blocked.
-- [ ] Server-side Publish gate.
-- [ ] Server-side Claim gate.
-- [ ] Public Share remains Receiver-only.
+- [x] Receiver-only Accept/Reject authorization.
+- [x] Cross-tenant access blocked.
+- [x] Server-side Publish gate.
+- [x] Server-side Claim gate.
+- [x] Public Share remains Receiver-only.
 
 ### Responsive
 
-- [ ] Desktop verified.
-- [ ] Intermediate/tablet verified.
-- [ ] Mobile verified.
-- [ ] No normal workflow requires horizontal scrolling.
+- [x] Desktop verified.
+- [x] Intermediate/tablet verified.
+- [x] Mobile verified.
+- [x] No normal workflow requires horizontal scrolling.
 
 # 28. Final Governance Position
 
-This document is the consolidated Company blueprint candidate that combines the original Company Locked Blueprint with all subsequently approved and implemented Company upgrades.
+This document is the consolidated current Company blueprint combining the original Company Locked Blueprint with all subsequently approved and implemented Company upgrades.
 
-The historical `Company_Locked_Blueprint.md` remains preserved as the original baseline record. This integrated document is intended to become the single current Company blueprint after final consistency verification and explicit Company lock.
+The historical `Company_Locked_Blueprint.md` remains preserved as the original baseline record. This integrated document is now the single current Company blueprint for the locked Company portal.
 
-**Current status:** FINAL VALIDATION / LOCK PENDING
+**Final status:** LOCKED  
+**Lock authority:** Ayush  
+**Lock basis:** Final System Audit completed with 142/142 requirements VERIFIED and verdict READY FOR COMPANY LOCK.
