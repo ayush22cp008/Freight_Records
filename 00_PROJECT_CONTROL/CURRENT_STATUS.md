@@ -1,6 +1,6 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Sep 8, 2026 — Day 17 / Chat43
+**Last updated:** Sep 9, 2026 — Day 18 / Chat45
 
 ## Current Project Position
 
@@ -30,9 +30,9 @@ Phase 1a remains complete and accepted.
 
 ### Phase 1b — Full 3-Portal UI/UX Redesign
 
-**Status: 🔵 ACTIVE — DRIVER ACCEPTED / COMPANY NEXT**
+**Status: 🔵 ACTIVE — DRIVER LOCKED / COMPANY LOCKED / REVIEWER NEXT**
 
-Phase 1b redesigns Driver, Company, and Reviewer frontend experiences around existing capabilities. It does not introduce new product functionality.
+Phase 1b is being executed sequentially across Driver, Company, and Reviewer. The original frontend redesign boundary remains protected, with the explicitly approved Receiver Accept/Reject handshake added as a contained Company workflow dependency.
 
 ### Driver Portal
 
@@ -61,15 +61,45 @@ Day 17 closure checkpoint:
 ### Company Portal
 
 ```text
-Blueprint → 🟢 COMPLETE / LOCKED
-Implementation → ⏳ NEXT
+Blueprint → 🔒 COMPLETE / LOCKED
+Implementation → 🟢 COMPLETE / ACCEPTED / LOCKED
+Day 18 Company closure → 🔒 CLOSED
 ```
 
-Authoritative locked blueprint:
+Current authoritative integrated blueprint:
+
+`02_ARCHITECTURE/locked_blueprints/Company_Integrated_Upgraded_Blueprint.md`
+
+Historical baseline preserved:
 
 `02_ARCHITECTURE/locked_blueprints/Company_Locked_Blueprint.md`
 
-Company implementation may begin only after Driver acceptance, which is now complete.
+Company implementation report:
+
+`03_IMPLEMENTATION/implementation_reports/Chat45_Day18_Node7_Phase1b_Company_Receiver_Accept_Reject_Implementation_Report.md`
+
+Company final system audit:
+
+`05_DEBUGGING/investigations/Chat45_Day18_Node7_Phase1b_Company_Integrated_Blueprint_Final_System_Audit_Report.md`
+
+Company lock approval:
+
+`06_APPROVALS/Chat45_Day18_Node7_Phase1b_Company_Portal_Lock_Approval.md`
+
+Company closure basis:
+
+```text
+Integrated Blueprint requirements        → 🟢 142/142 VERIFIED
+Receiver Accept/Reject                  → 🟢 IMPLEMENTED / MANUALLY VERIFIED
+Accept → Publish → Marketplace          → 🟢 VERIFIED
+Reject → Publish protection             → 🟢 VERIFIED
+Direct Claim protection                 → 🟡 INFERRED PASS (source-level)
+Sender/Receiver History visibility      → 🟢 VERIFIED
+Existing completion lifecycle            → 🟢 VERIFIED / PRESERVED
+Company lock governance                 → 🔒 COMPLETE
+```
+
+The Company Portal is now formally locked. No further Company product changes should be made without explicit governance reopening or a separately governed defect investigation.
 
 ### Reviewer Portal
 
@@ -79,54 +109,52 @@ Investigation Completion → 🟢 COMPLETE
 Mental Model → 🟢 COMPLETE / LOCKED
 Interaction Mapping → 🟢 COMPLETE / LOCKED
 Final Blueprint → 🟢 COMPLETE / LOCKED
-Implementation → ⏳ AFTER COMPANY ACCEPTANCE + R-05
+Implementation → ⏳ NEXT
 ```
 
 Authoritative locked blueprint:
 
 `02_ARCHITECTURE/locked_blueprints/Reviewer_Locked_Blueprint.md`
 
-## Day 17 Closure
+Reviewer implementation begins only after the required R-05 readiness check is satisfied.
 
-Day 17 completed the controlled Driver implementation cycle against the locked Driver blueprint.
+## Day 18 Company Closure
+
+Day 18 completed the controlled Company implementation and final governance lock cycle.
 
 ```text
-Driver implementation                     → 🟢 COMPLETE
-Driver build/test                        → 🟢 PASS
-Driver defect investigations             → 🟢 COMPLETE
-Photo upload reliability                 → 🟢 FIXED / VERIFIED
-Mobile photo overflow                   → 🟢 FIXED / VERIFIED
-Completed Trip → Timeline selection      → 🟢 FIXED / VERIFIED
-Profile / Active Trip presentation       → 🟢 FIXED / VERIFIED
-Ayush production manual verification     → 🟢 PASS
-Driver blueprint alignment               → 🟢 VERIFIED
-Remaining known Driver bugs              → 🟢 NONE
-Driver Portal                            → 🔒 LOCKED / ACCEPTED
-Day 17                                    → 🔒 CLOSED
+Company integrated blueprint            → 🟢 COMPLETE / VERIFIED
+Receiver request architecture            → 🟢 APPROVED
+Receiver Accept                         → 🟢 IMPLEMENTED / VERIFIED
+Receiver Reject                         → 🟢 IMPLEMENTED / VERIFIED
+Server-side Publish gate                → 🟢 VERIFIED
+Independent server-side Claim gate      → 🟡 INFERRED PASS / SOURCE VERIFIED
+Pending Requests UI                     → 🟢 VERIFIED
+Dashboard attention shortcut            → 🟢 VERIFIED
+Sender/Receiver History                 → 🟢 VERIFIED
+Existing completion workflow             → 🟢 VERIFIED / PRESERVED
+Build/test                              → 🟢 PASS
+Final system audit                      → 🟢 142/142 VERIFIED
+Ayush manual verification               → 🟢 PASS
+Company blueprint                       → 🔒 LOCKED
+Company Portal                          → 🔒 LOCKED
+Day 18                                  → 🔒 CLOSED
 ```
-
-Day 17 Work Progress Report:
-
-`00_PROJECT_CONTROL/Hackathon_Day_17_Work_Progress_Report.md`
-
-Day 17 Closure Checkpoint:
-
-`00_PROJECT_CONTROL/CHECKPOINTS/Chat43_Day17_Node7_Phase1b_Day17_Driver_Closure_Checkpoint.md`
 
 ## Implementation Sequence
 
-The mandatory sequential portal order remains:
+The mandatory sequential portal order is now:
 
 ```text
-Driver → 🟢 ACCEPTED / LOCKED
+Driver → 🔒 ACCEPTED / LOCKED
         ↓
-Company → ⏳ NEXT
+Company → 🔒 ACCEPTED / LOCKED
         ↓
-Company acceptance
+Reviewer R-05 readiness check → ⏳ NEXT GATE
         ↓
-Reviewer R-05 readiness check
+Reviewer implementation / test / manual verification
         ↓
-Reviewer
+Reviewer acceptance / lock
         ↓
 Cross-Portal E2E
         ↓
@@ -137,7 +165,7 @@ No portal is implemented in parallel.
 
 ## Protected Boundary
 
-Phase 1b is frontend-only.
+Phase 1b remains tightly governed.
 
 Protected unless separately investigated and explicitly approved:
 
@@ -154,6 +182,8 @@ Protected unless separately investigated and explicitly approved:
 - AI behavior;
 - Reviewer authority expansion.
 
+The Company Receiver Delivery Request / Accept / Reject layer is an explicitly approved and separately investigated exception completed before Company lock. Its server-side gates and migration are now part of the locked Company product behavior.
+
 C-05 and R-03 remain protected/out of scope. R-05 remains a narrow Reviewer History data-source readiness dependency.
 
 ## Execution Bridge
@@ -167,8 +197,6 @@ GitHub Records → source-of-truth bridge
 
 ## Next Action
 
-**Start Company Portal implementation only.**
+**Run the Reviewer R-05 readiness check, then start Reviewer Portal implementation only after the readiness gate passes.**
 
-The Driver Portal has completed build/test/evidence, Ayush manual verification, defect resolution, blueprint alignment verification, acceptance, and lock. Company is now the next sequential implementation target.
-
-Do not begin Reviewer implementation until Company is built, tested, manually verified, and accepted, and the R-05 readiness check is satisfied.
+Driver and Company are both formally locked. Do not reopen either portal unless new evidence identifies a regression, a locked-blueprint contradiction, or a separately approved governance change.
