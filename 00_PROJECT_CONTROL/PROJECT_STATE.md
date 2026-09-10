@@ -26,7 +26,7 @@ Baseline AI + Timeline + Public Shareable Evidence
 ### Phase 1b / Phase 1c Portal Completion
 
 ```text
-Full 3-Portal UI/UX Redesign
+Full 3-Portal UI/UX Redesign + Reviewer Completion
 → 🟢 DRIVER LOCKED / COMPANY LOCKED / REVIEWER LOCKED
 ```
 
@@ -53,10 +53,6 @@ Day 18                           → 🔒 CLOSED
 Current authoritative integrated blueprint:
 
 `02_ARCHITECTURE/locked_blueprints/Company_Integrated_Upgraded_Blueprint.md`
-
-Historical baseline preserved:
-
-`02_ARCHITECTURE/locked_blueprints/Company_Locked_Blueprint.md`
 
 Company lock approval:
 
@@ -95,20 +91,26 @@ Reviewer Blueprint comparison:
 
 `01_BRAIN_HANDOFFS/Antigravity/Chat48_Day20_Node7_Reviewer_Blueprint_Current_System_Comparison_Report.md`
 
-## Day 20 Reviewer Closure
+## Day 20 Closure
 
 ```text
 Reviewer Blueprint comparison              → 🟢 COMPLETE / FULLY ALIGNED
+Reviewer atomicity implementation          → 🟢 COMPLETE
+Production decision RPC                     → 🟢 VERIFIED
 Approve rollback verification              → 🟢 VERIFIED
 Reject rollback verification               → 🟢 VERIFIED
 Temporary test RPC cleanup                 → 🟢 VERIFIED
 Normal production retry                    → 🟢 VERIFIED
 Reviewer manual verification               → 🟢 PASS
 Reviewer Portal                            → 🔒 LOCKED / APPROVED
-Day 20 Reviewer closure                    → 🔒 COMPLETE
+Day 20                                     → 🔒 CLOSED
 ```
 
 The previously identified Reviewer decision atomicity/failure-safety GAP is resolved. Controlled failure tests showed the identity and current evidence remained `PENDING`; the temporary test function was removed; and the normal production approval path subsequently succeeded.
+
+Authoritative Day 20 work report:
+
+`00_PROJECT_CONTROL/Hackathon_Day_20_Work_Progress_Report.md`
 
 ## Current Project State
 
@@ -131,7 +133,7 @@ Day 16                              → CLOSED
 Day 17                              → CLOSED
 Day 18                              → CLOSED
 Day 19                              → CLOSED
-Day 20 Reviewer                     → CLOSED / LOCKED
+Day 20                              → CLOSED / LOCKED
 Portal implementation baseline      → LOCKED
 Cross-Portal E2E / Demo             → NEXT
 Phase 3                             → CONDITIONAL
@@ -154,6 +156,39 @@ OBSERVATION
 → AYUSH MANUAL VERIFICATION
 ```
 
+## Record Routing
+
+```text
+03_IMPLEMENTATION/prompts/                → implementation handoffs
+03_IMPLEMENTATION/plans/                  → implementation preparation
+03_IMPLEMENTATION/implementation_reports/ → Antigravity reports
+05_DEBUGGING/investigations/              → investigations
+02_ARCHITECTURE/                          → architecture records
+00_PROJECT_CONTROL/                       → project-control records
+00_PROJECT_CONTROL/CHECKPOINTS/           → completion checkpoints
+06_APPROVALS/                             → formal approval / lock records
+```
+
+## Day 20 Records
+
+Work Progress Report:
+
+`00_PROJECT_CONTROL/Hackathon_Day_20_Work_Progress_Report.md`
+
+Reviewer atomicity final verification:
+
+`03_IMPLEMENTATION/implementation_reports/Chat48_Day20_Node7_Phase1c_Reviewer_Decision_TestOnly_RPC_Rollback_Verification_Final_Report.md`
+
+Reviewer lock approval:
+
+`06_APPROVALS/Chat48_Day20_Node7_Phase1c_Reviewer_Portal_Lock_Approval.md`
+
+## Day 19 Records
+
+Work Progress Report:
+
+`00_PROJECT_CONTROL/Hackathon_Day_19_Work_Progress_Report.md`
+
 ## Next Action
 
-**Begin Cross-Portal End-to-End verification and demo-readiness. Validate the locked Driver → Company → Reviewer workflows together without changing the locked portal baselines unless a separately governed defect is discovered.**
+**Begin Cross-Portal End-to-End verification and demo-readiness. Validate the locked Driver → Company → Reviewer workflows together. Do not change locked portal baselines unless a concrete integration defect is reproduced and separately governed.**
