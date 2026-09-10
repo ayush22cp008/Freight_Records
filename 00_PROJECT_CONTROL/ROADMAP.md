@@ -2,9 +2,9 @@
 
 **Project:** Freight — AI Builders Hackathon  
 **Hackathon window:** Aug 21 – Sep 15, 2026  
-**Roadmap status:** ACTIVE EXECUTION ROADMAP — Driver and Company accepted/locked; Reviewer R-05 readiness next.  
-**Current execution day:** Day 19  
-**Current chat:** Chat46
+**Roadmap status:** ACTIVE EXECUTION ROADMAP — Driver, Company, and Reviewer accepted/locked; Cross-Portal E2E next.  
+**Current execution day:** Day 20  
+**Current chat:** Chat48
 
 ## Active Roadmap — 7 Nodes
 
@@ -41,18 +41,17 @@ Phase 1b Reviewer Mental Model      → COMPLETE / LOCKED
 Phase 1b Reviewer Interaction Map   → COMPLETE / LOCKED
 Phase 1b Reviewer Final Blueprint   → COMPLETE / LOCKED
 Shared Cross-Portal Design System   → LOCKED
-Implementation Boundary             → READY / ACTIVE EXECUTION
-Implementation Preparation          → FINALIZED / APPROVED
+Implementation Boundary             → COMPLETE / GOVERNED
+Implementation Preparation          → COMPLETE / APPROVED
 Driver Implementation               → COMPLETE / ACCEPTED / LOCKED
 Company Implementation              → COMPLETE / ACCEPTED / LOCKED
-Reviewer R-05 Readiness              → NEXT
-Reviewer Implementation             → AFTER R-05 READINESS
-Cross-Portal E2E / Demo              → PENDING
+Reviewer Implementation             → COMPLETE / VERIFIED / LOCKED
+Reviewer Decision Atomicity         → VERIFIED
+Reviewer Rollback Safety            → VERIFIED
+Day 19                              → CLOSED
+Day 20                              → CLOSED
+Cross-Portal E2E / Demo              → NEXT
 Phase 3                             → CONDITIONAL
-Day 16                              → CLOSED
-Day 17                              → CLOSED
-Day 18                              → CLOSED
-Day 19                              → CURRENT / OPEN
 ```
 
 ## Node 7 — AI + Final Integration + Demo
@@ -64,17 +63,33 @@ Day 19                              → CURRENT / OPEN
 ```text
 Phase 1a
    ↓
-Phase 1b
+Phase 1b / 1c
    ↓
-Phase 3 (conditional)
+Driver Portal → 🔒 LOCKED
    ↓
-Final E2E + bugfix + demo + presentation
+Company Portal → 🔒 LOCKED
+   ↓
+Reviewer Portal → 🔒 LOCKED
+   ↓
+Cross-Portal E2E
+   ↓
+Final integration bugfix / regression verification
+   ↓
+Demo readiness
+   ↓
+Final presentation
 ```
 
 ### Next Action
 
-**Run the Reviewer R-05 readiness check. After R-05 passes, begin Reviewer Portal implementation.** Driver and Company are formally locked. No parallel portal implementation and no Company reopening without explicit governance approval.
+**Begin Cross-Portal End-to-End validation across the locked Driver, Company, and Reviewer baselines. Any integration defect must be reproduced and separately governed before implementation.**
 
 ## Governance
 
-Day 19 / Chat46 is now the current continuation checkpoint. Historical Day 18 / Chat45 records remain unchanged as historical records.
+Day 20 / Chat48 is now the current continuation checkpoint. Historical Day 19 / Chat46 records remain unchanged as historical records.
+
+Locked portal behavior must not be changed silently. Any new defect follows:
+
+```text
+Observation → Investigation → Evidence → Root Cause → Decision → Fix → Build/Test → Ayush Manual Verification
+```
