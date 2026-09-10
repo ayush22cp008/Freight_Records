@@ -1,6 +1,6 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Sep 10, 2026 — Day 19 / Chat46
+**Last updated:** Sep 11, 2026 — Day 20 / Chat48
 
 ## Current Project Position
 
@@ -29,14 +29,14 @@ Baseline AI + Timeline + Public Shareable Evidence
 → 🟢 COMPLETE / ACCEPTED
 ```
 
-### Phase 1b
+### Phase 1b / Phase 1c
 
 ```text
-Full 3-Portal UI/UX Redesign
-→ 🔵 ACTIVE — DRIVER LOCKED / COMPANY LOCKED / REVIEWER INVESTIGATION COMPLETE
+Full 3-Portal UI/UX Redesign + Reviewer Completion
+→ 🟢 DRIVER LOCKED / COMPANY LOCKED / REVIEWER LOCKED
 ```
 
-Phase 1b is executed sequentially. The original frontend redesign boundary remains protected. The explicitly approved Company Receiver Delivery Request / Accept / Reject workflow dependency was completed before Company lock.
+The three portal baselines are now locked. Further portal changes require explicit evidence, investigation, and governance reopening.
 
 ### Driver Portal
 
@@ -49,9 +49,6 @@ Day 17 → 🔒 CLOSED
 Authoritative blueprint:
 `02_ARCHITECTURE/locked_blueprints/Driver_Locked_Blueprint.md`
 
-Day 17 closure report:
-`00_PROJECT_CONTROL/Hackathon_Day_17_Work_Progress_Report.md`
-
 ### Company Portal
 
 ```text
@@ -63,14 +60,8 @@ Day 18 → 🔒 CLOSED
 Authoritative integrated blueprint:
 `02_ARCHITECTURE/locked_blueprints/Company_Integrated_Upgraded_Blueprint.md`
 
-Company implementation report:
-`03_IMPLEMENTATION/implementation_reports/Chat45_Day18_Node7_Phase1b_Company_Receiver_Accept_Reject_Implementation_Report.md`
-
-Company final system audit:
-`05_DEBUGGING/investigations/Chat45_Day18_Node7_Phase1b_Company_Integrated_Blueprint_Final_System_Audit_Report.md`
-
 Company lock approval:
-`06_APPROVALS/Chat45_Day18_Node7_Phase1b_Company_Portal_Lock_Approval.md`
+`06_APPROVALS/Chat48_Day20_Node7_Phase1c_Company_Portal_Lock_Approval.md`
 
 Company closure basis remains:
 ```text
@@ -94,14 +85,26 @@ Whole Reviewer/Driver/Company Investigation → 🟢 COMPLETE
 Mental Model → 🟢 COMPLETE / LOCKED
 Interaction Mapping → 🟢 COMPLETE / LOCKED
 Final Blueprint → 🟢 COMPLETE / LOCKED
-Day 19 Truth Audit → 🔒 CLOSED
-Implementation → ⏸️ WAITING ON LIVE DATABASE + LIVE RUNTIME TRUTH CHECK
+Reviewer implementation → 🟢 COMPLETE / VERIFIED
+Decision atomicity → 🟢 VERIFIED
+Approve rollback safety → 🟢 VERIFIED
+Reject rollback safety → 🟢 VERIFIED
+Manual verification → 🟢 PASS
+Reviewer Portal → 🔒 LOCKED
+Day 20 → 🔒 CLOSED
 ```
 
 Authoritative blueprint:
 `02_ARCHITECTURE/locked_blueprints/Reviewer_Locked_Blueprint.md`
 
-The Day 19 investigation established source-code defects and explicitly classified live database, production schema/RLS parity, storage, and live runtime reproduction as BLOCKED. No Reviewer fix was authorized yet.
+Reviewer comparison:
+`01_BRAIN_HANDOFFS/Antigravity/Chat48_Day20_Node7_Reviewer_Blueprint_Current_System_Comparison_Report.md`
+
+Reviewer atomicity final verification:
+`03_IMPLEMENTATION/implementation_reports/Chat48_Day20_Node7_Phase1c_Reviewer_Decision_TestOnly_RPC_Rollback_Verification_Final_Report.md`
+
+Reviewer lock approval:
+`06_APPROVALS/Chat48_Day20_Node7_Phase1c_Reviewer_Portal_Lock_Approval.md`
 
 ## Mandatory Implementation / Verification Sequence
 
@@ -110,26 +113,20 @@ Driver → 🔒 ACCEPTED / LOCKED
 ↓
 Company → 🔒 ACCEPTED / LOCKED
 ↓
-Reviewer whole-system/source truth audit → 🟢 COMPLETE
+Reviewer → 🔒 ACCEPTED / LOCKED
 ↓
-LIVE DATABASE TRUTH AUDIT → ⏳ NEXT CHECKPOINT
+Cross-Portal E2E → ⏳ NEXT CHECKPOINT
 ↓
-LIVE RUNTIME / BROWSER AUDIT → ⏳ REQUIRED
+Integration defect investigation → if required
 ↓
-Evidence reconciliation + governance decision
+Final bugfix / regression verification
 ↓
-Only proven fixes authorized
+Demo readiness
 ↓
-Reviewer implementation / manual verification
-↓
-Reviewer acceptance / lock
-↓
-Cross-Portal E2E
-↓
-Final bugfix / demo readiness
+Final presentation
 ```
 
-No portal is implemented in parallel.
+No portal is implemented in parallel. Locked portals remain protected.
 
 ## Protected Boundary
 
@@ -148,7 +145,7 @@ Protected unless separately investigated and explicitly approved:
 - AI behavior
 - Reviewer authority expansion
 
-C-05 and R-03 remain protected/out of scope. Any further Reviewer persistence, recovery, evidence-cardinality, transactionality, or RLS changes require evidence and explicit governance approval.
+C-05 and R-03 remain protected/out of scope. Any future changes affecting locked portal behavior require evidence and explicit governance approval.
 
 ## Execution Bridge
 
@@ -159,38 +156,37 @@ Ayush          → final authority / manual tester / implementation authorizer
 GitHub Records → source-of-truth bridge
 ```
 
-## Chat46 / Day19 Closure State
+## Day 20 Closure State
 
 ```text
-Current Chat → Chat46
-Current Day  → Day19
-Day 19       → 🔒 CLOSED
-Previous Chat/Day → Chat45 / Day18 (historical, unchanged)
+Current Chat → Chat48
+Current Day  → Day20
+Day 20       → 🔒 CLOSED
+Previous Chat/Day → Chat46 / Day19 (historical, unchanged)
 ```
 
-Day 19 was a controlled truth-audit checkpoint, not an implementation day. Historical Day 18 / Chat45 records remain historical records and are not renamed or rewritten.
+Day 20 completed Reviewer decision atomicity implementation, controlled rollback verification for both decision paths, cleanup of the temporary test RPC, and normal production retry verification. Reviewer is now locked.
 
-## Day 19 Work Closure
+## Day 20 Work Closure
 
 ```text
-Whole-system Reviewer / Driver / Company investigation → 🟢 COMPLETE
-Evidence-first questionnaire → 🟢 COMPLETE
-Source-code truth audit → 🟢 COMPLETE
-Concrete source defects identified → 🟢 COMPLETE
-Live database verification → 🔴 BLOCKED
-Live runtime verification → 🔴 BLOCKED
-Implementation authorization → ⏸️ NOT AUTHORIZED
-Reviewer fixes → ⏸️ WAITING ON LIVE TRUTH CHECK
-Driver Portal → 🔒 LOCKED
-Company Portal → 🔒 LOCKED
-Day 19 → 🔒 CLOSED
+Reviewer atomicity investigation      → 🟢 COMPLETE
+Reviewer atomicity implementation     → 🟢 COMPLETE
+Production decision RPC               → 🟢 VERIFIED
+Approve rollback                      → 🟢 VERIFIED
+Reject rollback                       → 🟢 VERIFIED
+Temporary test RPC cleanup            → 🟢 VERIFIED
+Normal production retry               → 🟢 VERIFIED
+Reviewer manual verification          → 🟢 PASS
+Reviewer Portal                       → 🔒 LOCKED
+Driver Portal                         → 🔒 LOCKED
+Company Portal                        → 🔒 LOCKED
+Day 20                                → 🔒 CLOSED
 ```
 
-Authoritative Day 19 report:
-`00_PROJECT_CONTROL/Hackathon_Day_19_Work_Progress_Report.md`
-
-Key Day 19 findings include evidence-cardinality mismatches in onboarding and Reviewer Verify, the Driver `DRIVING_LICENCE` vs Queue `LICENSE` label mismatch, nondeterministic Queue evidence selection, and a non-transactional Reviewer decision path. These are source-level findings; corresponding live database/runtime facts remain unverified until the next checkpoint.
+Authoritative Day 20 report:
+`00_PROJECT_CONTROL/Hackathon_Day_20_Work_Progress_Report.md`
 
 ## Next Action
 
-**Run the LIVE DATABASE TRUTH AUDIT and LIVE RUNTIME / BROWSER AUDIT. Reconcile those results with the Day 19 source findings, then make an explicit governance decision on any required fix before Reviewer implementation proceeds.**
+**Begin Cross-Portal End-to-End validation across Company → Driver → Reviewer → delivery/history flows using the locked portal baselines. Do not make portal changes unless a concrete integration defect is reproduced and separately governed.**
