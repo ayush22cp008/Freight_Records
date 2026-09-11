@@ -164,6 +164,47 @@ Formal checkpoint:
 
 `00_PROJECT_CONTROL/CHECKPOINTS/Chat50_Day21_Node7_SameCompany_Sender_Receiver_Governance_Manual_Verification_Checkpoint.md`
 
+## Day 21 — Cross-Portal E2E Manual Verification
+
+```text
+Company Trip creation/publication       → 🟢 PASS
+Driver discovery/claim                  → 🟢 PASS
+Company claim-state visibility           → 🟢 PASS
+Pickup lifecycle                         → 🟢 PASS
+Transit lifecycle                        → 🟢 PASS
+Delivery / receiver lifecycle            → 🟢 PASS
+Final receiver confirmation              → 🟢 PASS
+Company final state                      → 🟢 COMPLETED
+Driver final state                       → 🟢 TRIP COMPLETED
+Evidence / event timeline                → 🟢 PASS
+AI Evidence Summary                      → 🟢 PASS
+Observed functional bug                  → NONE REPORTED
+Cross-Portal E2E                         → 🟢 COMPLETE / VERIFIED
+```
+
+Ayush manually executed the deployed cross-portal workflow using screenshot evidence. The tested Trip progressed from Company creation/publication through Driver claim, the complete delivery lifecycle, receiving-company confirmation, final completion, evidence/timeline presentation, and AI Evidence Summary.
+
+Observed delivery event sequence:
+
+```text
+ARRIVED_AT_PICKUP
+→ PICKUP_CHECKED_IN
+→ GOODS_LOADED
+→ PICKUP_DEPARTED
+→ IN_TRANSIT
+→ ARRIVED_AT_DELIVERY
+→ RECEIVER_CHECKED_IN
+→ GOODS_UNLOADED
+→ DELIVERY_DEPARTED
+```
+
+Authoritative E2E records:
+
+- `04_TESTING/test_results/Chat50_Day21_Node7_Cross_Portal_E2E_Manual_Verification_Test_Result.md`
+- `00_PROJECT_CONTROL/CHECKPOINTS/Chat50_Day21_Node7_Cross_Portal_E2E_Manual_Verification_Checkpoint.md`
+
+No implementation defect was identified in the tested E2E run. No integration bugfix investigation was opened.
+
 ## Current Project State
 
 ```text
@@ -188,8 +229,9 @@ Day 19                              → CLOSED
 Day 20                              → CLOSED / LOCKED
 Day 21 auto-refresh                 → DROPPED FROM CURRENT SCOPE
 Day 21 Chat50 same-company rule     → IMPLEMENTED / AYUSH VERIFIED
+Cross-Portal E2E                    → COMPLETE / AYUSH VERIFIED
 Portal implementation baseline      → LOCKED
-Cross-Portal E2E / Demo             → NEXT
+Final regression / Demo Readiness   → NEXT
 Phase 3                             → CONDITIONAL
 ```
 
@@ -225,4 +267,4 @@ OBSERVATION
 
 ## Next Action
 
-**Proceed with the remaining Cross-Portal End-to-End / demo-readiness work using the locked Driver → Company → Reviewer baselines and the verified Chat50 NEW-Trip sender/receiver invariant. The dropped auto-refresh feature must not be implemented unless the scope is explicitly reopened later.**
+**Proceed to final regression verification and Demo Readiness using the locked Driver → Company → Reviewer baselines and the verified Chat50 NEW-Trip sender/receiver invariant. Do not implement the dropped auto-refresh feature unless its scope is explicitly reopened later.**
