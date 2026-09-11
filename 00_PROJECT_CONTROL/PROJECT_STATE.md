@@ -112,6 +112,29 @@ Authoritative Day 20 work report:
 
 `00_PROJECT_CONTROL/Hackathon_Day_20_Work_Progress_Report.md`
 
+## Day 21 — Cross-Portal Auto-Refresh Decision
+
+```text
+Global fixed-timer auto-refresh             → ❌ REJECTED / NOT IMPLEMENTED
+Event-driven scoped auto-refresh             → 🟡 INVESTIGATED / NOT IMPLEMENTED
+Production Realtime publication              → ✅ VERIFIED TO EXIST
+Production Realtime application tables       → ❌ NONE ATTACHED AT VERIFICATION
+Current implementation status                → ❌ DROPPED FROM CURRENT SCOPE
+```
+
+The event-driven, resource-scoped approach was investigated for compatibility with the existing Freight architecture. Independent review supported the architecture with conditions, but the feature is not required for the current project completion target and is therefore dropped from the current implementation scope.
+
+The investigation, compatibility reviews, and verification records are preserved as historical decision evidence. No source-code, schema, RLS, lifecycle, claiming, evidence, authentication, AI, or locked-portal changes were authorized or made for this feature.
+
+Relevant records:
+
+- `05_DEBUGGING/investigations/Chat49_Day21_Node7_CrossPortal_AutoRefresh_Investigation.md`
+- `05_DEBUGGING/investigations/Chat49_Day21_Node7_CrossPortal_Global_AutoRefresh_Investigation_Report.md`
+- `05_DEBUGGING/investigations/Chat49_Day21_Node7_EventDriven_Scoped_AutoRefresh_Architecture_Reinvestigation_Report.md`
+- `01_BRAIN_HANDOFFS/Claude/Chat49_Day21_Node7_EventDriven_AutoRefresh_ExistingSystem_Compatibility_Review_Request.md`
+- `01_BRAIN_HANDOFFS/Grok/Chat49_Day21_Node7_Grok_Independent_Compatibility_Review_EventDriven_Scoped_AutoRefresh.md`
+- `04_TESTING/test_results/Chat49_Day21_Node7_EventDriven_AutoRefresh_PreImplementation_Gate_Verification_Test_Result.md`
+
 ## Current Project State
 
 ```text
@@ -134,6 +157,7 @@ Day 17                              → CLOSED
 Day 18                              → CLOSED
 Day 19                              → CLOSED
 Day 20                              → CLOSED / LOCKED
+Day 21 auto-refresh                 → DROPPED FROM CURRENT SCOPE
 Portal implementation baseline      → LOCKED
 Cross-Portal E2E / Demo             → NEXT
 Phase 3                             → CONDITIONAL
@@ -183,6 +207,16 @@ Reviewer lock approval:
 
 `06_APPROVALS/Chat48_Day20_Node7_Phase1c_Reviewer_Portal_Lock_Approval.md`
 
+## Day 21 Auto-Refresh Records
+
+Verification plan:
+
+`04_TESTING/test_plans/Chat49_Day21_Node7_EventDriven_AutoRefresh_PreImplementation_Gate_Verification_Test_Plan.md`
+
+Verification result:
+
+`04_TESTING/test_results/Chat49_Day21_Node7_EventDriven_AutoRefresh_PreImplementation_Gate_Verification_Test_Result.md`
+
 ## Day 19 Records
 
 Work Progress Report:
@@ -191,4 +225,4 @@ Work Progress Report:
 
 ## Next Action
 
-**Begin Cross-Portal End-to-End verification and demo-readiness. Validate the locked Driver → Company → Reviewer workflows together. Do not change locked portal baselines unless a concrete integration defect is reproduced and separately governed.**
+**Proceed with project documentation and the remaining Cross-Portal End-to-End / demo-readiness work using the locked Driver → Company → Reviewer baselines. The dropped auto-refresh feature must not be implemented unless the scope is explicitly reopened later.**
