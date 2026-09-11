@@ -1,6 +1,6 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Sep 11, 2026 — Day 21 / Chat49
+**Last updated:** Sep 12, 2026 — Day 21 / Chat50
 
 ## Current Project Position
 
@@ -36,7 +36,7 @@ Full 3-Portal UI/UX Redesign + Reviewer Completion
 → 🟢 DRIVER LOCKED / COMPANY LOCKED / REVIEWER LOCKED
 ```
 
-The three portal baselines are now locked. Further portal changes require explicit evidence, investigation, and governance reopening.
+The three portal baselines remain locked. The Chat50 same-company Sender/Receiver governance change is an explicitly approved exception limited to NEW Trip creation and does not reopen unrelated Company Portal behavior.
 
 ### Driver Portal
 
@@ -55,6 +55,7 @@ Authoritative blueprint:
 Blueprint → 🔒 COMPLETE / LOCKED
 Implementation → 🟢 COMPLETE / ACCEPTED / LOCKED
 Day 18 → 🔒 CLOSED
+Chat50 same-company NEW-Trip rule → 🟢 IMPLEMENTED / AYUSH VERIFIED
 ```
 
 Authoritative integrated blueprint:
@@ -63,7 +64,13 @@ Authoritative integrated blueprint:
 Company lock approval:
 `06_APPROVALS/Chat45_Day18_Node7_Phase1b_Company_Portal_Lock_Approval.md`
 
-No further Company product changes without explicit governance reopening or a separately governed defect investigation.
+Chat50 governance decision explicitly supersedes the previous same-company behavior for NEW Trips only. Existing same-company Trips remain preserved. No unrelated Company product changes are authorized.
+
+Governance decision:
+`02_ARCHITECTURE/Chat50_Day21_Node7_SameCompany_Sender_Receiver_Governance_Decision.md`
+
+Manual verification:
+`04_TESTING/test_results/Chat50_Day21_Node7_SameCompany_Sender_Receiver_Governance_Manual_Verification_Test_Result.md`
 
 ### Reviewer Portal
 
@@ -108,21 +115,46 @@ The auto-refresh feature was investigated through source compatibility review an
 
 No source-code, schema, RLS, lifecycle, claiming, evidence, authentication, AI, or locked-portal changes were authorized or made for auto-refresh. Investigation and verification records are preserved for historical reference.
 
+## Day 21 — Chat50 Same-Company Sender/Receiver Governance
+
+```text
+Governance investigation                 → 🟢 COMPLETE
+Ayush governance decision                → 🟢 APPROVED
+Implementation handoff                   → 🟢 CREATED
+Implementation                          → 🟢 COMPLETE
+Ayush UI manual verification             → 🟢 PASS
+Ayush direct API verification            → 🟢 PASS
+Post-rejection Trip visibility check     → 🟢 PASS
+Legacy same-company data migration       → ❌ NOT PERFORMED
+Source GitHub push                       → ❌ NOT PERFORMED
+```
+
+New product rule:
+
+```text
+NEW Trip: Sending Company = Receiving Company → ❌ REJECTED
+NEW Trip: Sending Company ≠ Receiving Company → ✅ ALLOWED
+```
+
+The deployed `testc2` account was manually verified. The Receiving Company selector did not contain `testc2`. A direct authenticated API attempt using `testc2` as its own receiver returned HTTP 400 with the expected rejection message. The rejected test Trip was not visible in My Created Trips.
+
+Existing same-company Trips were not deleted, reassigned, or migrated.
+
 Relevant records:
-- `05_DEBUGGING/investigations/Chat49_Day21_Node7_CrossPortal_AutoRefresh_Investigation.md`
-- `05_DEBUGGING/investigations/Chat49_Day21_Node7_CrossPortal_Global_AutoRefresh_Investigation_Report.md`
-- `05_DEBUGGING/investigations/Chat49_Day21_Node7_EventDriven_Scoped_AutoRefresh_Architecture_Reinvestigation_Report.md`
-- `01_BRAIN_HANDOFFS/Claude/Chat49_Day21_Node7_EventDriven_AutoRefresh_ExistingSystem_Compatibility_Review_Request.md`
-- `01_BRAIN_HANDOFFS/Grok/Chat49_Day21_Node7_Grok_Independent_Compatibility_Review_EventDriven_Scoped_AutoRefresh.md`
-- `04_TESTING/test_plans/Chat49_Day21_Node7_EventDriven_AutoRefresh_PreImplementation_Gate_Verification_Test_Plan.md`
-- `04_TESTING/test_results/Chat49_Day21_Node7_EventDriven_AutoRefresh_PreImplementation_Gate_Verification_Test_Result.md`
+
+- `02_ARCHITECTURE/Chat50_Day21_Node7_SameCompany_Sender_Receiver_Governance_Decision.md`
+- `05_DEBUGGING/investigations/Chat50_Day21_Node7_SameCompany_Sender_Receiver_Governance_Reinvestigation_Report.md`
+- `03_IMPLEMENTATION/prompts/Chat50_Day21_Node7_SameCompany_Sender_Receiver_Governance_Implementation_Prompt.md`
+- `03_IMPLEMENTATION/implementation_reports/Chat50_Day21_Node7_Report_SameCompany_Sender_Receiver_Governance.md`
+- `04_TESTING/test_results/Chat50_Day21_Node7_SameCompany_Sender_Receiver_Governance_Manual_Verification_Test_Result.md`
+- `00_PROJECT_CONTROL/CHECKPOINTS/Chat50_Day21_Node7_SameCompany_Sender_Receiver_Governance_Manual_Verification_Checkpoint.md`
 
 ## Mandatory Implementation / Verification Sequence
 
 ```text
 Driver → 🔒 ACCEPTED / LOCKED
 ↓
-Company → 🔒 ACCEPTED / LOCKED
+Company → 🔒 ACCEPTED / LOCKED + Chat50 NEW-Trip governance exception VERIFIED
 ↓
 Reviewer → 🔒 ACCEPTED / LOCKED
 ↓
@@ -137,7 +169,7 @@ Demo readiness
 Final presentation
 ```
 
-No portal is implemented in parallel. Locked portals remain protected.
+No portal is implemented in parallel. Locked portals remain protected except for explicitly governed changes such as Chat50's NEW-Trip sender/receiver invariant.
 
 ## Protected Boundary
 
@@ -169,4 +201,4 @@ GitHub Records → source-of-truth bridge
 
 ## Current Next Action
 
-**Proceed with project documentation and Cross-Portal End-to-End / demo-readiness work using the locked Driver → Company → Reviewer baselines. Do not implement the dropped auto-refresh feature unless its scope is explicitly reopened later.**
+**Proceed with Cross-Portal End-to-End / demo-readiness validation using the locked Driver → Company → Reviewer baselines and the verified Chat50 NEW-Trip sender/receiver invariant. Do not implement the dropped auto-refresh feature unless its scope is explicitly reopened later.**
