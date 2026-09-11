@@ -1,6 +1,6 @@
 # CURRENT_STATUS.md
 
-**Last updated:** Sep 11, 2026 — Day 20 / Chat48
+**Last updated:** Sep 11, 2026 — Day 21 / Chat49
 
 ## Current Project Position
 
@@ -61,19 +61,7 @@ Authoritative integrated blueprint:
 `02_ARCHITECTURE/locked_blueprints/Company_Integrated_Upgraded_Blueprint.md`
 
 Company lock approval:
-`06_APPROVALS/Chat48_Day20_Node7_Phase1c_Company_Portal_Lock_Approval.md`
-
-Company closure basis remains:
-```text
-Integrated Blueprint requirements → 🟢 142/142 VERIFIED
-Receiver Accept/Reject → 🟢 IMPLEMENTED / VERIFIED
-Accept → Publish → Marketplace → 🟢 VERIFIED
-Reject → Publish protection → 🟢 VERIFIED
-Direct Claim protection → 🟡 INFERRED PASS / SOURCE VERIFIED
-Sender/Receiver History → 🟢 VERIFIED
-Existing completion lifecycle → 🟢 VERIFIED / PRESERVED
-Company Portal → 🔒 LOCKED
-```
+`06_APPROVALS/Chat45_Day18_Node7_Phase1b_Company_Portal_Lock_Approval.md`
 
 No further Company product changes without explicit governance reopening or a separately governed defect investigation.
 
@@ -106,6 +94,29 @@ Reviewer atomicity final verification:
 Reviewer lock approval:
 `06_APPROVALS/Chat48_Day20_Node7_Phase1c_Reviewer_Portal_Lock_Approval.md`
 
+## Day 21 — Auto-Refresh Scope Decision
+
+```text
+Global fixed-timer auto-refresh       → ❌ REJECTED / NOT IMPLEMENTED
+Event-driven scoped auto-refresh      → 🟡 INVESTIGATED / NOT IMPLEMENTED
+Production Realtime publication       → ✅ VERIFIED TO EXIST
+Production application tables         → ❌ NONE ATTACHED AT VERIFICATION
+Current implementation status         → ❌ DROPPED FROM CURRENT SCOPE
+```
+
+The auto-refresh feature was investigated through source compatibility review and production Supabase verification. The event-driven scoped approach was found architecturally compatible with the current system, but it is not required for the current completion target. The feature is therefore dropped from the current implementation scope.
+
+No source-code, schema, RLS, lifecycle, claiming, evidence, authentication, AI, or locked-portal changes were authorized or made for auto-refresh. Investigation and verification records are preserved for historical reference.
+
+Relevant records:
+- `05_DEBUGGING/investigations/Chat49_Day21_Node7_CrossPortal_AutoRefresh_Investigation.md`
+- `05_DEBUGGING/investigations/Chat49_Day21_Node7_CrossPortal_Global_AutoRefresh_Investigation_Report.md`
+- `05_DEBUGGING/investigations/Chat49_Day21_Node7_EventDriven_Scoped_AutoRefresh_Architecture_Reinvestigation_Report.md`
+- `01_BRAIN_HANDOFFS/Claude/Chat49_Day21_Node7_EventDriven_AutoRefresh_ExistingSystem_Compatibility_Review_Request.md`
+- `01_BRAIN_HANDOFFS/Grok/Chat49_Day21_Node7_Grok_Independent_Compatibility_Review_EventDriven_Scoped_AutoRefresh.md`
+- `04_TESTING/test_plans/Chat49_Day21_Node7_EventDriven_AutoRefresh_PreImplementation_Gate_Verification_Test_Plan.md`
+- `04_TESTING/test_results/Chat49_Day21_Node7_EventDriven_AutoRefresh_PreImplementation_Gate_Verification_Test_Result.md`
+
 ## Mandatory Implementation / Verification Sequence
 
 ```text
@@ -115,7 +126,7 @@ Company → 🔒 ACCEPTED / LOCKED
 ↓
 Reviewer → 🔒 ACCEPTED / LOCKED
 ↓
-Cross-Portal E2E → ⏳ NEXT CHECKPOINT
+Cross-Portal E2E → ⏳ CURRENT NEXT CHECKPOINT
 ↓
 Integration defect investigation → if required
 ↓
@@ -156,37 +167,6 @@ Ayush          → final authority / manual tester / implementation authorizer
 GitHub Records → source-of-truth bridge
 ```
 
-## Day 20 Closure State
+## Current Next Action
 
-```text
-Current Chat → Chat48
-Current Day  → Day20
-Day 20       → 🔒 CLOSED
-Previous Chat/Day → Chat46 / Day19 (historical, unchanged)
-```
-
-Day 20 completed Reviewer decision atomicity implementation, controlled rollback verification for both decision paths, cleanup of the temporary test RPC, and normal production retry verification. Reviewer is now locked.
-
-## Day 20 Work Closure
-
-```text
-Reviewer atomicity investigation      → 🟢 COMPLETE
-Reviewer atomicity implementation     → 🟢 COMPLETE
-Production decision RPC               → 🟢 VERIFIED
-Approve rollback                      → 🟢 VERIFIED
-Reject rollback                       → 🟢 VERIFIED
-Temporary test RPC cleanup            → 🟢 VERIFIED
-Normal production retry               → 🟢 VERIFIED
-Reviewer manual verification          → 🟢 PASS
-Reviewer Portal                       → 🔒 LOCKED
-Driver Portal                         → 🔒 LOCKED
-Company Portal                        → 🔒 LOCKED
-Day 20                                → 🔒 CLOSED
-```
-
-Authoritative Day 20 report:
-`00_PROJECT_CONTROL/Hackathon_Day_20_Work_Progress_Report.md`
-
-## Next Action
-
-**Begin Cross-Portal End-to-End validation across Company → Driver → Reviewer → delivery/history flows using the locked portal baselines. Do not make portal changes unless a concrete integration defect is reproduced and separately governed.**
+**Proceed with project documentation and Cross-Portal End-to-End / demo-readiness work using the locked Driver → Company → Reviewer baselines. Do not implement the dropped auto-refresh feature unless its scope is explicitly reopened later.**
