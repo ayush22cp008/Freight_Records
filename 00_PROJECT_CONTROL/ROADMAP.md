@@ -3,8 +3,8 @@
 **Project:** Freight — AI Builders Hackathon  
 **Hackathon window:** Aug 21 – Sep 15, 2026  
 **Roadmap status:** ACTIVE EXECUTION ROADMAP — Driver, Company, and Reviewer accepted/locked; Cross-Portal E2E next.  
-**Current execution day:** Day 20  
-**Current chat:** Chat48
+**Current execution day:** Day 21  
+**Current chat:** Chat49
 
 ## Active Roadmap — 7 Nodes
 
@@ -50,6 +50,7 @@ Reviewer Decision Atomicity         → VERIFIED
 Reviewer Rollback Safety            → VERIFIED
 Day 19                              → CLOSED
 Day 20                              → CLOSED
+Day 21 Auto-Refresh                 → DROPPED FROM CURRENT SCOPE
 Cross-Portal E2E / Demo              → NEXT
 Phase 3                             → CONDITIONAL
 ```
@@ -80,13 +81,21 @@ Demo readiness
 Final presentation
 ```
 
+### Day 21 Auto-Refresh Decision
+
+The proposed Cross-Portal auto-refresh enhancement was investigated and independently reviewed. Global fixed-timer polling was rejected. Event-driven, resource-scoped Realtime refresh was found architecturally compatible with conditions, but it was not required for the current completion target and was dropped from the current implementation scope.
+
+Production verification established that the `supabase_realtime` publication exists, while no application tables were attached at the time of verification. No production Realtime publication changes were made.
+
+The investigation/test records remain preserved as historical evidence. Auto-refresh must not be implemented unless its scope is explicitly reopened later.
+
 ### Next Action
 
-**Begin Cross-Portal End-to-End validation across the locked Driver, Company, and Reviewer baselines. Any integration defect must be reproduced and separately governed before implementation.**
+**Proceed with Cross-Portal End-to-End validation and demo-readiness using the locked Driver, Company, and Reviewer baselines. Do not implement the dropped auto-refresh feature.**
 
 ## Governance
 
-Day 20 / Chat48 is now the current continuation checkpoint. Historical Day 19 / Chat46 records remain unchanged as historical records.
+Day 21 / Chat49 is the current continuation point. Historical Day 20 / Chat48 records remain unchanged as historical records.
 
 Locked portal behavior must not be changed silently. Any new defect follows:
 
