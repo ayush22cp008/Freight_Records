@@ -48,6 +48,7 @@ Authoritative locked blueprint:
 Integrated UX/Product Blueprint → 🔒 COMPLETE / LOCKED
 Implementation                  → 🟢 COMPLETE / ACCEPTED / LOCKED
 Day 18                           → 🔒 CLOSED
+Chat50 NEW-Trip same-company rule → 🟢 IMPLEMENTED / AYUSH VERIFIED
 ```
 
 Current authoritative integrated blueprint:
@@ -58,7 +59,23 @@ Company lock approval:
 
 `06_APPROVALS/Chat45_Day18_Node7_Phase1b_Company_Portal_Lock_Approval.md`
 
-Company remains formally locked. No further Company product changes should be made without explicit governance reopening or a separately governed defect investigation.
+The Company Portal remains a locked baseline except for the explicitly governed Chat50 NEW-Trip sender/receiver rule. The Chat50 decision supersedes the previous same-company behavior for NEW Trips only. Existing same-company Trips remain preserved and are not migrated.
+
+Chat50 governance decision:
+
+`02_ARCHITECTURE/Chat50_Day21_Node7_SameCompany_Sender_Receiver_Governance_Decision.md`
+
+Chat50 implementation report:
+
+`03_IMPLEMENTATION/implementation_reports/Chat50_Day21_Node7_Report_SameCompany_Sender_Receiver_Governance.md`
+
+Chat50 manual verification result:
+
+`04_TESTING/test_results/Chat50_Day21_Node7_SameCompany_Sender_Receiver_Governance_Manual_Verification_Test_Result.md`
+
+Chat50 checkpoint:
+
+`00_PROJECT_CONTROL/CHECKPOINTS/Chat50_Day21_Node7_SameCompany_Sender_Receiver_Governance_Manual_Verification_Checkpoint.md`
 
 #### Reviewer Portal
 
@@ -83,30 +100,22 @@ Reviewer lock approval:
 
 `06_APPROVALS/Chat48_Day20_Node7_Phase1c_Reviewer_Portal_Lock_Approval.md`
 
-Final atomicity verification:
-
-`03_IMPLEMENTATION/implementation_reports/Chat48_Day20_Node7_Phase1c_Reviewer_Decision_TestOnly_RPC_Rollback_Verification_Final_Report.md`
-
-Reviewer Blueprint comparison:
-
-`01_BRAIN_HANDOFFS/Antigravity/Chat48_Day20_Node7_Reviewer_Blueprint_Current_System_Comparison_Report.md`
-
 ## Day 20 Closure
 
 ```text
 Reviewer Blueprint comparison              → 🟢 COMPLETE / FULLY ALIGNED
 Reviewer atomicity implementation          → 🟢 COMPLETE
 Production decision RPC                     → 🟢 VERIFIED
-Approve rollback verification              → 🟢 VERIFIED
-Reject rollback verification               → 🟢 VERIFIED
-Temporary test RPC cleanup                 → 🟢 VERIFIED
-Normal production retry                    → 🟢 VERIFIED
-Reviewer manual verification               → 🟢 PASS
+Approve rollback verification               → 🟢 VERIFIED
+Reject rollback verification                → 🟢 VERIFIED
+Temporary test RPC cleanup                  → 🟢 VERIFIED
+Normal production retry                     → 🟢 VERIFIED
+Reviewer manual verification                → 🟢 PASS
 Reviewer Portal                            → 🔒 LOCKED / APPROVED
 Day 20                                     → 🔒 CLOSED
 ```
 
-The previously identified Reviewer decision atomicity/failure-safety GAP is resolved. Controlled failure tests showed the identity and current evidence remained `PENDING`; the temporary test function was removed; and the normal production approval path subsequently succeeded.
+The previously identified Reviewer decision atomicity/failure-safety GAP is resolved.
 
 Authoritative Day 20 work report:
 
@@ -124,16 +133,36 @@ Current implementation status                → ❌ DROPPED FROM CURRENT SCOPE
 
 The event-driven, resource-scoped approach was investigated for compatibility with the existing Freight architecture. Independent review supported the architecture with conditions, but the feature is not required for the current project completion target and is therefore dropped from the current implementation scope.
 
-The investigation, compatibility reviews, and verification records are preserved as historical decision evidence. No source-code, schema, RLS, lifecycle, claiming, evidence, authentication, AI, or locked-portal changes were authorized or made for this feature.
+No source-code, schema, RLS, lifecycle, claiming, evidence, authentication, AI, or locked-portal changes were authorized or made for auto-refresh.
 
-Relevant records:
+## Day 21 — Chat50 Same-Company Sender/Receiver Governance
 
-- `05_DEBUGGING/investigations/Chat49_Day21_Node7_CrossPortal_AutoRefresh_Investigation.md`
-- `05_DEBUGGING/investigations/Chat49_Day21_Node7_CrossPortal_Global_AutoRefresh_Investigation_Report.md`
-- `05_DEBUGGING/investigations/Chat49_Day21_Node7_EventDriven_Scoped_AutoRefresh_Architecture_Reinvestigation_Report.md`
-- `01_BRAIN_HANDOFFS/Claude/Chat49_Day21_Node7_EventDriven_AutoRefresh_ExistingSystem_Compatibility_Review_Request.md`
-- `01_BRAIN_HANDOFFS/Grok/Chat49_Day21_Node7_Grok_Independent_Compatibility_Review_EventDriven_Scoped_AutoRefresh.md`
-- `04_TESTING/test_results/Chat49_Day21_Node7_EventDriven_AutoRefresh_PreImplementation_Gate_Verification_Test_Result.md`
+```text
+Governance investigation                 → 🟢 COMPLETE
+Ayush governance decision                → 🟢 APPROVED
+Implementation handoff                   → 🟢 CREATED
+Implementation                          → 🟢 COMPLETE
+Ayush UI manual verification             → 🟢 PASS
+Ayush direct API verification            → 🟢 PASS
+Post-rejection Trip visibility check     → 🟢 PASS
+Legacy same-company data migration       → ❌ NOT PERFORMED
+Source GitHub push                       → ❌ NOT PERFORMED
+```
+
+New product rule:
+
+```text
+NEW Trip: Sending Company = Receiving Company → ❌ REJECTED
+NEW Trip: Sending Company ≠ Receiving Company → ✅ ALLOWED
+```
+
+The deployed `testc2` account was manually verified. The Receiving Company selector did not contain `testc2`. A direct authenticated API attempt using `testc2` as its own receiver returned HTTP 400 with the expected rejection message. The rejected test Trip was not visible in My Created Trips.
+
+Existing same-company Trips were not deleted, reassigned, or migrated.
+
+Formal checkpoint:
+
+`00_PROJECT_CONTROL/CHECKPOINTS/Chat50_Day21_Node7_SameCompany_Sender_Receiver_Governance_Manual_Verification_Checkpoint.md`
 
 ## Current Project State
 
@@ -149,7 +178,7 @@ Node 6                              → COMPLETE / ACCEPTED
 Node 7                              → ACTIVE
 Node 7 Phase 1a                     → COMPLETE / ACCEPTED
 Node 7 Driver                       → COMPLETE / ACCEPTED / LOCKED
-Node 7 Company                      → COMPLETE / ACCEPTED / LOCKED
+Node 7 Company                      → COMPLETE / ACCEPTED / LOCKED + Chat50 NEW-Trip exception VERIFIED
 Node 7 Reviewer                     → COMPLETE / ACCEPTED / LOCKED
 Shared Cross-Portal Design System   → LOCKED
 Day 16                              → CLOSED
@@ -158,6 +187,7 @@ Day 18                              → CLOSED
 Day 19                              → CLOSED
 Day 20                              → CLOSED / LOCKED
 Day 21 auto-refresh                 → DROPPED FROM CURRENT SCOPE
+Day 21 Chat50 same-company rule     → IMPLEMENTED / AYUSH VERIFIED
 Portal implementation baseline      → LOCKED
 Cross-Portal E2E / Demo             → NEXT
 Phase 3                             → CONDITIONAL
@@ -165,7 +195,7 @@ Phase 3                             → CONDITIONAL
 
 ## Protected Governance Boundary
 
-Driver, Company, and Reviewer portals are now locked baselines. Do not introduce product, database, persistence, transaction, RLS/security, authentication, lifecycle, evidence, claiming, backend behavior, AI behavior, or Reviewer-authority changes without a new investigation and explicit governance approval.
+Driver, Company, and Reviewer portals remain locked baselines. The Chat50 same-company change is a separately governed exception limited to NEW Trip creation. Do not introduce unrelated product, database, persistence, transaction, RLS/security, authentication, lifecycle, evidence, claiming, backend behavior, AI behavior, or Reviewer-authority changes without a new investigation and explicit governance approval.
 
 Any future defect must follow:
 
@@ -193,36 +223,6 @@ OBSERVATION
 06_APPROVALS/                             → formal approval / lock records
 ```
 
-## Day 20 Records
-
-Work Progress Report:
-
-`00_PROJECT_CONTROL/Hackathon_Day_20_Work_Progress_Report.md`
-
-Reviewer atomicity final verification:
-
-`03_IMPLEMENTATION/implementation_reports/Chat48_Day20_Node7_Phase1c_Reviewer_Decision_TestOnly_RPC_Rollback_Verification_Final_Report.md`
-
-Reviewer lock approval:
-
-`06_APPROVALS/Chat48_Day20_Node7_Phase1c_Reviewer_Portal_Lock_Approval.md`
-
-## Day 21 Auto-Refresh Records
-
-Verification plan:
-
-`04_TESTING/test_plans/Chat49_Day21_Node7_EventDriven_AutoRefresh_PreImplementation_Gate_Verification_Test_Plan.md`
-
-Verification result:
-
-`04_TESTING/test_results/Chat49_Day21_Node7_EventDriven_AutoRefresh_PreImplementation_Gate_Verification_Test_Result.md`
-
-## Day 19 Records
-
-Work Progress Report:
-
-`00_PROJECT_CONTROL/Hackathon_Day_19_Work_Progress_Report.md`
-
 ## Next Action
 
-**Proceed with project documentation and the remaining Cross-Portal End-to-End / demo-readiness work using the locked Driver → Company → Reviewer baselines. The dropped auto-refresh feature must not be implemented unless the scope is explicitly reopened later.**
+**Proceed with the remaining Cross-Portal End-to-End / demo-readiness work using the locked Driver → Company → Reviewer baselines and the verified Chat50 NEW-Trip sender/receiver invariant. The dropped auto-refresh feature must not be implemented unless the scope is explicitly reopened later.**
