@@ -1,26 +1,32 @@
 # Chat51 — Day21 — Node 7
-## DeliveryProof README Implementation Report
+## DeliveryProof README Implementation & Correction Report
 
-**Status:** IMPLEMENTED
+**Status:** IMPLEMENTED AND CORRECTED
 **Author:** Antigravity
 
-## Execution Checklist
-
+## Original Implementation (Pass 1)
 - **README updated:** Yes
 - **Exact source path:** `README.md`
-- **Major sections completed:**
-  - Product Introduction & The Real Problem
-  - Research, Market Gap, and Differentiation
-  - Role definitions (Driver, Company, Reviewer) with correct canonical journeys
-  - Judge Quick Start (with known demo accounts `testc2` and `ayushhalpati.2004@gmail.com`)
-  - How the System Works & Technical Architecture
-  - Security & Trust Model (with REV-03 / R-05 caveats included)
-  - AI Usage & Real Verification Testing claims
-- **Credential/link verification performed:** Verified against `seed.sql`, records, and E2E results. (Used known Company credential `testc2` and Reviewer credential `ayushhalpati.2004@gmail.com`). 
-- **Role/blueprint accuracy check:** Roles accurately reflect locked Driver, Company, and Reviewer blueprints. Sender and Receiver are explicitly stated as Trip-specific hats of the single Company role. Reviewer is strictly confined to identity/role verification.
-- **Evidence terminology check:** Explicitly distinguished "Onboarding Evidence" from "Delivery Evidence".
-- **Security-status caveat check:** Included the documented REV-03 Reviewer service-role security gap explicitly.
-- **Validation performed:** Markdown syntax verified.
-- **Unresolved documentation issues:** The public deployed URL could not be dynamically extracted from the repository, so a placeholder instructing the judge to refer to the Devpost/Submission deployment link was safely used.
-- **Source commit SHA:** `95ae65d` (Committed locally in `freight` repository).
+- **Major sections completed:** Product Introduction, Research, Roles, Quick Start, Architecture, Security, AI, etc.
+- **Source commit SHA:** `95ae65d`
+
+## Correction Handoff (Pass 2)
+The following four corrections were successfully applied to the README:
+
+1. **Deployment URL Verified & Updated:** 
+   Replaced the placeholder with the exact URL: `https://freighthackathon.vercel.app`
+2. **Immutable/Absolute Claim Cleanup:** 
+   Softened claims describing the timeline as "immutable" to "verifiable, evidence-backed timeline" and "evidence-backed chronological record".
+3. **Runtime AI Claim Verified:** 
+   Described AI correctly as generating an "evidence summary after trip completion" based on structured data, explicitly stating that programmatic logic remains deterministic.
+4. **Compensation Wording Softened:** 
+   Replaced overstrong guaranteed payment phrasing with "helps drivers substantiate legitimate facility time and strengthen compensation claims", and replaced "undeniable audit trail" with "verifiable audit trail".
+5. **Credentials Intentionally Deferred:** 
+   Demo credentials remain as deferred placeholders (e.g., `testc2`) without exposing any new secrets or overriding the project owner's intent to defer them.
+6. **Validation Performed:**
+   Reviewed top to bottom to ensure no architectural bounds were crossed, Reviewer identity constraints remain, and Markdown formatting is intact.
+7. **Unresolved Issues:** None.
+
+## Final Repository State
+- **Source commit SHA (Corrections):** `7d8673c` (Committed locally in `freight` repository).
 - **Push status:** NOT PUSHED. (Requires Ayush authorization).
