@@ -3,12 +3,19 @@
 ## Purpose
 Continue Node 7 final presentation preparation as the next active reasoning brain. This record is the ChatGPT → Claude bridge; do not bypass the GitHub Records workflow.
 
-## Authoritative sources
-- `00_PROJECT_CONTROL/ROADMAP.md`
-- `00_PROJECT_CONTROL/CURRENT_STATUS.md`
-- `00_PROJECT_CONTROL/PROJECT_STATE.md`
-- Uploaded AI Builders Hackathon overview supplied by Ayush
-- Relevant verified Node 7 records in `04_TESTING/`, `02_ARCHITECTURE/`, and `03_IMPLEMENTATION/`
+## Authoritative sources — direct GitHub links
+Claude should open these exact records directly:
+
+- https://github.com/ayush22cp008/Freight_Records/blob/main/00_PROJECT_CONTROL/ROADMAP.md
+- https://github.com/ayush22cp008/Freight_Records/blob/main/00_PROJECT_CONTROL/CURRENT_STATUS.md
+- https://github.com/ayush22cp008/Freight_Records/blob/main/00_PROJECT_CONTROL/PROJECT_STATE.md
+- https://github.com/ayush22cp008/Freight_Records/blob/main/04_TESTING/test_results/Chat50_Day21_Node7_Cross_Portal_E2E_Manual_Verification_Test_Result.md
+- https://github.com/ayush22cp008/Freight_Records/blob/main/04_TESTING/test_results/Chat50_Day21_Node7_Final_Regression_Manual_Verification_Test_Result.md
+- https://github.com/ayush22cp008/Freight_Records/blob/main/02_ARCHITECTURE/Chat50_Day21_Node7_SameCompany_Sender_Receiver_Governance_Decision.md
+
+The uploaded AI Builders Hackathon overview supplied by Ayush is also a required source for the presentation requirements and judging criteria.
+
+Do not rely on folder-only references such as `04_TESTING/`, `02_ARCHITECTURE/`, or `03_IMPLEMENTATION/`. Use exact file links when a project record is required.
 
 ## Current project state
 - Current Node: Node 7 — AI + Final Integration + Demo
@@ -77,7 +84,7 @@ Proposed 10-slide structure:
 - Public demo credentials remain intentionally deferred until the final pre-submission step; do not invent or expose credentials now.
 
 ## What Claude should do next
-1. Read the current Records before making presentation claims.
+1. Open the exact GitHub links above before making presentation claims.
 2. Validate the proposed 10-slide narrative against the hackathon requirements and judging criteria.
 3. Refine the slide-by-slide story, prioritizing judge comprehension, technical credibility, real-world value, and visual storytelling.
 4. Identify which verified product evidence/screenshots/architecture visuals should support each slide.
