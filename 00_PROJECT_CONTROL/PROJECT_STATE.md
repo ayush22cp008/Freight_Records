@@ -1,6 +1,6 @@
 # PROJECT_STATE.md — Project State
 
-**Last updated:** Sep 12, 2026 — Day 21 / Chat50
+**Last updated:** Sep 12, 2026 — Day 21 / Chat51
 
 ## Historical / Completed Nodes
 
@@ -57,27 +57,7 @@ Current authoritative integrated blueprint:
 
 `02_ARCHITECTURE/locked_blueprints/Company_Integrated_Upgraded_Blueprint.md`
 
-Company lock approval:
-
-`06_APPROVALS/Chat45_Day18_Node7_Phase1b_Company_Portal_Lock_Approval.md`
-
 The Company Portal remains a locked baseline except for the explicitly governed Chat50 NEW-Trip sender/receiver rule. The Chat50 decision supersedes the previous same-company behavior for NEW Trips only. Existing same-company Trips remain preserved and are not migrated.
-
-Chat50 governance decision:
-
-`02_ARCHITECTURE/Chat50_Day21_Node7_SameCompany_Sender_Receiver_Governance_Decision.md`
-
-Chat50 implementation report:
-
-`03_IMPLEMENTATION/implementation_reports/Chat50_Day21_Node7_Report_SameCompany_Sender_Receiver_Governance.md`
-
-Chat50 manual verification result:
-
-`04_TESTING/test_results/Chat50_Day21_Node7_SameCompany_Sender_Receiver_Governance_Manual_Verification_Test_Result.md`
-
-Chat50 checkpoint:
-
-`00_PROJECT_CONTROL/CHECKPOINTS/Chat50_Day21_Node7_SameCompany_Sender_Receiver_Governance_Manual_Verification_Checkpoint.md`
 
 #### Reviewer Portal
 
@@ -92,20 +72,16 @@ Atomic decision rollback safety          → 🟢 VERIFIED
 Reviewer Blueprint comparison            → 🟢 COMPLETE / FULLY ALIGNED
 Ayush manual verification                → 🟢 PASS
 Reviewer Portal                          → 🔒 LOCKED / APPROVED
+Day 20                                   → 🔒 CLOSED
 ```
 
 Authoritative locked blueprint:
 
 `02_ARCHITECTURE/locked_blueprints/Reviewer_Locked_Blueprint.md`
 
-Reviewer lock approval:
-
-`06_APPROVALS/Chat48_Day20_Node7_Phase1c_Reviewer_Portal_Lock_Approval.md`
-
 ## Day 20 Closure
 
 ```text
-Reviewer Blueprint comparison              → 🟢 COMPLETE / FULLY ALIGNED
 Reviewer atomicity implementation          → 🟢 COMPLETE
 Production decision RPC                     → 🟢 VERIFIED
 Approve rollback verification               → 🟢 VERIFIED
@@ -113,11 +89,11 @@ Reject rollback verification                → 🟢 VERIFIED
 Temporary test RPC cleanup                  → 🟢 VERIFIED
 Normal production retry                     → 🟢 VERIFIED
 Reviewer manual verification                → 🟢 PASS
-Reviewer Portal                            → 🔒 LOCKED / APPROVED
-Day 20                                     → 🔒 CLOSED
+Reviewer Portal                             → 🔒 LOCKED / APPROVED
+Day 20                                      → 🔒 CLOSED
 ```
 
-The previously identified Reviewer decision atomicity/failure-safety GAP is resolved.
+The previously identified Reviewer decision atomicity/failure-safety gap is resolved.
 
 Authoritative Day 20 work report:
 
@@ -133,9 +109,9 @@ Production Realtime application tables       → ❌ NONE ATTACHED AT VERIFICATI
 Current implementation status                → ❌ DROPPED FROM CURRENT SCOPE
 ```
 
-The event-driven, resource-scoped approach was investigated for compatibility with the existing Freight architecture. Independent review supported the architecture with conditions, but the feature is not required for the current project completion target and is therefore dropped from the current implementation scope.
+The event-driven, resource-scoped approach was investigated for compatibility with the existing architecture. It is not required for the current completion target and is therefore dropped from the current implementation scope.
 
-No source-code, schema, RLS, lifecycle, claiming, evidence, authentication, AI, or locked-portal changes were authorized or made for auto-refresh.
+No source-code, schema, RLS, lifecycle, claiming, evidence, authentication, AI, or locked-portal changes were authorized or made for auto-refresh. Investigation records remain preserved.
 
 ## Day 21 — Chat50 Same-Company Sender/Receiver Governance
 
@@ -143,7 +119,7 @@ No source-code, schema, RLS, lifecycle, claiming, evidence, authentication, AI, 
 Governance investigation                 → 🟢 COMPLETE
 Ayush governance decision                → 🟢 APPROVED
 Implementation handoff                   → 🟢 CREATED
-Implementation                          → 🟢 COMPLETE
+Implementation                           → 🟢 COMPLETE
 Ayush UI manual verification             → 🟢 PASS
 Ayush direct API verification            → 🟢 PASS
 Post-rejection Trip visibility check     → 🟢 PASS
@@ -236,73 +212,106 @@ Ayush manual UI verification             → 🟢 PASS (deployment screenshots)
 Source GitHub push                       → ✅ PERFORMED
 ```
 
-The user-facing product brand is now **DeliveryProof**. Confirmed presentation-layer branding was updated while internal technical identifiers such as repository names, package names, `FreightIdentity`, and `freight_identities` were preserved.
+The user-facing product brand is now **DeliveryProof**. Presentation-layer branding was updated while internal technical identifiers such as repository names, package names, `FreightIdentity`, and `freight_identities` were preserved.
 
-## Current Project State
+## Day 21 — Documentation / README Closure
 
 ```text
-Node 1                              → COMPLETE / LOCKED
-Node 2                              → COMPLETE / ACCEPTED
-Node 3                              → COMPLETE / ACCEPTED
-Node 4                              → COMPLETE / ACCEPTED
-Node 5                              → COMPLETE / ACCEPTED
-Dashboard follow-up                → CLOSED / VERIFIED
-Historical AI follow-up             → CLOSED / VERIFIED
-Node 6                              → COMPLETE / ACCEPTED
-Node 7                              → ACTIVE
-Node 7 Phase 1a                     → COMPLETE / ACCEPTED
-Node 7 Driver                       → COMPLETE / ACCEPTED / LOCKED
-Node 7 Company                      → COMPLETE / ACCEPTED / LOCKED + Chat50 NEW-Trip exception VERIFIED
-Node 7 Reviewer                     → COMPLETE / ACCEPTED / LOCKED
-Shared Cross-Portal Design System   → LOCKED
-Day 16                              → CLOSED
-Day 17                              → CLOSED
-Day 18                              → CLOSED
-Day 19                              → CLOSED
-Day 20                              → CLOSED / LOCKED
-Day 21 auto-refresh                 → DROPPED FROM CURRENT SCOPE
-Day 21 Chat50 same-company rule     → IMPLEMENTED / AYUSH VERIFIED
-Cross-Portal E2E                    → COMPLETE / AYUSH VERIFIED
-Final Regression                    → COMPLETE / AYUSH VERIFIED
-DeliveryProof branding              → COMPLETE / AYUSH VERIFIED / PUSHED
-Portal implementation baseline      → LOCKED
-Documentation                       → CURRENT
-Final Presentation                  → AFTER DOCUMENTATION
-Demo Video                          → AFTER FINAL PRESENTATION
-Final Submission                    → AFTER DEMO VIDEO
-Phase 3                             → CONDITIONAL
+README implementation                    → 🟢 COMPLETE
+README correction pass                   → 🟢 COMPLETE
+Production URL in README                 → 🟢 VERIFIED
+Runtime AI wording                       → 🟢 VERIFIED
+Compensation / audit wording             → 🟢 CORRECTED
+RLS/security wording                     → 🟢 CORRECTED
+Public demo credentials                  → 🟡 INTENTIONALLY DEFERRED
+README GitHub main branch                → 🟢 VERIFIED
+Vercel production URL                    → 🟢 VERIFIED
+Old Vercel URL redirect                  → 🟢 VERIFIED
+Day 21 documentation                     → 🔒 CLOSED
 ```
+
+The DeliveryProof root README was completed and verified on the source repository `main` branch. The primary production URL is `https://deliveryproofhackathon.vercel.app`; the previous `freighthackathon.vercel.app` hostname redirects to the new production URL. The README documents the implemented runtime AI Evidence Summary capability and uses corrected evidence-based wording for claims and security scope.
+
+Public demo credentials remain intentionally deferred to the final pre-submission step.
+
+Authoritative documentation records:
+
+- `03_IMPLEMENTATION/implementation_reports/Chat51_Day21_Node7_DeliveryProof_README_Implementation_Report.md`
+- `01_BRAIN_HANDOFFS/Antigravity/Chat51_Day21_Node7_DeliveryProof_README_Implementation_Prompt.md`
+- `01_BRAIN_HANDOFFS/Antigravity/Chat51_Day21_Node7_DeliveryProof_README_Correction_Handoff.md`
+
+## Day 21 — Closure
+
+```text
+Day 21 work                         → 🔒 CLOSED
+Same-company governance             → 🟢 IMPLEMENTED / VERIFIED
+Cross-Portal E2E                    → 🟢 COMPLETE / VERIFIED
+Final Regression                    → 🟢 PASS / VERIFIED
+DeliveryProof branding              → 🟢 COMPLETE / AYUSH VERIFIED / PUSHED
+README documentation                → 🟢 COMPLETE / VERIFIED
+Auto-refresh enhancement            → ❌ DROPPED FROM CURRENT SCOPE
+```
+
+Day 21 is formally CLOSED. Node 7 remains ACTIVE only for the remaining final-presentation, demo-video, and submission activities.
+
+## Mandatory Implementation / Verification Sequence
+
+```text
+Driver → 🔒 ACCEPTED / LOCKED
+↓
+Company → 🔒 ACCEPTED / LOCKED + Chat50 NEW-Trip governance exception VERIFIED
+↓
+Reviewer → 🔒 ACCEPTED / LOCKED
+↓
+Cross-Portal E2E → 🟢 COMPLETE / VERIFIED
+↓
+Integration defect investigation → NOT REQUIRED / NO BUG OBSERVED
+↓
+Final regression verification → 🟢 PASS / VERIFIED
+↓
+DeliveryProof branding update → 🟢 IMPLEMENTED / AYUSH VERIFIED / PUSHED
+↓
+Documentation / README → 🟢 COMPLETE / VERIFIED
+↓
+Day 21 → 🔒 CLOSED
+↓
+Final Presentation
+↓
+Demo Video
+↓
+Final Submission
+```
+
+No portal is implemented in parallel. Locked portals remain protected except for explicitly governed changes such as Chat50's NEW-Trip sender/receiver invariant and the presentation-only DeliveryProof rebrand.
 
 ## Protected Governance Boundary
 
-Driver, Company, and Reviewer portals remain locked baselines. The Chat50 same-company change is a separately governed exception limited to NEW Trip creation. Do not introduce unrelated product, database, persistence, transaction, RLS/security, authentication, lifecycle, evidence, claiming, backend behavior, AI behavior, or Reviewer-authority changes without a new investigation and explicit governance approval.
+Protected unless separately investigated and explicitly approved:
 
-Any future defect must follow:
+- APIs and API contracts
+- database/schema/data model
+- RLS/security architecture
+- authentication/role rules
+- business rules
+- trip lifecycle/state semantics
+- claiming/marketplace behavior
+- evidence requirements/types/integrity
+- persistent review state
+- backend behavior
+- AI behavior
+- Reviewer authority expansion
+
+C-05 and R-03 remain protected/out of scope. Any future changes affecting locked portal behavior require evidence and explicit governance approval.
+
+## Execution Bridge
 
 ```text
-OBSERVATION
-→ INVESTIGATION
-→ EVIDENCE
-→ ROOT CAUSE
-→ DECISION
-→ FIX
-→ BUILD / TEST
-→ AYUSH MANUAL VERIFICATION
-```
-
-## Record Routing
-
-```text
-03_IMPLEMENTATION/prompts/                → implementation handoffs
-03_IMPLEMENTATION/plans/                  → implementation preparation
-03_IMPLEMENTATION/implementation_reports/ → Antigravity reports
-05_DEBUGGING/investigations/              → investigations
-02_ARCHITECTURE/                          → architecture records
-00_PROJECT_CONTROL/                       → project-control records
-00_PROJECT_CONTROL/CHECKPOINTS/           → completion checkpoints
-06_APPROVALS/                             → formal approval / lock records
+ChatGPT        → architecture / reasoning / boundary decisions
+Antigravity    → implementation / execution only
+Ayush          → final authority / manual tester / implementation authorizer
+GitHub Records → source-of-truth bridge
 ```
 
 ## Next Action
 
-**Proceed to Documentation under the permanent product name DeliveryProof. Final Regression is complete and formally recorded. The DeliveryProof branding implementation has been pushed. Do not implement the dropped auto-refresh feature unless its scope is explicitly reopened later.**
+**Day 21 is CLOSED. Proceed to final presentation preparation, then demo video preparation, then final submission. Public demo credentials and final README submission links remain intentionally deferred until the final pre-submission pass. Do not implement the dropped auto-refresh feature unless its scope is explicitly reopened later.**
