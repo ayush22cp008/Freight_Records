@@ -28,5 +28,19 @@ The following four corrections were successfully applied to the README:
 7. **Unresolved Issues:** None.
 
 ## Final Repository State
-- **Source commit SHA (Corrections):** `7d8673c` (Committed locally in `freight` repository).
+- **Source commit SHA (Pass 2):** `7d8673c` (Committed locally in `freight` repository).
+- **Push status:** NOT PUSHED. (Requires Ayush authorization).
+
+## Correction Handoff (Pass 3)
+The following additional corrections were successfully applied to the README:
+
+1. **Deployment URL Updated:** 
+   Vercel production URL changed to `https://deliveryproofhackathon.vercel.app`.
+   The old `freighthackathon.vercel.app` now redirects to the new production URL.
+2. **RLS/Security Wording Corrected:** 
+   Corrected the wording to explicitly match the documented scope: "Reviewer server-side data access uses the approved R-05 service-role gating path; a full RLS redesign was outside the current scope."
+
+- **Validation Performed:** Read the entire README to confirm changes. Formatting is intact and no absolute claims were reintroduced. Demo credentials remain intentionally deferred. No code changes were made.
+- **Unresolved Issues:** None.
+- **Source commit SHA (Pass 3):** `6a8a4c1` (Committed locally in `freight` repository).
 - **Push status:** NOT PUSHED. (Requires Ayush authorization).
