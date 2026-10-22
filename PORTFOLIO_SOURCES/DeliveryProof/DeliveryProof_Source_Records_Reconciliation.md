@@ -68,7 +68,7 @@ These are small, targeted source changes aligned with accepted project records. 
 
 **Deployment status evidence:** The latest summary-gate commit first showed **pending** while this report was drafted. A follow-up GitHub status check now returns Vercel **success** for both the source-cleanup and summary-gate commits. Deployment-log details were not available under the current Vercel authorization scope; an authenticated live API smoke test and direct database inspection were not performed.
 
-**Status:** 🟡 Source commits identified and Vercel status reports success; authenticated live behavior and production database state remain unverified.
+**Status:** Ayush confirms the submitted project's functional workflows were tested and working before submission. Vercel status reports success for the later source edits. A separate authenticated manual test of the later Summary edit and a direct database query were not performed during this documentation review; this is not an open defect report for the submitted version.
 
 ### DP-REC-04 — Public demo-account table in README
 
@@ -112,7 +112,7 @@ These are small, targeted source changes aligned with accepted project records. 
 
 **Current source:** Creating a new public share first revokes an existing active share and then inserts a new active share using separate Supabase calls. A partial unique index enforces at most one active share per Trip.
 
-**Status:** 🟡 Documented design limitation. The index is a defensive invariant; the current code does not show the two calls wrapped in one database transaction. No change was made because a transactional RPC decision requires an explicit consistency requirement and implementation test.
+**Status:** Documented implementation characteristic, not a reported defect. The index is a defensive invariant; the current code does not show the two calls wrapped in one database transaction. No change is recommended without a concrete consistency requirement.
 
 ### DP-REC-09 — Anonymous public-verification rate limiter
 
