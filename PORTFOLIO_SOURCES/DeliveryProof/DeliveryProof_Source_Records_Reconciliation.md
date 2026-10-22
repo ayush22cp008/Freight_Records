@@ -13,7 +13,9 @@
 
 ## 1. Executive result
 
-The comparison identified one checked-in cleanup artifact, one direct implementation-scope mismatch, one test/readiness gap, and several source-level design questions that need an explicit verification or product decision.
+**Ayush's clarification (22 October 2026):** The listed project flows/features were working and he personally tested the project before submitting it to the hackathon. This report therefore must not characterize these source-review observations as known functional bugs or imply that the already-submitted project was never tested. The earlier Day 21 records also contain documented manual cross-portal E2E and regression passes.
+
+The comparison identified source/record differences and some implementation characteristics worth documenting. They are not, by themselves, evidence that the submitted project failed. No blanket new E2E re-test is required solely because these static source observations were listed. The two source commits below were created during this later reconciliation; the original pre-submission test evidence does not automatically test post-submission code changes.
 
 ### Confirmed actions taken in this reconciliation
 
@@ -54,7 +56,7 @@ These are small, targeted source changes aligned with accepted project records. 
 
 **Conclusion:** There is an automated test source file, but its presence does not prove it has run or passed. It requires a correctly configured test database and suitable seed fixtures. The current simple seed script alone does not satisfy the test’s preconditions.
 
-**Status:** 🟡 Automated test execution remains unverified. Preserve the manual two-driver acceptance as a separate, recorded result. A future run should record command, database target (never secret values), fixture setup, test output, and cleanup.
+**Status:** The accepted manual two-driver claim test remains the project’s functional acceptance evidence, and Ayush confirms he tested the project before submission. Separate automated Vitest execution is not claimed as passed from source-file presence alone; this is a documentation/test-coverage distinction, not evidence that manual concurrency behavior failed.
 
 ### DP-REC-03 — Source synchronization / deployment identity
 
@@ -76,7 +78,7 @@ These are small, targeted source changes aligned with accepted project records. 
 
 **Conclusion:** This is a later source change relative to the curated status—not proof that the accounts are production-isolated, disposable, or safe to expose. The README’s current content should be considered the current source state; the earlier “deferred” note is historical and needs a clear follow-up decision.
 
-**Status:** 🟡 Product/security review required before treating credentials as approved for wider public distribution. Verify the accounts are dedicated demo identities, have only synthetic disposable data, cannot access production/private data, and do not share passwords with any personal or production account. This report intentionally does not repeat credentials.
+**Status:** The README includes the demo accounts used for showcasing the submitted project. This source review does not establish account isolation merely from the README or app workflow. That is a security/release-hygiene consideration, not a reported functional failure; no implementation change is prescribed here. This report intentionally does not repeat credentials.
 
 ### DP-REC-05 — Server timestamp provenance
 
@@ -84,7 +86,7 @@ These are small, targeted source changes aligned with accepted project records. 
 
 **Conclusion:** The UI uses a server-time endpoint, but the inspected event routes do not visibly replace/assign the timestamp inside the write handler. It is therefore not accurate to claim this route alone guarantees a tamper-proof server receipt timestamp.
 
-**Status:** 🟡 Security/design decision needed. Decide whether the authoritative event time should be assigned server-side at write time, or whether the supplied timestamp represents the event-capture timestamp and should be stored separately from server-received time. Preserve the accepted event-evidence semantics and test the selected design before changing it.
+**Status:** This is a source-level timestamp-provenance observation, not a reported broken event flow. Ayush confirms the submitted project was functionally tested. Do not change timestamp semantics merely to resolve a wording concern; consider additional hardening only if a stronger tamper-resistance guarantee is required.
 
 ### DP-REC-06 — AI Evidence Summary completion gate
 
@@ -104,7 +106,7 @@ These are small, targeted source changes aligned with accepted project records. 
 
 **Current migration:** `src/db/migrations/007_event_photos_bucket.sql` creates `event-photos` with `public = true`. The upload endpoint returns a public URL. The public verification projection does not include raw photo URLs in its mapped response, but Storage object visibility is a separate concern.
 
-**Status:** 🟡 Privacy/security decision required. Confirm that public object access is intentional for the expected photo evidence and review the live Storage bucket configuration before changing it. Do not describe event photos as private based on the public verify response alone.
+**Status:** The checked-in migration configures a public bucket; this is an implementation/security characteristic rather than evidence that photo upload/display failed. Do not describe the bucket as private. No policy change is recommended without an explicit privacy requirement and a deliberate migration plan.
 
 ### DP-REC-08 — Public-share replacement transactionality
 
@@ -116,7 +118,7 @@ These are small, targeted source changes aligned with accepted project records. 
 
 **Current source:** The limiter is a process-local in-memory Map keyed by IP and token, with a 60-second window and a 10-request threshold. The API uses `x-forwarded-for`, falling back to `anonymous`.
 
-**Status:** 🟡 Known scale limitation, not a newly confirmed exploit. It is not a shared counter across server instances or restarts. Evaluate a shared rate-limit store only if the current product scope requires globally coordinated enforcement.
+**Status:** Known implementation characteristic, not an observed failure. The counter is not shared across server instances or restarts. This is not a reason to reopen the already-submitted project unless global rate-limit consistency becomes a requirement.
 
 ---
 
@@ -127,10 +129,7 @@ No production data is modified by this checklist. Use a safe staging/test enviro
 ### Source and deployment
 - [ ] Confirm the latest source commit is the commit Vercel builds for the intended project.
 - [x] Confirm GitHub’s Vercel status returned success for the source-cleanup and summary-gate commits.
-- [ ] Run/confirm the production or preview route after deployment.
-- [ ] Test `/api/summary` for a completed Trip: eligible behavior.
-- [ ] Test `/api/summary` for a claimed or in-progress Trip: should be rejected by the completed-only query.
-- [ ] Confirm the AI Evidence Summary still works through the completed public/manual E2E path.
+- [ ] If continuing post-submission maintenance, smoke-test the latest `/api/summary` source change: completed Trip is eligible, and a non-completed Trip is rejected. The owner’s pre-submission tests validate the submitted version, not automatically this later source edit.
 
 ### Reviewer cleanup
 - [ ] Confirm the production/staging database has the normal `process_reviewer_decision` function.
@@ -144,15 +143,12 @@ No production data is modified by this checklist. Use a safe staging/test enviro
 - [ ] Capture actual output and state whether the check is a database-update simulation or real authenticated HTTP E2E.
 
 ### Public demo accounts
-- [ ] Verify accounts are dedicated demo accounts and data is synthetic.
-- [ ] Verify they cannot read any production/private data.
-- [ ] Decide whether account credentials belong in public README or in a controlled judge-only handoff.
-- [ ] Update CURRENT_STATUS and PROJECT_STATE with that decision; do not treat “the table exists” as security approval.
+- [ ] Optional release-hygiene check: confirm demo accounts are dedicated identities with synthetic data and cannot access private/production data before reusing them beyond the hackathon.
 
 ### Timestamp and photo evidence
 - [ ] Agree on the meaning of event time versus server-received time.
 - [ ] If changed, add a regression test for client-submitted forged timestamps.
-- [ ] Confirm the live `event-photos` Storage visibility and the intended access model with a safe test object before any policy change.
+- [ ] If photo privacy requirements change, confirm live `event-photos` Storage visibility before altering policies.
 
 ---
 
@@ -163,13 +159,22 @@ No production data is modified by this checklist. Use a safe staging/test enviro
 | Curated architecture/decision/verification records | Preserved |
 | Test-only migration source discrepancy | Resolved in current source tree |
 | AI Summary completed-only guard | Resolved in source; Vercel status success; authenticated runtime test pending |
-| Automated concurrency test | Exists; execution unverified; requires suitable fixtures/environment |
-| Public demo-account approval | Open decision |
-| Timestamp provenance | Open design/security decision |
-| Event-photo visibility | Open policy verification |
-| Public-share replacement transaction | Known non-transactional sequence; decision open |
-| Anonymous rate-limit scalability | Known process-local design limitation |
+| Manual concurrency acceptance | Owner confirms the project was tested before submission; accepted records document the two-driver manual claim test. Separate automated test execution is unverified and is not a claim that manual testing failed. |
+| Public demo accounts | Present in README; account-isolation review is optional release hygiene, not an identified functional failure. |
+| Timestamp provenance | Source-level implementation detail; no reported functional failure. Revisit only for stronger tamper-resistance requirements. |
+| Event-photo visibility | Migration specifies a public bucket; treat as an access-policy characteristic, not a reported functional bug. |
+| Public-share replacement transaction | Sequential operations are visible in source; no reported functional failure, no change required absent a stronger atomicity requirement. |
+| Anonymous rate-limit scalability | Process-local design characteristic; not a reported functional failure. |
 | Latest Vercel check | Success reported for source commits; live API behavior not directly tested |
 
-**Recommended next action:** verify the new Vercel deployment and test the completed-only AI Summary gate, then handle the public demo-account decision. Keep the other review items as evidence-based open work rather than changing locked behavior without a decision.
+## 5. Owner clarification and how to use this report
+
+Ayush confirms all of the listed functional areas were working and were tested by him before the hackathon submission. The correct project narrative is therefore:
+
+- **The submitted project was tested by its author.** The existing Day 21 manual cross-portal E2E and final regression records remain relevant evidence.
+- **No functional bug is reported by this source review.** Static observations about a local rate-limit Map, sequential share replacement calls, timestamp fields, or bucket visibility describe the implementation; they do not establish that a user-facing workflow failed.
+- **Do not restart or expand the implementation solely to “close” these observations.** Revisit them only if a concrete new requirement, incident, or scope decision warrants it.
+- **Keep later edits separate from submitted-test evidence.** The two commits made in this reconciliation post-date the submission-era testing: removal of the temporary test migration (source cleanup) and the completed-only Summary gate. Vercel reports success for the summary-gate commit, but that status alone does not prove every runtime case was exercised after the edit. This narrow distinction does not invalidate Ayush's tests of the submitted project.
+
+No further change to locked product behavior is recommended from this reconciliation alone.
 
