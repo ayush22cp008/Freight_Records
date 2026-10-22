@@ -1,6 +1,6 @@
 # PROJECT_STATE.md — Project State
 
-**Last updated:** Sep 12, 2026 — Day 21 / Chat51
+**Last updated:** 22 October 2026 — post-Day21 reconciliation addendum (Day 21 remains closed)
 
 ## Historical / Completed Nodes
 
@@ -327,4 +327,20 @@ GitHub Records → source-of-truth bridge
 
 ## Next Action
 
-**Day 21 is CLOSED. The final presentation is COMPLETE / LOCKED. Proceed to demo-video preparation, then final submission. Public demo credentials and final README submission links remain intentionally deferred until the final pre-submission pass. Do not implement the dropped auto-refresh feature unless its scope is explicitly reopened later.**
+**Day 21 remains CLOSED and the final presentation remains COMPLETE / LOCKED. The subsequent README now contains a demo-account table, so public-credential approval is an open reconciliation item rather than a currently verified deferral. Before final submission, verify the latest Vercel deployment after the completed-only AI Summary source fix and resolve the explicitly listed open checks in `PORTFOLIO_SOURCES/DeliveryProof/DeliveryProof_Source_Records_Reconciliation.md`. Do not implement dropped auto-refresh or reopen locked portal behavior without explicit approval.**
+
+
+---
+
+## Post-Day21 source / records reconciliation — 22 October 2026
+
+**Day 21 remains closed.** This addendum records subsequent repository review; it does not reopen locked portal design or assert that the latest source has been deployed.
+
+- Added detailed project record, API/database/source-code crosswalk, reconciliation report and documentation index under `PORTFOLIO_SOURCES/DeliveryProof/`.
+- Application-source commit `3c61efc078c13b2d868af06b68075ffa599df37d` removed the temporary test-only Reviewer RPC migration file from the current tree. This does not itself execute a database DROP; production DB state was not directly inspected in this pass.
+- Application-source commit `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5` aligned `/api/summary` with the accepted post-completion rule by querying only `status = completed`. Vercel’s check was pending when checked, so the source fix is not yet recorded as live-verified.
+- `tests/concurrency.test.ts` exists, but successful automated execution was not verified. The checked-in seed script alone does not provide the test’s required two Drivers and published unclaimed Trip.
+- The current README contains a demo-account table despite an earlier Day 21 note that public credentials were deferred. Verify demo-account isolation and decide intended public distribution before marking approved.
+- Server timestamp provenance, event-photo bucket visibility, public-share transactionality, and the process-local anonymous rate limiter remain documented review items. No live Supabase database inspection or mutation occurred during this pass.
+
+Authoritative follow-up: `PORTFOLIO_SOURCES/DeliveryProof/DeliveryProof_Source_Records_Reconciliation.md`.
