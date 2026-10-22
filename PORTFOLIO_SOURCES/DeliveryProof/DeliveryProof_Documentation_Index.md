@@ -56,7 +56,7 @@ These five records form the earlier approved summary layer. Preserve them as the
 
 - Verify deployment of the completed-only AI Summary change and test completed vs. non-completed Trip behavior.
 - Confirm deployed database has the normal Reviewer decision RPC and does not retain the test-only function.
-- Automated concurrency test source exists, but execution is unverified and suitable fixtures/environment are required.
+- The submitted project's manual two-driver/claim behavior is covered by the accepted manual verification record and Ayush confirms he tested the submitted project before submission. The separate automated concurrency test source was not independently run during this records review; that is not evidence the tested functionality failed.
 - Confirm the public README demo accounts are isolated, disposable test accounts and decide whether credentials should remain public.
 - Decide how to model authoritative server-received time separately from client-captured event time, if required.
 - Confirm live event-photo Storage visibility matches intended privacy.
@@ -68,11 +68,11 @@ Full evidence boundaries and suggested checks are in the [reconciliation report]
 
 ## 5. Current interpretation
 
-**Historical project acceptance:** Day 21 records the cross-portal manual E2E and final regression as passed for the areas checked. This is not a universal no-bugs claim.
+**Historical project acceptance:** Day 21 records the cross-portal manual E2E and final regression as passed for the areas checked. Ayush additionally confirms he personally tested the working project before hackathon submission. These are owner-confirmed tests of the submitted version, not a universal no-bugs claim.
 
 **Source state:** The repository contains later reconciliation commits. The private AI Summary endpoint is now source-gated to completed Trips.
 
-**Deployment state:** GitHub reports Vercel success for the latest AI Summary source fix. Do not mark runtime behavior verified until the deployed endpoint is tested.
+**Deployment state:** GitHub reports Vercel success for the post-submission AI Summary source edit. The submitted version's workflow was tested by Ayush before submission. That later narrow source edit was not separately manually smoke-tested; distinguish it from the submitted-version test evidence.
 
 **Database state:** This pass did not run direct queries against the live Supabase database. Source file removal alone does not prove a database function was dropped.
 
