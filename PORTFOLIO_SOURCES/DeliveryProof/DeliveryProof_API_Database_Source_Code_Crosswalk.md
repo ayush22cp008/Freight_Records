@@ -413,9 +413,9 @@ This is the accepted canonical workflow and the checked-in handler prerequisite 
 
 The UI helper src/lib/capture/getServerTime.ts calls /api/server-time and receives an ISO timestamp. The event handlers also read server_timestamp from the POST body and insert that value into events. Thus the helper obtains a server-generated time, but the inspected event route does not visibly recompute/overwrite the timestamp inside the same mutation. For any statement requiring a strictly tamper-resistant server receipt timestamp, treat this as a verification/review question rather than assume that the database timestamp column name makes the submitted value immutable.
 
-### 9.2 AI summary endpoint does not visibly gate on completed status
+### 9.2 AI summary endpoint completion gate — source fix committed, deployment pending
 
-The app documentation and curated final records describe AI Evidence Summary as a post-completion feature. The currently inspected /api/summary handler queries Trip statuses active, claimed, in_progress and completed and checks broad Arrival / Check-in / Departure event presence. It does not visibly require status completed as a distinct condition in that route. The separate public-share creation route does require status completed. Align the direct AI endpoint with the intended eligibility rule if the product invariant is that private summaries must only be generated after completed status; do not state that this route already enforces it.
+The accepted project records define AI Evidence Summary as a post-completion feature. The prior source route queried active, claimed, in_progress and completed Trips, which did not match that rule. On 22 October 2026, commit `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5` changed the query to `.eq('status', 'completed')` and changed the no-match message to “No completed trip found.” The current Git source was re-read and contains the completed-only condition. Vercel’s check was pending when checked; production behavior is not yet verified.
 
 ### 9.3 Arrival photo requirement differs from other event handlers
 
@@ -456,7 +456,7 @@ Items below are technical review points discovered while building this reference
 | API-DB-01 | Test-only Reviewer migration | Migration 013 exists in the checked-in source and defines a deliberately failing RPC. | Whether that migration/function exists in the deployed DB; reconcile the source file with the curated claim that it was removed. |
 | API-TEST-02 | Claim-concurrency test | tests/concurrency.test.ts exists and contains a concurrent conditional-update test requiring seed data/environment. | Whether the test has actually run successfully; keep manual two-Driver acceptance separate from automated execution. |
 | API-SEC-03 | Event timestamps | UI helper fetches server time; event APIs accept server_timestamp in submitted JSON. | Whether an attacker can alter the timestamp in the deployed flow; decide whether the server route/DB should assign authoritative ingestion time. |
-| API-AI-04 | Direct summary eligibility | /api/summary accepts active, claimed, in_progress and completed states if event prerequisites pass. | Whether direct summaries are intentionally allowed before completed state or need an explicit completed-only check. |
+| API-AI-04 | Direct summary eligibility | Fixed in source commit `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5`: `/api/summary` now filters to `status = completed`. | Deployment status was pending and live endpoint testing remains required. |
 | API-STOR-05 | Event-photo bucket public flag | Migration 007 sets event-photos public=true; upload endpoint returns a public URL. | Whether this is intended for every event photo and matches current privacy expectations. |
 | API-RATE-06 | Anonymous verification rate limiter | A module-local Map limits requests by IP+token key. | Whether this is sufficient for multi-instance deployment; no shared store is shown in the inspected helper. |
 | API-SHARE-07 | Share replacement sequence | API updates old share, then inserts replacement; database has partial unique index. | Whether a transactional RPC is necessary for the desired consistency guarantees. |
@@ -515,5 +515,7 @@ This crosswalk should be read alongside:
 - [DeliveryProof_Major_Verified_Challenges_and_Fixes.md](./DeliveryProof_Major_Verified_Challenges_and_Fixes.md)
 - [DeliveryProof_Final_Verification.md](./DeliveryProof_Final_Verification.md)
 - [DeliveryProof_Final_Project_Handoff.md](./DeliveryProof_Final_Project_Handoff.md)
+- [DeliveryProof_Source_Records_Reconciliation.md](./DeliveryProof_Source_Records_Reconciliation.md)
+- [DeliveryProof_Documentation_Index.md](./DeliveryProof_Documentation_Index.md)
 
 Those curated records preserve accepted architecture and recorded test results. This file adds source navigation and current-source observations; it does not override an accepted decision, and it does not convert source presence into test evidence.
