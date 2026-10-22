@@ -80,7 +80,7 @@ These are examples from the actual handlers, not a promise that every endpoint r
 | /api/auth/logout | POST | src/app/api/auth/logout/route.ts | Calls Supabase Auth signOut for the request session. |
 | /api/auth/forgot-password | POST | src/app/api/auth/forgot-password/route.ts | Requires email; constructs an update-password callback URL from the request origin and calls resetPasswordForEmail. It returns success even when the reset provider call errors, to avoid exposing whether an email exists. |
 | /api/onboarding/submit | POST | src/app/api/onboarding/submit/route.ts; src/app/(authenticated)/onboarding/page.tsx; migrations 004–005 | Requires a current identity in an allowed submission state (PENDING or REJECTED); accepts document_type and storage_path; writes onboarding_evidence using the authenticated identity and its requested role. For a resubmission after REJECTED, the handler attempts to return identity state to PENDING. The actual file upload is a separate client/Storage flow; this endpoint records the evidence metadata. |
-| /api/admin/review | POST | src/app/api/admin/review/route.ts; migrations 011–013 | Requires authenticated user and reviewer_authorizations membership. Accepts identity_id, action APPROVE or REJECT, and optional rejection reason; calls process_reviewer_decision through Supabase RPC. Maps missing identity/not-pending RPC errors to client responses. The checked-in test-only migration discrepancy is tracked in Section 10. |
+| /api/admin/review | POST | src/app/api/admin/review/route.ts; migrations 011–012 | Requires authenticated user and reviewer_authorizations membership. Accepts identity_id, action APPROVE or REJECT, and optional rejection reason; calls process_reviewer_decision through Supabase RPC. Maps missing identity/not-pending RPC errors to client responses. Historical test-only migration 013 was removed from current main on 22 Oct; deployed database state was not queried. |
 | /api/admin/history | GET | src/app/api/admin/history/route.ts; migration 011 | Requires authenticated user and reviewer_authorizations membership. Queries reviewer_decisions newest-first and includes related identity/evidence. Accepts optional limit, offset and id query parameters; returns a transformed history data array. |
 
 ### 3.2 Company lookup and Receiver agreement
@@ -296,7 +296,7 @@ Migration 006_create_trip_public_shares.sql defines token_hash as unique, a stat
 | 010_add_reviewed_at.sql | Adds freight_identities.reviewed_at. |
 | 011_reviewer_decisions.sql | Adds persistent Reviewer decision history. |
 | 012_reviewer_decision_rpc.sql | Defines process_reviewer_decision RPC. |
-| 013_reviewer_decision_test_rpc.sql | Defines forced-exception test RPC for rollback tests; presence conflicts with the curated record saying the temporary function was removed, and must be reconciled. |
+| 013_reviewer_decision_test_rpc.sql | Historical test-only forced-exception RPC. Removed from current main in commit `3c61efc...`; file remains in Git history. Removing the source file does not query or change a deployed database function. |
 
 The files describe migrations with manual Supabase SQL Editor comments and include historical/incremental schema changes. Do not assume the listed files can be blindly re-run against any environment; inspect the deployed schema and applied migration state first.
 
@@ -413,9 +413,9 @@ This is the accepted canonical workflow and the checked-in handler prerequisite 
 
 The UI helper src/lib/capture/getServerTime.ts calls /api/server-time and receives an ISO timestamp. The event handlers also read server_timestamp from the POST body and insert that value into events. Thus the helper obtains a server-generated time, but the inspected event route does not visibly recompute/overwrite the timestamp inside the same mutation. For any statement requiring a strictly tamper-resistant server receipt timestamp, treat this as a verification/review question rather than assume that the database timestamp column name makes the submitted value immutable.
 
-### 9.2 AI summary endpoint completion gate — source fix committed, deployment pending
+### 9.2 AI summary endpoint completion gate — source and Vercel check successful; runtime test pending
 
-The accepted project records define AI Evidence Summary as a post-completion feature. The prior source route queried active, claimed, in_progress and completed Trips, which did not match that rule. On 22 October 2026, commit `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5` changed the query to `.eq('status', 'completed')` and changed the no-match message to “No completed trip found.” The current Git source was re-read and contains the completed-only condition. Vercel’s check was pending when checked; production behavior is not yet verified.
+The accepted project records define AI Evidence Summary as a post-completion feature. The prior source route queried active, claimed, in_progress and completed Trips, which did not match that rule. On 22 October 2026, commit `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5` changed the query to `.eq('status', 'completed')` and changed the no-match message to “No completed trip found.” The current Git source contains the completed-only condition, and a follow-up GitHub check reports Vercel success for the commit. Direct authenticated production behavior has not yet been tested.
 
 ### 9.3 Arrival photo requirement differs from other event handlers
 
@@ -439,7 +439,7 @@ The inspected /api/trips/create handler checks creatorCompany.id === receiving_c
 
 ### 9.8 Reviewer test-only migration reconciliation
 
-The current source tree includes migration 013_reviewer_decision_test_rpc.sql defining process_reviewer_decision_test with deliberate exceptions after evidence mutation. Curated final records say the temporary RPC was dropped. The file proves source presence only; it does not prove that the migration is applied in production or that the test function exists in the deployed database. Reconcile source and database before asserting either outcome.
+Migration 013_reviewer_decision_test_rpc.sql was removed from the current main tree in commit `3c61efc...`. Historical Git still contains the original file, as expected. This resolves the source-tree discrepancy; the deployed database was not queried in this pass, so the presence or absence of a previously applied test function is not independently confirmed here.
 
 ### 9.9 Public share replacement uses sequential operations
 
@@ -456,11 +456,11 @@ Items below are technical review points discovered while building this reference
 | API-DB-01 | Test-only Reviewer migration | Migration 013 exists in the checked-in source and defines a deliberately failing RPC. | Whether that migration/function exists in the deployed DB; reconcile the source file with the curated claim that it was removed. |
 | API-TEST-02 | Claim-concurrency test | tests/concurrency.test.ts exists and contains a concurrent conditional-update test requiring seed data/environment. | Whether the test has actually run successfully; keep manual two-Driver acceptance separate from automated execution. |
 | API-SEC-03 | Event timestamps | UI helper fetches server time; event APIs accept server_timestamp in submitted JSON. | Whether an attacker can alter the timestamp in the deployed flow; decide whether the server route/DB should assign authoritative ingestion time. |
-| API-AI-04 | Direct summary eligibility | Fixed in source commit `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5`: `/api/summary` now filters to `status = completed`. | Deployment status was pending and live endpoint testing remains required. |
+| API-AI-04 | Direct summary eligibility | Fixed in source commit `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5`: `/api/summary` now filters to `status = completed`; Vercel check reports success. | Authenticated live endpoint test remains required. |
 | API-STOR-05 | Event-photo bucket public flag | Migration 007 sets event-photos public=true; upload endpoint returns a public URL. | Whether this is intended for every event photo and matches current privacy expectations. |
 | API-RATE-06 | Anonymous verification rate limiter | A module-local Map limits requests by IP+token key. | Whether this is sufficient for multi-instance deployment; no shared store is shown in the inspected helper. |
 | API-SHARE-07 | Share replacement sequence | API updates old share, then inserts replacement; database has partial unique index. | Whether a transactional RPC is necessary for the desired consistency guarantees. |
-| API-STATUS-08 | Source snapshot vs final records | Inspected main snapshot identified September 15 source commit; curated final records describe later Day 21 work and tests. | Exact source SHA deployed during final E2E and confirmation that source is synchronized with that tested deployment. |
+| API-STATUS-08 | Source snapshot vs final records | Source cleanup and completed-only Summary gate were committed to main on 22 October; Vercel check reports success for the latest source change. | Exact commit used by the historical final E2E and direct post-reconciliation live API verification remain unconfirmed. |
 | API-DOC-09 | Demo-account documentation | README contains test-account credentials; final curated status says public credentials were deferred to final pre-submission. | Verify these are disposable, intentionally public demo accounts and not access to production/personal data before distributing README. |
 
 Do not mark an item closed just because a comment or later summary says it was fixed. Close it with a current source diff, actual database/deployment check, or new test record appropriate to the question.
