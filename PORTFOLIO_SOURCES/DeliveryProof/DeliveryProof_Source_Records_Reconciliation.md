@@ -20,7 +20,7 @@ The comparison identified one checked-in cleanup artifact, one direct implementa
 | Item | Change | Evidence | Current status |
 |---|---|---|---|
 | Temporary Reviewer test RPC migration | Removed `src/db/migrations/013_reviewer_decision_test_rpc.sql` from the current source tree. It defined a deliberate exception test function. | Source cleanup commit `3c61efc078c13b2d868af06b68075ffa599df37d` | **Source cleanup complete; deployed database not re-inspected in this pass.** |
-| AI Evidence Summary post-completion guard | Updated `src/app/api/summary/route.ts` to query only a Trip with `status = 'completed'`; changed the no-match message to “No completed trip found.” | Source commit `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5` | **Source aligned to accepted product scope; deployment check was pending when recorded.** |
+| AI Evidence Summary post-completion guard | Updated `src/app/api/summary/route.ts` to query only a Trip with `status = 'completed'`; changed the no-match message to “No completed trip found.” | Source commit `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5` | **Source aligned to accepted product scope; follow-up Vercel status check reports success. Live API behavior remains untested.** |
 
 These are small, targeted source changes aligned with accepted project records. No database migrations were applied and no production database rows/functions were directly inspected during this review.
 
@@ -64,9 +64,9 @@ These are small, targeted source changes aligned with accepted project records. 
 - `3c61efc078c13b2d868af06b68075ffa599df37d` — removed the test-only migration file.
 - `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5` — added the completed-only condition to `/api/summary`.
 
-**Deployment status evidence:** A Vercel status check existed for the earlier source commit. For the latest summary-gate commit, GitHub returned a Vercel check in **pending** state when this report was drafted. The deployment-log endpoint was not available under the current Vercel scope, so the build and live behavior were not independently verified in this pass.
+**Deployment status evidence:** The latest summary-gate commit first showed **pending** while this report was drafted. A follow-up GitHub status check now returns Vercel **success** for both the source-cleanup and summary-gate commits. Deployment-log details were not available under the current Vercel authorization scope; an authenticated live API smoke test and direct database inspection were not performed.
 
-**Status:** 🟡 Source commits identified; latest deployment/build and production database synchronization still need confirmation. Do not describe the latest source fix as live until the associated Vercel check is successful and the deployed route is tested.
+**Status:** 🟡 Source commits identified and Vercel status reports success; authenticated live behavior and production database state remain unverified.
 
 ### DP-REC-04 — Public demo-account table in README
 
@@ -96,9 +96,9 @@ These are small, targeted source changes aligned with accepted project records. 
 
 **What is now confirmed:** Current Git source includes the completed-only query.
 
-**What remains:** Vercel’s status for this commit was pending at the time of the check; a successful deployment and a direct API test against both completed and non-completed Trips remain necessary.
+**What remains:** Vercel status now reports success for this commit. A direct API test against completed and non-completed Trips is still necessary to establish runtime behavior.
 
-**Status:** 🟡 Source corrected; deployment and runtime verification pending.
+**Status:** 🟡 Source corrected and Vercel status successful; runtime/API verification pending.
 
 ### DP-REC-07 — Event-photo bucket visibility
 
@@ -126,7 +126,7 @@ No production data is modified by this checklist. Use a safe staging/test enviro
 
 ### Source and deployment
 - [ ] Confirm the latest source commit is the commit Vercel builds for the intended project.
-- [ ] Confirm the latest Vercel check becomes successful.
+- [x] Confirm GitHub’s Vercel status returned success for the source-cleanup and summary-gate commits.
 - [ ] Run/confirm the production or preview route after deployment.
 - [ ] Test `/api/summary` for a completed Trip: eligible behavior.
 - [ ] Test `/api/summary` for a claimed or in-progress Trip: should be rejected by the completed-only query.
@@ -162,14 +162,14 @@ No production data is modified by this checklist. Use a safe staging/test enviro
 |---|---|
 | Curated architecture/decision/verification records | Preserved |
 | Test-only migration source discrepancy | Resolved in current source tree |
-| AI Summary completed-only guard | Resolved in current source tree; deployment pending |
+| AI Summary completed-only guard | Resolved in source; Vercel status success; authenticated runtime test pending |
 | Automated concurrency test | Exists; execution unverified; requires suitable fixtures/environment |
 | Public demo-account approval | Open decision |
 | Timestamp provenance | Open design/security decision |
 | Event-photo visibility | Open policy verification |
 | Public-share replacement transaction | Known non-transactional sequence; decision open |
 | Anonymous rate-limit scalability | Known process-local design limitation |
-| Latest deployment/live behavior | Not verified in this pass |
+| Latest Vercel check | Success reported for source commits; live API behavior not directly tested |
 
 **Recommended next action:** verify the new Vercel deployment and test the completed-only AI Summary gate, then handle the public demo-account decision. Keep the other review items as evidence-based open work rather than changing locked behavior without a decision.
 
