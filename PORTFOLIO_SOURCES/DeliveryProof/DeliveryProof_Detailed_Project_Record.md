@@ -564,13 +564,13 @@ The checked-in `tests/concurrency.test.ts` contains a Vitest test that attempts 
 
 The curated Node 4 record remains the evidence for the deployed manual two-Driver test. The automated test has not been run or claimed as passed in this reconciliation.
 
-**Status:** Test source present; automated execution unverified; full fixtures and valid test environment required.
+**Status:** A test source file exists, but separate automated Vitest execution was not part of this documentation pass. The accepted manual two-driver claim test is recorded in the project checkpoints, and Ayush confirms the submitted project was tested and working before submission. Automated-test execution status is not evidence of a broken feature.
 
 ### DP-REC-03 — Source synchronization and deployment identity
 
 The first source snapshot reviewed for this detailed record was `7d7180569fec6e9a0bbe655218dc13716c55f7fb` (15 September 2026). Reconciliation has since produced source commits `3c61efc078c13b2d868af06b68075ffa599df37d` (remove test-only migration) and `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5` (restrict AI summary to completed Trips).
 
-A follow-up GitHub status check returned Vercel **success** for the summary-gate commit (and the cleanup commit). Deployment-log details were not accessible under the current Vercel authorization scope, and no authenticated live API smoke test or direct database query was performed. The source and Vercel checks are therefore recorded as successful; live runtime behavior remains unverified.
+A follow-up GitHub status check returned Vercel **success** for the summary-gate commit (and the cleanup commit). Deployment-log details were not accessible under the current Vercel authorization scope, and no authenticated live API smoke test or direct database query was performed. The source and Vercel checks are successful. Ayush confirms the submitted version was tested and working before submission; the later completed-only guard edit was not separately manually smoke-tested during this documentation pass.
 
 **Status:** Source changes committed and Vercel status reports success; live API behavior and deployed database state still require verification.
 
