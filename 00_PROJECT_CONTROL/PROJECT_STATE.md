@@ -338,7 +338,7 @@ GitHub Records → source-of-truth bridge
 
 - Added detailed project record, API/database/source-code crosswalk, reconciliation report and documentation index under `PORTFOLIO_SOURCES/DeliveryProof/`.
 - Application-source commit `3c61efc078c13b2d868af06b68075ffa599df37d` removed the temporary test-only Reviewer RPC migration file from the current tree. This does not itself execute a database DROP; production DB state was not directly inspected in this pass.
-- Application-source commit `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5` aligned `/api/summary` with the accepted post-completion rule by querying only `status = completed`. Vercel’s check was pending when checked, so the source fix is not yet recorded as live-verified.
+- Application-source commit `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5` aligned `/api/summary` with the accepted post-completion rule by querying only `status = completed`. A follow-up GitHub status check reports Vercel success for this commit; an authenticated live API smoke test is still pending, so runtime behavior is not yet recorded as verified.
 - `tests/concurrency.test.ts` exists, but successful automated execution was not verified. The checked-in seed script alone does not provide the test’s required two Drivers and published unclaimed Trip.
 - The current README contains a demo-account table despite an earlier Day 21 note that public credentials were deferred. Verify demo-account isolation and decide intended public distribution before marking approved.
 - Server timestamp provenance, event-photo bucket visibility, public-share transactionality, and the process-local anonymous rate limiter remain documented review items. No live Supabase database inspection or mutation occurred during this pass.
