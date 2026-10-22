@@ -68,7 +68,7 @@ The project records describe this responsibility boundary:
 - **Ayush:** final authority, manual tester and implementation authorizer.
 - **Freight_Records:** record bridge for accepted decisions, implementation reports, checkpoints and test evidence.
 
-The five curated records in PORTFOLIO_SOURCES/DeliveryProof/ are the approved summary layer over the larger records archive. Do not treat every historical prompt, draft, temporary experiment, superseded decision or unresolved investigation as current behavior.
+The curated records in PORTFOLIO_SOURCES/DeliveryProof/ are the approved summary layer over the larger records archive. The Detailed Project Record, API/Database Crosswalk, Source/Records Reconciliation report and Documentation Index are later companion references. Do not treat every historical prompt, draft, temporary experiment, superseded decision or unresolved investigation as current behavior.
 
 ---
 
@@ -546,47 +546,75 @@ The portal baselines were locked, the Reviewer blueprint constrained Reviewer au
 
 This section prevents future readers from treating a documentation statement, a checked-in migration and a live production database as interchangeable evidence.
 
-### DP-REC-01 — Reviewer test-only migration still exists in source
+### DP-REC-01 — Reviewer test-only migration
 
-**Curated final record says:** the temporary Reviewer test RPC was removed after rollback testing.
+**Prior mismatch:** The accepted Day 20 record says the temporary Reviewer test RPC was removed, but the application main branch still contained `src/db/migrations/013_reviewer_decision_test_rpc.sql`.
 
-**Current source inspection found:** src/db/migrations/013_reviewer_decision_test_rpc.sql remains on the visible main branch and defines process_reviewer_decision_test, with intentional exceptions in Approve and Reject paths.
+**Action taken:** The migration file was removed from the current source tree in commit `3c61efc078c13b2d868af06b68075ffa599df37d`.
 
-**Can conclude:** the current source repository contains a test-only migration that conflicts with the curated statement that the temporary function was removed.
+**Current evidence:** The current Git tree no longer contains migration 013. This resolves the source-tree discrepancy.
 
-**Cannot conclude from that file alone:** whether the migration was applied to production, whether the function still exists in the production database, or whether deployment procedures exclude it.
+**Remaining boundary:** A Git file deletion does not run `DROP FUNCTION` against a database. The final Day 20 record says the test function was removed; this pass did not directly query the deployed database. Keep the historical rollback test result, and treat production function presence as not independently re-inspected here.
 
-**Reconciliation needed:** confirm production database state without disclosing secrets; decide whether this migration should be removed from source or isolated as an explicit test-only artifact; then align the source and curated records. Do not call production compromised or claim the function is live based only on a checked-in SQL file.
+**Status:** Source reconciled; no live database mutation or direct database inspection performed in this pass.
 
-### DP-REC-02 — Automated claim-concurrency test status
+### DP-REC-02 — Automated claim-concurrency test
 
-**Curated final record says:** the deployed two-driver manual test was accepted; a separate automated local race-test framework was deferred and was not represented as passed.
+The checked-in `tests/concurrency.test.ts` contains a Vitest test that attempts two concurrent conditional updates. The test requires a published unclaimed Trip and at least two Driver rows. The current `src/db/seed.sql` only seeds one Driver and one Trip in `active` status; that script alone does not satisfy the concurrency test’s prerequisites. The test also relies on configured Supabase environment variables; its fallback key is a placeholder.
 
-**Current source inspection found:** tests/concurrency.test.ts exists and contains a Vitest test that concurrently issues two conditional database updates against a seeded published Trip.
+The curated Node 4 record remains the evidence for the deployed manual two-Driver test. The automated test has not been run or claimed as passed in this reconciliation.
 
-**Can conclude:** an automated test file is present.
+**Status:** Test source present; automated execution unverified; full fixtures and valid test environment required.
 
-**Cannot conclude:** that it ran successfully in CI/local execution, that its environment was configured, or that its assumptions work against a freshly initialized schema/data set.
+### DP-REC-03 — Source synchronization and deployment identity
 
-**Reconciliation needed:** either execute and record the test as an actual automated result, or label it as an available but unverified test script. Keep the deployed manual verification separate.
+The first source snapshot reviewed for this detailed record was `7d7180569fec6e9a0bbe655218dc13716c55f7fb` (15 September 2026). Reconciliation has since produced source commits `3c61efc078c13b2d868af06b68075ffa599df37d` (remove test-only migration) and `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5` (restrict AI summary to completed Trips).
 
-### DP-REC-03 — Application source and records timestamps differ
+GitHub reported Vercel status **pending** for the summary-gate commit when checked. The deployment log details were not accessible under the current Vercel authorization scope, so this record does not claim the latest commit is live or that the build has passed.
 
-The visible application repository main head inspected for this record was commit 7d7180569fec6e9a0bbe655218dc13716c55f7fb, dated 15 September 2026, with message “Change presentation deck link to Google Slides.” The curated project records were written/updated around 28 September 2026 and document Day 21 checks and source synchronization.
+**Status:** Source changes committed; latest deployment and live API behavior still require verification.
 
-This is a timeline mismatch between the inspected source branch and later records. It does not prove which commit was deployed during the recorded final tests. Reconcile the exact tested deployment commit with the current source branch before claiming the repository is a byte-for-byte mirror of the final tested deployment.
+### DP-REC-04 — Public demo-account table
 
-### DP-REC-04 — Demo-account documentation requires final sharing decision
+The current application README contains a demo-account table, while the earlier Day 21 control records say public demo credentials were deferred. Git history shows a later README change titled “Enhance README with demo video and account details” dated 13 September 2026.
 
-The current source README includes a demo-account table, while the curated final verification says public demo credentials were deferred to the final pre-submission pass. This detailed record intentionally does not repeat passwords.
+Treat the README as the current source content and the “deferred” note as historical status. The presence of credentials in a public README does not prove that the accounts are isolated, disposable, or safe to distribute further. Do not repeat credentials in other documentation.
 
-Before circulating the README, confirm the accounts are deliberately public test users with disposable data and do not grant access to production or personal data. Align the README and project-control status after that decision.
+**Status:** Owner/security decision remains open until the accounts are verified as dedicated demo accounts with synthetic data and no access to private or production data.
 
-### DP-REC-05 — Public-share atomicity wording
+### DP-REC-05 — Server timestamp provenance
 
-The inspected public-share creation route revokes an existing active share and then inserts a replacement. The partial unique index is a concurrency guard, but the two REST calls are not demonstrated by the inspected route to be one database transaction. Describe the index as a protection; do not claim the whole replace-share operation is atomic without additional evidence.
+The UI helper `src/lib/capture/getServerTime.ts` fetches `/api/server-time`, and event clients submit a `server_timestamp` field to event APIs. The inspected event handlers accept that field from the request body and do not visibly reassign the timestamp inside the write handler.
 
-These are reconciliation tasks, not claims that production failure has been proven.
+**Status:** Open design/security review. Decide whether this field represents the client-captured event time or whether authoritative server-received time needs a separately assigned column. Do not claim tamper-proof receipt time solely because the field is named `server_timestamp`.
+
+### DP-REC-06 — AI Evidence Summary completion gate
+
+The accepted architecture defines AI Evidence Summary as a post-completion capability. The prior source route queried `active`, `claimed`, `in_progress`, and `completed` Trips, which did not match that boundary.
+
+**Action taken:** Commit `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5` changed the private `/api/summary` query to require `.eq('status', 'completed')` and changed the no-match response to “No completed trip found.”
+
+**Status:** Source fix committed and read back from GitHub; Vercel check was pending at the time of this record. Runtime/deployment verification remains open.
+
+### DP-REC-07 — Event-photo bucket visibility
+
+Migration `007_event_photos_bucket.sql` creates the `event-photos` bucket with `public = true`, and the upload API returns a public URL. The public verification projection omits raw photo URLs, but that does not make the underlying Storage objects private.
+
+**Status:** Open policy verification. Confirm intended access and live bucket configuration before changing visibility or describing delivery photos as private.
+
+### DP-REC-08 — Public-share replacement is not a single demonstrated transaction
+
+The current share-creation handler first revokes the old ACTIVE row, then inserts a new ACTIVE row in separate requests. The partial unique index is a concurrency guard; the handler does not demonstrate that both calls are a single database transaction.
+
+**Status:** Documented limitation; no runtime change made. A transactional RPC should be considered only after the required consistency semantics are decided.
+
+### DP-REC-09 — Anonymous verification rate limiting
+
+The public verification endpoint uses a module-local in-memory Map with an IP-plus-token key and fixed window. It is not a shared store across server instances/restarts.
+
+**Status:** Documented scalability limitation, not a newly confirmed production exploit. Evaluate a shared store only if globally coordinated limiting is within scope.
+
+
 
 ---
 
@@ -674,6 +702,10 @@ The approved five-file summary set in PORTFOLIO_SOURCES/DeliveryProof/ is:
 3. DeliveryProof_Major_Verified_Challenges_and_Fixes.md
 4. DeliveryProof_Final_Verification.md
 5. DeliveryProof_Final_Project_Handoff.md
+6. DeliveryProof_Detailed_Project_Record.md (later companion synthesis)
+7. DeliveryProof_API_Database_Source_Code_Crosswalk.md (later source-level reference)
+8. DeliveryProof_Source_Records_Reconciliation.md (reconciliation results / open checks)
+9. DeliveryProof_Documentation_Index.md (navigation and current status)
 
 Read this detailed record alongside those files and the underlying records they cite, especially:
 
@@ -698,4 +730,4 @@ When historical prompt, later accepted decision, verification checkpoint and vis
 
 ---
 
-**Documentation status:** Detailed record created as Version 1.0. Core product and accepted architecture are consolidated. The source-versus-record differences in Section 16 remain open until the relevant repository/database state is explicitly reconciled.
+**Documentation status:** Version 1.0 consolidated the product and accepted architecture. The 22 October 2026 reconciliation has removed the test-only migration from the current source tree and committed the completed-only AI Summary guard. Latest deployment status was pending when checked; database, credential-safety and other design items remain explicitly open. See DeliveryProof_Source_Records_Reconciliation.md.
