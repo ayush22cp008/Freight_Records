@@ -50,7 +50,7 @@ These five records form the earlier approved summary layer. Preserve them as the
 | Item | Source commit | State |
 |---|---|---|
 | Removed the test-only Reviewer RPC migration file from the current source tree | `3c61efc078c13b2d868af06b68075ffa599df37d` | Source cleanup confirmed; no live database query was performed during this pass. |
-| Restricted the private AI Evidence Summary route to completed Trips | `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5` | Source contains the completed-only condition; the Vercel check was pending when captured. |
+| Restricted the private AI Evidence Summary route to completed Trips | `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5` | Source contains the completed-only condition and GitHub reports Vercel success; authenticated runtime behavior remains untested. |
 
 ### Open verification / decisions
 
@@ -72,7 +72,7 @@ Full evidence boundaries and suggested checks are in the [reconciliation report]
 
 **Source state:** The repository contains later reconciliation commits. The private AI Summary endpoint is now source-gated to completed Trips.
 
-**Deployment state:** Do not describe the latest AI-summary source fix as live-verified until its Vercel check is successful and the deployed endpoint is tested.
+**Deployment state:** GitHub reports Vercel success for the latest AI Summary source fix. Do not mark runtime behavior verified until the deployed endpoint is tested.
 
 **Database state:** This pass did not run direct queries against the live Supabase database. Source file removal alone does not prove a database function was dropped.
 
