@@ -213,7 +213,7 @@ Approve failure → identity remains PENDING; evidence remains PENDING
 Reject failure  → identity remains PENDING; evidence remains PENDING
 ~~~
 
-The curated final report says the temporary test RPC was removed and a normal production retry succeeded. The currently inspected source repository still contains src/db/migrations/013_reviewer_decision_test_rpc.sql. That difference is explicitly tracked in Section 16; this document does not silently call it reconciled.
+The curated final report says the temporary test RPC was removed and a normal production retry succeeded. A 22 October source reconciliation removed `src/db/migrations/013_reviewer_decision_test_rpc.sql` from the current main tree in commit `3c61efc078c13b2d868af06b68075ffa599df37d`. The deployed database was not directly queried in this pass, so source-file removal alone does not prove the function’s current database state; see DP-REC-01.
 
 ---
 
