@@ -570,9 +570,9 @@ The curated Node 4 record remains the evidence for the deployed manual two-Drive
 
 The first source snapshot reviewed for this detailed record was `7d7180569fec6e9a0bbe655218dc13716c55f7fb` (15 September 2026). Reconciliation has since produced source commits `3c61efc078c13b2d868af06b68075ffa599df37d` (remove test-only migration) and `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5` (restrict AI summary to completed Trips).
 
-GitHub reported Vercel status **pending** for the summary-gate commit when checked. The deployment log details were not accessible under the current Vercel authorization scope, so this record does not claim the latest commit is live or that the build has passed.
+A follow-up GitHub status check returned Vercel **success** for the summary-gate commit (and the cleanup commit). Deployment-log details were not accessible under the current Vercel authorization scope, and no authenticated live API smoke test or direct database query was performed. The source and Vercel checks are therefore recorded as successful; live runtime behavior remains unverified.
 
-**Status:** Source changes committed; latest deployment and live API behavior still require verification.
+**Status:** Source changes committed and Vercel status reports success; live API behavior and deployed database state still require verification.
 
 ### DP-REC-04 — Public demo-account table
 
@@ -594,7 +594,7 @@ The accepted architecture defines AI Evidence Summary as a post-completion capab
 
 **Action taken:** Commit `bc4a2e76d57e772f54bd89722f21d7745aa3d6e5` changed the private `/api/summary` query to require `.eq('status', 'completed')` and changed the no-match response to “No completed trip found.”
 
-**Status:** Source fix committed and read back from GitHub; Vercel check was pending at the time of this record. Runtime/deployment verification remains open.
+**Status:** Source fix committed and read back from GitHub; follow-up Vercel check reports success. Runtime/API verification remains open.
 
 ### DP-REC-07 — Event-photo bucket visibility
 
