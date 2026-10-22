@@ -100,7 +100,7 @@ These are small, targeted source changes aligned with accepted project records. 
 
 **What remains:** Vercel status now reports success for this commit. A direct API test against completed and non-completed Trips is still necessary to establish runtime behavior.
 
-**Status:** 🟡 Source corrected and Vercel status successful; runtime/API verification pending.
+**Status:** Ayush confirms the submitted AI Summary flow worked and was tested before submission. The completed-only guard was added later; Vercel reports success, but that narrow post-submission edit has not been separately manually smoke-tested.
 
 ### DP-REC-07 — Event-photo bucket visibility
 
@@ -131,24 +131,17 @@ No production data is modified by this checklist. Use a safe staging/test enviro
 - [x] Confirm GitHub’s Vercel status returned success for the source-cleanup and summary-gate commits.
 - [ ] If continuing post-submission maintenance, smoke-test the latest `/api/summary` source change: completed Trip is eligible, and a non-completed Trip is rejected. The owner’s pre-submission tests validate the submitted version, not automatically this later source edit.
 
-### Reviewer cleanup
-- [ ] Confirm the production/staging database has the normal `process_reviewer_decision` function.
-- [ ] Confirm the test-only `process_reviewer_decision_test` function is absent, if the historic migration was ever applied.
-- [ ] Do not run the forced-exception test function in production.
+### Reviewer cleanup (optional direct database audit)
+The submitted Reviewer workflow was tested by Ayush before submission. If a separate live database audit is desired, confirm the normal `process_reviewer_decision` function and check whether the historic test-only function exists, because deleting a migration file does not mutate a database. Do not run the forced-exception test function in production.
 
-### Automated concurrency
-- [ ] Configure a disposable test database with one published unclaimed Trip and at least two test Driver rows linked to usable Auth identities if exercising the HTTP endpoint.
-- [ ] Supply real environment variables in the test environment; do not use the placeholder fallback key.
-- [ ] Run `npm test -- --run tests/concurrency.test.ts` or the project’s equivalent Vitest invocation.
-- [ ] Capture actual output and state whether the check is a database-update simulation or real authenticated HTTP E2E.
+### Automated concurrency (optional extra test coverage)
+The accepted manual two-Driver test is documented, and Ayush confirms he tested the submitted project. The test below is an additional automated-coverage option, not a requirement to establish that the submitted feature worked: configure a disposable test database with one published unclaimed Trip and at least two test Drivers, set valid test environment variables, run the project’s Vitest command, and capture its output. Do not use production accounts or a production database for this test.
 
 ### Public demo accounts
 - [ ] Optional release-hygiene check: confirm demo accounts are dedicated identities with synthetic data and cannot access private/production data before reusing them beyond the hackathon.
 
-### Timestamp and photo evidence
-- [ ] Agree on the meaning of event time versus server-received time.
-- [ ] If changed, add a regression test for client-submitted forged timestamps.
-- [ ] If photo privacy requirements change, confirm live `event-photos` Storage visibility before altering policies.
+### Timestamp and photo evidence (optional hardening review)
+No broken functional flow was reported by Ayush. Only if a new tamper-resistance or photo-privacy requirement is introduced, review the distinction between event-capture time and server-received time or verify the live `event-photos` Storage policy before making any change.
 
 ---
 
@@ -158,14 +151,14 @@ No production data is modified by this checklist. Use a safe staging/test enviro
 |---|---|
 | Curated architecture/decision/verification records | Preserved |
 | Test-only migration source discrepancy | Resolved in current source tree |
-| AI Summary completed-only guard | Resolved in source; Vercel status success; authenticated runtime test pending |
+| AI Summary completed-only guard | Source change committed; Vercel status success. The submitted AI Summary workflow was owner-tested before submission; the later source edit was not separately manually smoke-tested. |
 | Manual concurrency acceptance | Owner confirms the project was tested before submission; accepted records document the two-driver manual claim test. Separate automated test execution is unverified and is not a claim that manual testing failed. |
 | Public demo accounts | Present in README; account-isolation review is optional release hygiene, not an identified functional failure. |
 | Timestamp provenance | Source-level implementation detail; no reported functional failure. Revisit only for stronger tamper-resistance requirements. |
 | Event-photo visibility | Migration specifies a public bucket; treat as an access-policy characteristic, not a reported functional bug. |
 | Public-share replacement transaction | Sequential operations are visible in source; no reported functional failure, no change required absent a stronger atomicity requirement. |
 | Anonymous rate-limit scalability | Process-local design characteristic; not a reported functional failure. |
-| Latest Vercel check | Success reported for source commits; live API behavior not directly tested |
+| Latest Vercel check | Success reported for source commits. Ayush confirms the submitted version was tested; the later narrow AI Summary source edit was not independently manually tested. |
 
 ## 5. Owner clarification and how to use this report
 
